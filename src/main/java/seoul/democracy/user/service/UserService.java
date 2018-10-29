@@ -54,13 +54,6 @@ public class UserService {
     }
 
     @Transactional
-    public User update(UserUpdateDto updateDto) {
-        User user = getMe();
-
-        return user.update(updateDto);
-    }
-
-    @Transactional
     public User create(UserCreateDto createDto, String ip) {
 
         if (existsEmail(createDto.getEmail()))
@@ -71,7 +64,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    boolean existsEmail(String email) {
+    @Transactional
+    public User update(UserUpdateDto updateDto) {
+        User user = getMe();
+
+        return user.update(updateDto);
+    }
+
+    private boolean existsEmail(String email) {
         return userRepository.exists(equalEmail(email.trim()));
     }
 }

@@ -12,6 +12,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * 회원
+ */
 @Getter
 @NoArgsConstructor
 @Entity(name = "TB_USER")

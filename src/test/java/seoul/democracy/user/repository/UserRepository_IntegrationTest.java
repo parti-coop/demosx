@@ -12,13 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.user.domain.Role;
 import seoul.democracy.user.domain.User;
 import seoul.democracy.user.dto.UserDto;
-import seoul.democracy.user.predicate.UserPredicate;
 
 import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static seoul.democracy.user.dto.UserDto.projection;
+import static seoul.democracy.user.dto.UserDto.projectionForAdminList;
+import static seoul.democracy.user.predicate.UserPredicate.equalId;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -34,7 +36,7 @@ public class UserRepository_IntegrationTest {
 
     @Test
     public void projection_동작확인() {
-        UserDto userDto = userRepository.findOne(UserPredicate.equalId(11L), UserDto.projection);
+        UserDto userDto = userRepository.findOne(equalId(11L), projection);
 
         assertThat(userDto.getId(), is(11L));
         assertThat(userDto.getCreatedDate(), is(LocalDateTime.of(2018, 10, 11, 10, 0)));
@@ -51,7 +53,7 @@ public class UserRepository_IntegrationTest {
 
     @Test
     public void projectionForAdminList_동작확인() {
-        UserDto userDto = userRepository.findOne(UserPredicate.equalId(11L), UserDto.projectionForAdminList);
+        UserDto userDto = userRepository.findOne(equalId(11L), projectionForAdminList);
 
         assertThat(userDto.getId(), is(11L));
         assertThat(userDto.getCreatedDate(), is(LocalDateTime.of(2018, 10, 11, 10, 0)));
