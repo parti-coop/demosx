@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns="http://www.springframework.org/schema/security"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <global-method-security pre-post-annotations="enabled"/>
+    <http auto-config="true" use-expressions="true">
+
+        <intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/user/**" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/ajax/user/**" access="hasRole('ROLE_USER')"/>
+
+        <form-login login-page="/login.do"
+                    username-parameter="id"
+                    password-parameter="pw"
+                    login-processing-url="/loginProcess.do"
+                    authentication-success-handler-ref="authenticationSuccessHandler"
+                    authentication-failure-handler-ref="authenticationFailureHandler"
+        />
+        <logout logout-url="/logout.do" logout-success-url="/" delete-cookies="JSESSIONID"/>
+        <session-management>
+            <concurrency-control max-sessions="10" error-if-maximum-exceeded="false"/>
+        </session-management>
+
+        <csrf request-matcher-ref="csrfSecurityRequestMatcher"/>
+
+        <headers>
+            <frame-options policy="SAMEORIGIN"/>
+        </headers>
+    </http>
+
+    <beans:bean id="csrfSecurityRequestMatcher" class="seoul.democracy.common.config.CsrfSecurityRequestMatcher"/>
+
+    <beans:bean id="authenticationSuccessHandler"
+                class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+        <beans:property name="defaultTargetUrl" value="/index.do"/>
+    </beans:bean>
+
+    <beans:bean id="authenticationFailureHandler"
+                class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+        <beans:property name="defaultFailureUrl" value="/login.do?login_error=1"/>
+    </beans:bean>
+
+    <beans:bean id="encoder" class="org.springframework.security.crypto.password.NoOpPasswordEncoder"/>
+    <!--<beans:bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>-->
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="userLoginService">
+            <password-encoder ref="encoder"/>
+        </authentication-provider>
+    </authentication-manager>
+
+    <beans:bean id="userLoginService" class="seoul.democracy.user.service.UserLoginService"/>
+
+    <beans:bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+        <beans:property name="hierarchy">
+            <beans:value>
+                ROLE_ADMIN > ROLE_MANAGER
+                ROLE_MANAGER > ROLE_USER
+                ROLE_USER > ROLE_RESTRICTED
+                ROLE_RESTRICTED > IS_AUTHENTICATED_FULLY
+                IS_AUTHENTICATED_REMEMBERED > IS_AUTHENTICATED_ANONYMOUSLY
+            </beans:value>
+        </beans:property>
+    </beans:bean>
+
+</beans:beans>

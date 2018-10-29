@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+    <!-- 환경설정 기본정보를 globals.properties 에서 참조하도록 propertyConfigurer 설정  -->
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/egovframework/egovProps/globals.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- datasource 설정(propertyConfigurer 활용) -->
+    <!-- 실 운영환경에서는 dbcp를 사용하도록 설정 변경 필요 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${Globals.DriverClassName}"/>
+        <property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/democracy_test?useSSL=false"/>
+        <property name="user" value="${Globals.UserName}"/>
+        <property name="password" value="${Globals.Password}"/>
+    </bean>
+
+    <tx:annotation-driven/>
+
+</beans>
