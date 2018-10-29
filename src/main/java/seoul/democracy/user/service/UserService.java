@@ -61,12 +61,12 @@ public class UserService {
     }
 
     @Transactional
-    public User join(UserCreateDto createDto) {
+    public User create(UserCreateDto createDto, String ip) {
 
         if (existsEmail(createDto.getEmail()))
             throw new AlreadyExistsException("이미 사용중인 이메일입니다.");
 
-        User user = User.create(createDto);
+        User user = User.create(createDto, ip);
 
         return userRepository.save(user);
     }

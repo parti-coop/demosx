@@ -94,16 +94,17 @@ public class User implements Serializable {
     @Embedded
     private UserDepartment department;
 
-    private User(String email, String name, String password) {
+    private User(String email, String name, String password, String ip) {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.ip = ip;
         this.role = Role.ROLE_USER;
         this.status = Status.ACTIVATED;
     }
 
-    public static User create(UserCreateDto createDto) {
-        return new User(createDto.getEmail().trim(), createDto.getName(), createDto.getPassword());
+    public static User create(UserCreateDto createDto, String ip) {
+        return new User(createDto.getEmail().trim(), createDto.getName(), createDto.getPassword(), ip);
     }
 
     public User update(UserUpdateDto updateDto) {

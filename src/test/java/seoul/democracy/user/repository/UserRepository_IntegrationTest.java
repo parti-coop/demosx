@@ -34,16 +34,16 @@ public class UserRepository_IntegrationTest {
 
     @Test
     public void projection_동작확인() {
-        UserDto userDto = userRepository.findOne(UserPredicate.equalId(6L), UserDto.projection);
+        UserDto userDto = userRepository.findOne(UserPredicate.equalId(11L), UserDto.projection);
 
-        assertThat(userDto.getId(), is(6L));
-        assertThat(userDto.getCreatedDate(), is(LocalDateTime.of(2018, 10, 6, 10, 0)));
+        assertThat(userDto.getId(), is(11L));
+        assertThat(userDto.getCreatedDate(), is(LocalDateTime.of(2018, 10, 11, 10, 0)));
         assertThat(userDto.getEmail(), is("manager1@googl.co.kr"));
         assertThat(userDto.getRole(), is(Role.ROLE_MANAGER));
         assertThat(userDto.getStatus(), is(User.Status.ACTIVATED));
         assertThat(userDto.getName(), is("매니저1"));
-        assertThat(userDto.getLoginDate(), is(LocalDateTime.of(2018, 11, 6, 10, 0)));
-        assertThat(userDto.getPhoto(), is("image6.jpg"));
+        assertThat(userDto.getLoginDate(), is(LocalDateTime.of(2018, 11, 11, 10, 0)));
+        assertThat(userDto.getPhoto(), is("image11.jpg"));
         assertThat(userDto.getDepartment1(), is("부서1-1"));
         assertThat(userDto.getDepartment2(), is("부서1-2"));
         assertThat(userDto.getDepartment3(), is("부서1-3"));
@@ -51,15 +51,15 @@ public class UserRepository_IntegrationTest {
 
     @Test
     public void projectionForAdminList_동작확인() {
-        UserDto userDto = userRepository.findOne(UserPredicate.equalId(6L), UserDto.projectionForAdminList);
+        UserDto userDto = userRepository.findOne(UserPredicate.equalId(11L), UserDto.projectionForAdminList);
 
-        assertThat(userDto.getId(), is(6L));
-        assertThat(userDto.getCreatedDate(), is(LocalDateTime.of(2018, 10, 6, 10, 0)));
+        assertThat(userDto.getId(), is(11L));
+        assertThat(userDto.getCreatedDate(), is(LocalDateTime.of(2018, 10, 11, 10, 0)));
         assertThat(userDto.getEmail(), is("manager1@googl.co.kr"));
         assertThat(userDto.getRole(), is(Role.ROLE_MANAGER));
         assertThat(userDto.getStatus(), is(User.Status.ACTIVATED));
         assertThat(userDto.getName(), is("매니저1"));
-        assertThat(userDto.getLoginDate(), is(LocalDateTime.of(2018, 11, 6, 10, 0)));
+        assertThat(userDto.getLoginDate(), is(LocalDateTime.of(2018, 11, 11, 10, 0)));
         assertThat(userDto.getPhoto(), is(nullValue()));
         assertThat(userDto.getDepartment1(), is(nullValue()));
         assertThat(userDto.getDepartment2(), is(nullValue()));
