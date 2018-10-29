@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import seoul.democracy.issue.dto.CategoryCreateDto;
+import seoul.democracy.issue.dto.CategoryUpdateDto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -50,5 +51,12 @@ public class Category {
 
     public static Category create(CategoryCreateDto createDto) {
         return new Category(createDto.getName(), createDto.getEnabled(), createDto.getSequence());
+    }
+
+    public Category update(CategoryUpdateDto updateDto) {
+        this.name = updateDto.getName();
+        this.enabled = updateDto.getEnabled();
+        this.sequence = updateDto.getSequence();
+        return this;
     }
 }

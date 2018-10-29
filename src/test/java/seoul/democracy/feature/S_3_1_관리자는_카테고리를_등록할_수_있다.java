@@ -81,12 +81,12 @@ public class S_3_1_관리자는_카테고리를_등록할_수_있다 {
     }
 
     /**
-     * 4. 유저는 카테고리를 등록할 수 없다.
+     * 4. 사용자는 카테고리를 등록할 수 없다.
      */
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
-    public void T_4_유저는_카테고리를_등록할_수_없다() {
-        CategoryCreateDto createDto = CategoryCreateDto.of("유저카테고리", true, 10);
+    public void T_4_사용자는_카테고리를_등록할_수_없다() {
+        CategoryCreateDto createDto = CategoryCreateDto.of("사용자카테고리", true, 10);
         categoryService.create(createDto);
     }
 }
