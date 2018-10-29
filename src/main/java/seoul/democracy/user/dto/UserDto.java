@@ -34,6 +34,7 @@ public class UserDto {
     private String email;
     private String name;
     private String photo;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime loginDate;
 
     private String department1;

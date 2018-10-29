@@ -5,9 +5,9 @@
   <!-- Logo -->
   <a href="<c:url value="/admin/index.do"/>" class="logo">
     <!-- mini logo for sidebar mini 50x50 pixels -->
-    <span class="logo-mini"><b>C</b>TR</span>
+    <span class="logo-mini"><b>D</b></span>
     <!-- logo for regular state and mobile devices -->
-    <span class="logo-lg"><b>C</b>ENTRAL</span>
+    <span class="logo-lg"><b>D</b>EMOCRACY</span>
   </a>
   <nav class="navbar navbar-static-top">
     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
@@ -25,12 +25,12 @@
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <img src="<c:url value="/images/noavatar.png"/>" class="user-image" alt="User Image">
-            <span class="hidden-xs">${loginUser.loginid}</span>
+            <span class="hidden-xs">${loginUser.email}</span>
           </a>
           <ul class="dropdown-menu">
             <li class="user-header">
               <img src="<c:url value="/images/noavatar.png"/>" class="img-circle" alt="User Image">
-              <p>${loginUser.loginid}</p>
+              <p>${loginUser.email}</p>
             </li>
             <li class="user-footer">
               <div class="pull-right">

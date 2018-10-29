@@ -71,7 +71,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    boolean existsEmail(String loginid) {
-        return userRepository.exists(equalEmail(loginid.trim()));
+    boolean existsEmail(String email) {
+        return userRepository.exists(equalEmail(email.trim()));
     }
 }

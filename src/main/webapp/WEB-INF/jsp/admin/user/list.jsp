@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>회원 관리 - Central</title>
+  <title>회원 관리 - Democracy</title>
   <%@ include file="../shared/head.jsp" %>
   <link rel="stylesheet" type="text/css" href="<c:url value="/css/dataTables.bootstrap.min.css"/>"/>
   <script type="text/javascript" src="<c:url value="/js/jquery.dataTables.min.js"/>"></script>
@@ -12,7 +12,6 @@
 <body class="hold-transition skin-black-light fixed sidebar-mini admin">
 
 <div class="wrapper">
-
   <%@ include file="../shared/header.jsp" %>
 
   <div class="content-wrapper">
@@ -31,12 +30,7 @@
                   <th>가입일</th>
                   <th>이름</th>
                   <th>이메일</th>
-                  <th>연락처</th>
-                  <th>생성수</th>
-                  <th>완료수</th>
-                  <th>참여수</th>
-                  <th>상세보기</th>
-                  <th>탈퇴처리</th>
+                  <th>최근로그인일</th>
                 </tr>
                 </thead>
               </table>
@@ -46,7 +40,6 @@
       </div>
     </section>
   </div>
-
   <%@ include file="../shared/footer.jsp" %>
 </div>
 
@@ -164,23 +157,8 @@
         columns: [
           { data: 'createdDate' },
           { data: 'name', orderable: false },
-          { data: 'loginid', orderable: false },
-          { data: 'phone', orderable: false },
-          { data: 'eventCount', orderable: true },
-          { data: 'eventClosedCount', orderable: true },
-          { data: 'eventJoinCount', orderable: true },
-          {
-            data: function (item) {
-              return '<a class="btn btn-primary btn-xs" href="#" target="_blank">상세보기</a>';
-            },
-            orderable: false
-          },
-          {
-            data: function (item) {
-              return '<button class="btn btn-primary btn-xs event-cancel" data-id="' + item.id + '">탈퇴처리</button>';
-            },
-            orderable: false
-          }
+          { data: 'email', orderable: false },
+          { data: 'loginDate', orderable: false }
         ]
       });
 
