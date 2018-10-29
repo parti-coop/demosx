@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <!-- http://www.egovframe.go.kr/wiki/doku.php?id=egovframework:rte:ptl:dispatcherservlet -->
+
+    <!-- 패키지 내 Controller, Service, Repository 클래스의 auto detect를 위한 mvc 설정 -->
+    <context:component-scan base-package="seoul">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan>
+
+    <!-- 서블릿컨네이너상의 exception에 대한 오류 페이지를 연결하는 mvc 설정 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="defaultErrorView" value="cmm/error/egovError"/>
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">cmm/error/dataAccessFailure</prop>
+                <prop key="org.springframework.transaction.TransactionException">cmm/error/transactionFailure</prop>
+                <prop key="egovframework.rte.fdl.cmmn.exception.EgovBizException">cmm/error/egovError</prop>
+                <prop key="org.springframework.security.AccessDeniedException">cmm/error/accessDenied</prop>
+            </props>
+        </property>
+    </bean>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**/*.do"/>
+            <mvc:exclude-mapping path="/admin/**"/>
+            <bean class="seoul.democracy.site.interceptor.SiteInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/admin/**/*.do"/>
+            <bean class="seoul.democracy.admin.interceptor.AdminInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!-- 화면처리용 JSP 파일명의  prefix, suffix 처리에 대한 mvc 설정  -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:order="1"
+          p:viewClass="org.springframework.web.servlet.view.JstlView"
+          p:prefix="/WEB-INF/jsp/"
+          p:suffix=".jsp"/>
+
+    <!--http://www.egovframe.go.kr/wiki/doku.php?id=egovframework:rte2:ptl:spring_mvc_tag_configuration -->
+    <!-- Annotation 을 사용하지 않는 경우에 대한 MVC 처리 설정 -->
+    <!-- 정적 페이지 설정시 사용됨, path를 view로 바로 연결 -->
+    <!--<mvc:view-controller path="/cmmn/validator.do" view-name="cmmn/validator"/>-->
+
+    <bean class="org.springframework.format.support.FormattingConversionServiceFactoryBean" id="conversionService"/>
+
+
+    <!-- ConversionService, @RequestParam, @Valid, @DateTimeFormat, JSON 처리등 -->
+    <mvc:annotation-driven conversion-service="conversionService" ignore-default-model-on-redirect="true">
+        <mvc:argument-resolvers>
+            <bean class="org.springframework.data.web.querydsl.QuerydslPredicateArgumentResolver">
+                <constructor-arg>
+                    <bean class="org.springframework.data.querydsl.binding.QuerydslBindingsFactory">
+                        <constructor-arg>
+                            <value type="org.springframework.data.querydsl.SimpleEntityPathResolver">INSTANCE</value>
+                        </constructor-arg>
+                    </bean>
+                </constructor-arg>
+                <constructor-arg ref="conversionService"/>
+            </bean>
+            <bean class="org.springframework.data.web.PageableHandlerMethodArgumentResolver">
+                <constructor-arg>
+                    <bean class="org.springframework.data.web.SortHandlerMethodArgumentResolver">
+                        <property name="sortParameter" value="sort[]"/>
+                    </bean>
+                </constructor-arg>
+                <property name="oneIndexedParameters" value="true"/>
+                <property name="maxPageSize" value="100"/>
+            </bean>
+            <bean class="seoul.democracy.common.resolver.InetAddressHandlerMethodArgumentResolver"/>
+        </mvc:argument-resolvers>
+        <!--<mvc:message-converters>
+            &lt;!&ndash; Use the HibernateAware mapper instead of the default &ndash;&gt;
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="prefixJson" value="true"/>
+                <property name="supportedMediaTypes" value="application/json"/>
+                <property name="objectMapper">
+                    <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                        <property name="serializationInclusion" value="NON_NULL"/>
+                    </bean>
+                </property>
+            </bean>
+        </mvc:message-converters>-->
+    </mvc:annotation-driven>
+
+    <!-- 처리할 수 없는 요청(.css, .js, .jpg)은 컨테이너에게 위임한다. mvc:resources로 변경 가능 -->
+    <mvc:default-servlet-handler/>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+</beans>

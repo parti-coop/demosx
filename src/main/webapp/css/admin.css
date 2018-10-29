@@ -1,0 +1,15 @@
+.skin-black-light .wrapper > .main-header {
+    border-top: 6px solid #3c8dbc;
+}
+
+.main-sidebar, .fixed .content-wrapper, .fixed .right-side {
+    padding-top: 56px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+#tinymce {
+    padding-top: 20px;
+}
