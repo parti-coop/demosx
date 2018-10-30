@@ -35,6 +35,14 @@ public class ProposalService {
         return proposalRepository.findOne(predicate, projection);
     }
 
+    private Proposal getProposal(Long id) {
+        Proposal proposal = proposalRepository.findOne(id);
+        if (proposal == null || proposal.getStatus().isDelete() || proposal.getStatus().isBlock())
+            throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
+
+        return proposal;
+    }
+
     @Transactional
     public Proposal create(ProposalCreateDto createDto, String ip) {
         Category category = categoryRepository.findOne(CategoryPredicate.equalName(createDto.getCategory()));
@@ -49,10 +57,14 @@ public class ProposalService {
     @Transactional
     @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
     public Proposal update(ProposalUpdateDto updateDto, String ip) {
-        Proposal proposal = proposalRepository.findOne(updateDto.getId());
-        if (proposal == null || proposal.getStatus().isDelete() || proposal.getStatus().isBlock())
-            throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
-
+        Proposal proposal = getProposal(updateDto.getId());
         return proposal.update(updateDto, ip);
+    }
+
+    @Transactional
+    @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
+    public Proposal delete(Long id, String ip) {
+        Proposal proposal = getProposal(id);
+        return proposal.delete(ip);
     }
 }

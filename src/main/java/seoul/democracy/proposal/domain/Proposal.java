@@ -61,6 +61,13 @@ public class Proposal extends Issue {
         return this;
     }
 
+    public Proposal delete(String ip) {
+        this.modifiedIp = ip;
+        this.status = Status.DELETE;
+
+        return this;
+    }
+
     public enum Status {
         OPEN,       // 공개
         DELETE,     // 삭제
