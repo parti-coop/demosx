@@ -26,7 +26,6 @@ public class UserRepositoryImpl extends QueryDslRepositorySupport implements Use
                                                  from(user)
                                                      .where(predicate))
                                              .listResults(projection);
-
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 

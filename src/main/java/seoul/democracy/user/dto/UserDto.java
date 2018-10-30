@@ -24,7 +24,7 @@ public class UserDto {
         user.id, user.createdDate, user.role, user.status, user.email, user.name, user.loginDate);
 
     //public final static QBean<UserDto> projectionForMe = Projections.fields(UserDto.class, user.id, user.email, user.role);
-    //public final static QBean<UserDto> projectionForBasic = Projections.fields(UserDto.class, user.email, user.name);
+    public final static QBean<UserDto> projectionForBasic = Projections.fields(UserDto.class, user.email, user.name);
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")
