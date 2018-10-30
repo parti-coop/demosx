@@ -59,7 +59,7 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_1_사용자는_제목_내용_카테고리_첨부파일로_제안을_등록할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        ProposalCreateDto createDto = ProposalCreateDto.of("제안합니다.", "제안내용입니다.", "복지", null);
+        ProposalCreateDto createDto = ProposalCreateDto.of("제안합니다.", "제안내용입니다.", "복지");
         Proposal proposal = proposalService.create(createDto, ip);
         assertThat(proposal.getId(), is(notNullValue()));
 
@@ -93,7 +93,7 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
     @Test(expected = BadRequestException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_2_비공개_카테고리에_제안을_등록할_수_없다() {
-        ProposalCreateDto createDto = ProposalCreateDto.of("제안합니다.", "제안내용입니다.", "비공개", null);
+        ProposalCreateDto createDto = ProposalCreateDto.of("제안합니다.", "제안내용입니다.", "비공개");
         proposalService.create(createDto, ip);
     }
 
@@ -103,7 +103,7 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
     @Test(expected = BadRequestException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_존재하지_않는_카테고리로_제안을_등록할_수_없다() {
-        ProposalCreateDto createDto = ProposalCreateDto.of("제안합니다.", "제안내용입니다.", "notExists", null);
+        ProposalCreateDto createDto = ProposalCreateDto.of("제안합니다.", "제안내용입니다.", "notExists");
         proposalService.create(createDto, ip);
     }
 }

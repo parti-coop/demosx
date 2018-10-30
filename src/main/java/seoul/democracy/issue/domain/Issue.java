@@ -54,6 +54,8 @@ public abstract class Issue {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "REG_ID", updatable = false, nullable = false)
     private User createdBy;
+    @Column(name = "REG_ID", insertable = false, updatable = false)
+    private Long createdById;
 
     /**
      * 수정 ID
