@@ -26,7 +26,7 @@ import static seoul.democracy.issue.predicate.CategoryPredicate.equalId;
 
 /**
  * epic : 3. 카테고리 관리
- * story : 3.1 관리자는 카테고리를 등록할 수 있다.
+ * story : 3.2 관리자는 카테고리를 수정할 수 있다.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {

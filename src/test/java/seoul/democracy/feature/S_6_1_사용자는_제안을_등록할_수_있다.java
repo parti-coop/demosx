@@ -29,8 +29,8 @@ import static seoul.democracy.proposal.predicate.ProposalPredicate.equalId;
 
 
 /**
- * epic : 3. 카테고리 관리
- * story : 3.1 관리자는 카테고리를 등록할 수 있다.
+ * epic : 6. 제안
+ * story : 6.1 사용자는 제안을 등록할 수 있다.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {

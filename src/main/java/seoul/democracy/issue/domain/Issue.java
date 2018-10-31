@@ -97,6 +97,8 @@ public abstract class Issue {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "STATS_ID", updatable = false, nullable = false)
     protected IssueStats stats;
+    @Column(name = "STATS_ID", insertable = false, updatable = false)
+    private Long statsId;
 
     /**
      * 이슈 파일
