@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.issue.domain.Issue;
+import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
 import seoul.democracy.user.domain.User;
 
 import javax.persistence.*;
@@ -53,8 +54,8 @@ public abstract class Opinion {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "REG_ID", updatable = false, nullable = false)
     private User createdBy;
-    //@Column(name = "REG_ID", insertable = false, updatable = false)
-    //private Long createdById;
+    @Column(name = "REG_ID", insertable = false, updatable = false)
+    private Long createdById;
 
     /**
      * 수정 ID
@@ -74,7 +75,7 @@ public abstract class Opinion {
      * 수정 아이피
      */
     @Column(name = "CHG_IP")
-    private String modifiedIp;
+    protected String modifiedIp;
 
     /**
      * 이슈
@@ -90,15 +91,47 @@ public abstract class Opinion {
     private Long likeCount;
 
     /**
+     * 의견 상태
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "OPINION_STATUS")
+    private ProposalOpinion.Status status;
+
+    /**
      * 의견 내용
      */
     @Column(name = "OPINION_CONTENT")
-    private String content;
+    protected String content;
 
     Opinion(Issue issue, String content, String ip) {
         this.issue = issue;
         this.content = content;
         this.createdIp = ip;
         this.modifiedIp = ip;
+
+        this.status = Status.OPEN;
+    }
+
+    public abstract ProposalOpinion update(ProposalOpinionUpdateDto updateDto, String ip);
+
+    public Opinion delete(String ip) {
+        this.status = Status.DELETE;
+        this.modifiedIp = ip;
+
+        return this;
+    }
+
+    public enum Status {
+        OPEN,
+        DELETE,
+        BLOCK;
+
+        public boolean isDelete() {
+            return this == DELETE;
+        }
+
+        public boolean isBlock() {
+            return this == BLOCK;
+        }
     }
 }

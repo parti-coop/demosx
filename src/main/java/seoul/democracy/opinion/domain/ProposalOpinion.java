@@ -2,6 +2,7 @@ package seoul.democracy.opinion.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
 import seoul.democracy.proposal.domain.Proposal;
 
 import javax.persistence.*;
@@ -15,12 +16,6 @@ import javax.persistence.*;
 @DiscriminatorValue("P")
 public class ProposalOpinion extends Opinion {
 
-    /**
-     * 의견 상태
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "OPINION_STATUS")
-    private Status status;
 
     /**
      * 의견 투표
@@ -31,7 +26,6 @@ public class ProposalOpinion extends Opinion {
 
     private ProposalOpinion(Proposal proposal, String content, String ip) {
         super(proposal, content, ip);
-        this.status = Status.OPEN;
         this.vote = Vote.NONE;
     }
 
@@ -39,10 +33,11 @@ public class ProposalOpinion extends Opinion {
         return new ProposalOpinion(proposal, content, ip);
     }
 
-    public enum Status {
-        OPEN,
-        DELETE,
-        BLOCK
+    @Override
+    public ProposalOpinion update(ProposalOpinionUpdateDto updateDto, String ip) {
+        this.content = updateDto.getContent();
+        this.modifiedIp = ip;
+        return this;
     }
 
     public enum Vote {

@@ -16,9 +16,11 @@ import seoul.democracy.issue.predicate.IssueLikePredicate;
 import seoul.democracy.issue.repository.CategoryRepository;
 import seoul.democracy.issue.repository.IssueLikeRepository;
 import seoul.democracy.issue.repository.IssueStatsRepository;
+import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.domain.ProposalOpinion;
 import seoul.democracy.opinion.dto.ProposalOpinionCreateDto;
 import seoul.democracy.opinion.dto.ProposalOpinionDto;
+import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
 import seoul.democracy.opinion.repository.OpinionRepository;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.ProposalCreateDto;
@@ -58,12 +60,23 @@ public class ProposalService {
         return proposalRepository.findOne(predicate, projection);
     }
 
-    private Proposal getProposal(Long id) {
-        Proposal proposal = proposalRepository.findOne(id);
+    private Proposal getProposal(Long proposalId) {
+        Proposal proposal = proposalRepository.findOne(proposalId);
         if (proposal == null || proposal.getStatus().isDelete() || proposal.getStatus().isBlock())
             throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
 
         return proposal;
+    }
+
+    public ProposalOpinionDto getOpinion(Predicate predicate, Expression<ProposalOpinionDto> projection) {
+        return opinionRepository.findOne(predicate, projection);
+    }
+
+    private Opinion getOpinion(Long opinionId) {
+        Opinion opinion = opinionRepository.findOne(opinionId);
+        if (opinion == null || opinion.getStatus().isDelete() || opinion.getStatus().isBlock())
+            throw new NotFoundException("의견이 존재하지 않습니다.");
+        return opinion;
     }
 
     @Transactional
@@ -95,12 +108,12 @@ public class ProposalService {
      * 공감
      */
     @Transactional
-    public IssueLike selectLike(Long id, String ip) {
+    public IssueLike selectLike(Long issueId, String ip) {
         User user = UserUtils.getLoginUser();
-        if (likeRepository.exists(IssueLikePredicate.equalUserIdAndIssueId(user.getId(), id)))
+        if (likeRepository.exists(IssueLikePredicate.equalUserIdAndIssueId(user.getId(), issueId)))
             throw new AlreadyExistsException("이미 공감하였습니다.");
 
-        Proposal proposal = getProposal(id);
+        Proposal proposal = getProposal(issueId);
 
         statsRepository.selectLikeProposal(proposal.getStatsId());
         IssueLike like = IssueLike.create(user, proposal, ip);
@@ -111,14 +124,14 @@ public class ProposalService {
      * 공감 해제
      */
     @Transactional
-    public IssueLike unselectLike(Long id) {
+    public IssueLike unselectLike(Long issueId) {
         User user = UserUtils.getLoginUser();
 
-        IssueLike like = likeRepository.findOne(equalUserIdAndIssueId(user.getId(), id));
+        IssueLike like = likeRepository.findOne(equalUserIdAndIssueId(user.getId(), issueId));
         if (like == null)
             throw new NotFoundException("공감 상태가 아닙니다.");
 
-        Proposal proposal = getProposal(id);
+        Proposal proposal = getProposal(issueId);
         statsRepository.unselectLikeProposal(proposal.getStatsId());
         likeRepository.delete(like);
 
@@ -126,7 +139,7 @@ public class ProposalService {
     }
 
     /**
-     * 의견
+     * 의견 등록
      */
     @Transactional
     public ProposalOpinion createOpinion(ProposalOpinionCreateDto createDto, String ip) {
@@ -137,7 +150,21 @@ public class ProposalService {
         return opinionRepository.save(opinion);
     }
 
-    public ProposalOpinionDto getOpinion(Predicate predicate, Expression<ProposalOpinionDto> projection) {
-        return opinionRepository.findOne(predicate, projection);
+    /**
+     * 의견 수정
+     */
+    @Transactional
+    @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
+    public ProposalOpinion updateOpinion(ProposalOpinionUpdateDto updateDto, String ip) {
+        return getOpinion(updateDto.getOpinionId()).update(updateDto, ip);
+    }
+
+    /**
+     * 의견 삭제
+     */
+    @Transactional
+    @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
+    public Opinion deleteOpinion(Long opinionId, String ip) {
+        return getOpinion(opinionId).delete(ip);
     }
 }
