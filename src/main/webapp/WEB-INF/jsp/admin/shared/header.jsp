@@ -49,24 +49,19 @@
 <aside class="main-sidebar">
   <section class="sidebar">
     <ul class="sidebar-menu" data-widget="tree">
-      <li class="header">메인 관리</li>
-      <li><a href="<c:url value="/admin/options/slider.do"/>"><i class="fa fa-picture-o"></i> <span>메인슬라이더</span></a></li>
-      <li><a href="<c:url value="/admin/options/recommend.do"/>"><i class="fa fa-thumbs-up"></i> <span>추천 이벤트</span></a></li>
+      <li class="header">시민제안</li>
+      <li><a href="<c:url value="/admin/issue/proposal.do"/>"><i class="fa fa-picture-o"></i> <span>제안관리</span></a></li>
+      <li><a href="<c:url value="/admin/issue/devate.do"/>"><i class="fa fa-picture-o"></i> <span>토론관리</span></a></li>
+      <li><a href="<c:url value="/admin/issue/action.do"/>"><i class="fa fa-picture-o"></i> <span>실행관리</span></a></li>
+
+      <li class="header">온라인 공론장</li>
+      <li><a href="<c:url value="/admin/issue/proposal.do"/>"><i class="fa fa-picture-o"></i> <span>온라인 공론장</span></a></li>
 
       <li class="header">User</li>
       <li><a href="<c:url value="/admin/users/list.do"/>"><i class="fa fa-user"></i> <span>회원 관리</span></a></li>
 
-      <li class="header">Event</li>
-      <li><a href="<c:url value="/admin/events/list.do"/>"><i class="fa fa-calendar-check-o"></i> <span>이벤트 관리</span></a></li>
-
-      <li class="header">Board</li>
-      <li><a href="<c:url value="/admin/posts/notice/list.do"/>"><i class="fa fa-bell"></i> <span>공지사항</span></a></li>
-      <li><a href="<c:url value="/admin/posts/faq/list.do"/>"><i class="fa fa-comment"></i> <span>FAQ</span></a></li>
-      <li><a href="<c:url value="/admin/post-inquire/list.do"/>"><i class="fa fa-question"></i> <span>문의하기</span></a></li>
-
-      <li class="header">Etc</li>
-      <li><a href="<c:url value="/admin/options/agreement-terms.do"/>"><i class="fa fa-info"></i> <span>이용약관</span></a></li>
-      <li><a href="<c:url value="/admin/options/agreement-privacy.do"/>"><i class="fa fa-info"></i> <span>개인정보보호정책</span></a></li>
+      <li class="header">카테고리</li>
+      <li><a href="<c:url value="/admin/category/list.do"/>"><i class="fa fa-calendar-check-o"></i> <span>카테고리</span></a></li>
 
       <li class="header">Stats</li>
       <li><a href="https://adminlte.io/docs"><i class="fa fa-bar-chart"></i> <span>통계</span></a></li>

@@ -25,6 +25,7 @@ public class ProposalDto {
         proposal.createdIp, proposal.modifiedIp, proposal.opinionType,
         CategoryDto.projection.as("category"),
         IssueStatsDto.projection.as("stats"),
+        proposal.adminCommentDate, proposal.adminComment,
         proposal.status, proposal.title, proposal.content);
 
     private Long id;
@@ -42,6 +43,9 @@ public class ProposalDto {
     private List<IssueFile> files;
 
     private Proposal.Status status;
+
+    private LocalDateTime adminCommentDate;
+    private String adminComment;
 
     private String title;
     private String content;

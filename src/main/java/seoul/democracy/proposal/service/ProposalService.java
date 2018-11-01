@@ -4,6 +4,7 @@ import com.mysema.query.types.Expression;
 import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.AlreadyExistsException;
@@ -25,6 +26,7 @@ import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
 import seoul.democracy.opinion.repository.OpinionLikeRepository;
 import seoul.democracy.opinion.repository.OpinionRepository;
 import seoul.democracy.proposal.domain.Proposal;
+import seoul.democracy.proposal.dto.ProposalAdminCommentEditDto;
 import seoul.democracy.proposal.dto.ProposalCreateDto;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.dto.ProposalUpdateDto;
@@ -214,5 +216,15 @@ public class ProposalService {
         opinionRepository.unselectLike(opinion.getId());
         opinionLikeRepository.delete(like);
         return like;
+    }
+
+    /**
+     * 관리자 댓글
+     */
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public Proposal editAdminComment(ProposalAdminCommentEditDto editDto) {
+        Proposal proposal = getProposal(editDto.getProposalId());
+        return proposal.editAdminComment(editDto.getComment());
     }
 }

@@ -2,6 +2,7 @@ package seoul.democracy.proposal.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.domain.IssueStats;
@@ -11,6 +12,7 @@ import seoul.democracy.proposal.dto.ProposalCreateDto;
 import seoul.democracy.proposal.dto.ProposalUpdateDto;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -24,6 +26,20 @@ public class Proposal extends Issue {
     @Enumerated(EnumType.STRING)
     @Column(name = "ISSUE_STATUS")
     private Status status;
+
+    /**
+     * 관리자 댓글 일시
+     */
+    @Convert(converter = LocalDateTimeAttributeConverter.class)
+    @Column(name = "ADMIN_COMMENT_DT")
+    private LocalDateTime adminCommentDate;
+
+    /**
+     * 관리자 댓글
+     */
+    @Lob
+    @Column(name = "ADMIN_COMMENT")
+    private String adminComment;
 
     public Proposal(Category category, String title, String content, String ip) {
         this.stats = IssueStats.create();
@@ -58,6 +74,12 @@ public class Proposal extends Issue {
 
     public ProposalOpinion createOpinion(String content, String ip) {
         return ProposalOpinion.create(this, content, ip);
+    }
+
+    public Proposal editAdminComment(String comment) {
+        this.adminComment = comment;
+        this.adminCommentDate = LocalDateTime.now();
+        return this;
     }
 
     public enum Status {

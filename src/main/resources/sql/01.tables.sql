@@ -82,27 +82,29 @@ ALTER TABLE `TB_USER_LOGIN`
 
 -- 이슈
 CREATE TABLE `TB_ISSUE` (
-	`ISSUE_ID`        BIGINT(20) UNSIGNED NOT NULL COMMENT '이슈ID', -- 이슈ID
-	`ISSUE_DTYPE`     CHAR(1)             NOT NULL COMMENT '이슈종류', -- 이슈종류
-	`REG_DT`          DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP
+	`ISSUE_ID`           BIGINT(20) UNSIGNED NOT NULL COMMENT '이슈ID', -- 이슈ID
+	`ISSUE_DTYPE`        CHAR(1)             NOT NULL COMMENT '이슈종류', -- 이슈종류
+	`REG_DT`             DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP
 	 COMMENT '등록일시', -- 등록일시
-	`CHG_DT`          DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '수정일시', -- 수정일시
-	`REG_ID`          BIGINT(20) UNSIGNED NOT NULL COMMENT '등록ID', -- 등록ID
-	`CHG_ID`          BIGINT(20) UNSIGNED NOT NULL COMMENT '수정ID', -- 수정ID
-	`REG_IP`          VARCHAR(15)         NOT NULL COMMENT '등록아이피', -- 등록아이피
-	`CHG_IP`          VARCHAR(15)         NOT NULL COMMENT '수정아이피', -- 수정아이피
-	`CATE_ID`         BIGINT(20) UNSIGNED NOT NULL COMMENT '범주ID', -- 범주ID
-	`STATS_ID`        BIGINT(20) UNSIGNED NOT NULL COMMENT '통계ID', -- 통계ID
-	`ISSUE_STATUS`    VARCHAR(12)         NOT NULL COMMENT '이슈상태', -- 이슈상태
-	`OPINION_TYPE`    VARCHAR(12)         NOT NULL COMMENT '의견타입', -- 의견타입
-	`ISSUE_TITLE`     VARCHAR(300)        NOT NULL COMMENT '이슈제목', -- 이슈제목
-	`ISSUE_CONTENT`   LONGTEXT            NULL     COMMENT '이슈내용', -- 이슈내용
-	`IMG_URL`         VARCHAR(300)        NULL     COMMENT '이미지URL', -- 이미지URL
-	`ADMIN_COMMENT`   VARCHAR(3000)       NULL     COMMENT '관리자댓글', -- 관리자댓글
-	`MANAGER_ID`      BIGINT(20) UNSIGNED NULL     COMMENT '매니저ID', -- 매니저ID
-	`MANAGER_COMMENT` VARCHAR(3000)       NULL     COMMENT '매니저댓글', -- 매니저댓글
-	`DISCUSS_STDATE`  DATE                NULL     COMMENT '토론시작일', -- 토론시작일
-	`DISCUSS_EDDATE`  DATE                NULL     COMMENT '토론종료일' -- 토론종료일
+	`CHG_DT`             DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '수정일시', -- 수정일시
+	`REG_ID`             BIGINT(20) UNSIGNED NOT NULL COMMENT '등록ID', -- 등록ID
+	`CHG_ID`             BIGINT(20) UNSIGNED NOT NULL COMMENT '수정ID', -- 수정ID
+	`REG_IP`             VARCHAR(15)         NOT NULL COMMENT '등록아이피', -- 등록아이피
+	`CHG_IP`             VARCHAR(15)         NOT NULL COMMENT '수정아이피', -- 수정아이피
+	`CATE_ID`            BIGINT(20) UNSIGNED NOT NULL COMMENT '범주ID', -- 범주ID
+	`STATS_ID`           BIGINT(20) UNSIGNED NOT NULL COMMENT '통계ID', -- 통계ID
+	`ISSUE_STATUS`       VARCHAR(12)         NOT NULL COMMENT '이슈상태', -- 이슈상태
+	`OPINION_TYPE`       VARCHAR(12)         NOT NULL COMMENT '의견타입', -- 의견타입
+	`ISSUE_TITLE`        VARCHAR(300)        NOT NULL COMMENT '이슈제목', -- 이슈제목
+	`ISSUE_CONTENT`      LONGTEXT            NULL     COMMENT '이슈내용', -- 이슈내용
+	`IMG_URL`            VARCHAR(300)        NULL     COMMENT '이미지URL', -- 이미지URL
+	`DISCUSS_STDATE`     DATE                NULL     COMMENT '토론시작일', -- 토론시작일
+	`DISCUSS_EDDATE`     DATE                NULL     COMMENT '토론종료일', -- 토론종료일
+	`ADMIN_COMMENT_DT`   DATETIME            NULL     COMMENT '관리자댓글일시', -- 관리자댓글일시
+	`ADMIN_COMMENT`      LONGTEXT            NULL     COMMENT '관리자댓글', -- 관리자댓글
+	`MANAGER_ID`         BIGINT(20) UNSIGNED NULL     COMMENT '매니저ID', -- 매니저ID
+	`MANAGER_COMMENT_DT` DATETIME            NULL     COMMENT '매니저댓글일시', -- 매니저댓글일시
+	`MANAGER_COMMENT`    LONGTEXT            NULL     COMMENT '매니저댓글' -- 매니저댓글
 )
 COMMENT '이슈';
 
