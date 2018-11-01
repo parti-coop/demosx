@@ -17,10 +17,12 @@ import seoul.democracy.issue.repository.CategoryRepository;
 import seoul.democracy.issue.repository.IssueLikeRepository;
 import seoul.democracy.issue.repository.IssueStatsRepository;
 import seoul.democracy.opinion.domain.Opinion;
+import seoul.democracy.opinion.domain.OpinionLike;
 import seoul.democracy.opinion.domain.ProposalOpinion;
 import seoul.democracy.opinion.dto.ProposalOpinionCreateDto;
 import seoul.democracy.opinion.dto.ProposalOpinionDto;
 import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
+import seoul.democracy.opinion.repository.OpinionLikeRepository;
 import seoul.democracy.opinion.repository.OpinionRepository;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.ProposalCreateDto;
@@ -31,6 +33,7 @@ import seoul.democracy.user.domain.User;
 import seoul.democracy.user.utils.UserUtils;
 
 import static seoul.democracy.issue.predicate.IssueLikePredicate.equalUserIdAndIssueId;
+import static seoul.democracy.opinion.predicate.OpinionLikePredicate.equalUserIdAndOpinionId;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,18 +45,21 @@ public class ProposalService {
     private final IssueStatsRepository statsRepository;
 
     private final OpinionRepository opinionRepository;
+    private final OpinionLikeRepository opinionLikeRepository;
 
     @Autowired
     public ProposalService(ProposalRepository proposalRepository,
                            CategoryRepository categoryRepository,
                            IssueLikeRepository likeRepository,
                            IssueStatsRepository statsRepository,
-                           OpinionRepository opinionRepository) {
+                           OpinionRepository opinionRepository,
+                           OpinionLikeRepository opinionLikeRepository) {
         this.proposalRepository = proposalRepository;
         this.categoryRepository = categoryRepository;
         this.likeRepository = likeRepository;
         this.statsRepository = statsRepository;
         this.opinionRepository = opinionRepository;
+        this.opinionLikeRepository = opinionLikeRepository;
     }
 
     public ProposalDto getProposal(Predicate predicate, Expression<ProposalDto> projection) {
@@ -79,6 +85,9 @@ public class ProposalService {
         return opinion;
     }
 
+    /**
+     * 제안 등록
+     */
     @Transactional
     public Proposal create(ProposalCreateDto createDto, String ip) {
         Category category = categoryRepository.findOne(CategoryPredicate.equalName(createDto.getCategory()));
@@ -90,6 +99,9 @@ public class ProposalService {
         return proposalRepository.save(proposal);
     }
 
+    /**
+     * 제안 수정
+     */
     @Transactional
     @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
     public Proposal update(ProposalUpdateDto updateDto, String ip) {
@@ -97,6 +109,9 @@ public class ProposalService {
         return proposal.update(updateDto, ip);
     }
 
+    /**
+     * 제안 삭제
+     */
     @Transactional
     @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
     public Proposal delete(Long id, String ip) {
@@ -114,8 +129,8 @@ public class ProposalService {
             throw new AlreadyExistsException("이미 공감하였습니다.");
 
         Proposal proposal = getProposal(issueId);
-
         statsRepository.selectLikeProposal(proposal.getStatsId());
+
         IssueLike like = IssueLike.create(user, proposal, ip);
         return likeRepository.save(like);
     }
@@ -166,5 +181,38 @@ public class ProposalService {
     @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
     public Opinion deleteOpinion(Long opinionId, String ip) {
         return getOpinion(opinionId).delete(ip);
+    }
+
+    /**
+     * 의견 공감
+     */
+    @Transactional
+    public OpinionLike selectOpinionLike(Long opinionId, String ip) {
+        User user = UserUtils.getLoginUser();
+        if (opinionLikeRepository.exists(equalUserIdAndOpinionId(user.getId(), opinionId)))
+            throw new AlreadyExistsException("이미 공감하였습니다.");
+
+        Opinion opinion = getOpinion(opinionId);
+        opinionRepository.selectLike(opinionId);
+
+        OpinionLike like = OpinionLike.create(user, opinion, ip);
+        return opinionLikeRepository.save(like);
+    }
+
+    /**
+     * 의견 공감해제
+     */
+    @Transactional
+    public OpinionLike unselectOpinionLike(Long opinionId) {
+        User user = UserUtils.getLoginUser();
+
+        OpinionLike like = opinionLikeRepository.findOne(equalUserIdAndOpinionId(user.getId(), opinionId));
+        if (like == null)
+            throw new NotFoundException("공감 상태가 아닙니다.");
+
+        Opinion opinion = getOpinion(opinionId);
+        opinionRepository.unselectLike(opinion.getId());
+        opinionLikeRepository.delete(like);
+        return like;
     }
 }

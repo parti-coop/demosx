@@ -2,6 +2,7 @@ package seoul.democracy.opinion.repository;
 
 import com.mysema.query.SearchResults;
 import com.mysema.query.jpa.JPQLQuery;
+import com.mysema.query.support.Expressions;
 import com.mysema.query.types.Expression;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,8 @@ import static seoul.democracy.opinion.domain.QProposalOpinion.proposalOpinion;
 import static seoul.democracy.user.domain.QUser.user;
 
 public class OpinionRepositoryImpl extends QueryDslRepositorySupport implements OpinionRepositoryCustom {
+
+    final private static Expression<Long> constant = Expressions.constant(1L);
 
     public OpinionRepositoryImpl() {
         super(Opinion.class);
@@ -47,5 +50,21 @@ public class OpinionRepositoryImpl extends QueryDslRepositorySupport implements 
         return getQuery(projection)
                    .where(predicate)
                    .uniqueResult(projection);
+    }
+
+    @Override
+    public void selectLike(Long opinionId) {
+        update(proposalOpinion)
+            .where(proposalOpinion.id.eq(opinionId))
+            .set(proposalOpinion.likeCount, proposalOpinion.likeCount.add(constant))
+            .execute();
+    }
+
+    @Override
+    public void unselectLike(Long opinionId) {
+        update(proposalOpinion)
+            .where(proposalOpinion.id.eq(opinionId))
+            .set(proposalOpinion.likeCount, proposalOpinion.likeCount.subtract(constant))
+            .execute();
     }
 }

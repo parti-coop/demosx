@@ -11,4 +11,15 @@ public interface OpinionRepositoryCustom {
     Page<ProposalOpinionDto> findAll(Predicate predicate, Pageable pageable, Expression<ProposalOpinionDto> projection);
 
     ProposalOpinionDto findOne(Predicate predicate, Expression<ProposalOpinionDto> projection);
+
+
+    /**
+     * 제안의견 공감
+     */
+    void selectLike(Long opinionId);
+
+    /**
+     * 제안의견 공감 해제
+     */
+    void unselectLike(Long opinionId);
 }
