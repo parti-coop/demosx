@@ -10,6 +10,7 @@ import seoul.democracy.opinion.domain.OpinionType;
 import seoul.democracy.opinion.domain.ProposalOpinion;
 import seoul.democracy.proposal.dto.ProposalCreateDto;
 import seoul.democracy.proposal.dto.ProposalUpdateDto;
+import seoul.democracy.user.domain.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -28,6 +29,13 @@ public class Proposal extends Issue {
     private Status status;
 
     /**
+     * 이슈 과정
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ISSUE_PROCESS")
+    private Process process;
+
+    /**
      * 관리자 댓글 일시
      */
     @Convert(converter = LocalDateTimeAttributeConverter.class)
@@ -41,9 +49,17 @@ public class Proposal extends Issue {
     @Column(name = "ADMIN_COMMENT")
     private String adminComment;
 
+    /**
+     * 매니저 - 담당자
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MANAGER_ID")
+    private User manager;
+
     public Proposal(Category category, String title, String content, String ip) {
         this.stats = IssueStats.create();
         this.status = Status.OPEN;
+        this.process = Process.INIT;
         this.opinionType = OpinionType.PROPOSAL;
         this.category = category;
         this.title = title;
@@ -82,6 +98,11 @@ public class Proposal extends Issue {
         return this;
     }
 
+    public Proposal assignManager(User manager) {
+        this.manager = manager;
+        return this;
+    }
+
     public enum Status {
         OPEN,       // 공개
         DELETE,     // 삭제
@@ -94,5 +115,11 @@ public class Proposal extends Issue {
         public boolean isBlock() {
             return this == BLOCK;
         }
+    }
+
+    public enum Process {
+        INIT,       // 초기상태
+        ASSIGNED,   // 답변대기
+        COMPLETE    // 부서답변
     }
 }

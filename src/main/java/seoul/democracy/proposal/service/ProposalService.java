@@ -26,12 +26,11 @@ import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
 import seoul.democracy.opinion.repository.OpinionLikeRepository;
 import seoul.democracy.opinion.repository.OpinionRepository;
 import seoul.democracy.proposal.domain.Proposal;
-import seoul.democracy.proposal.dto.ProposalAdminCommentEditDto;
-import seoul.democracy.proposal.dto.ProposalCreateDto;
-import seoul.democracy.proposal.dto.ProposalDto;
-import seoul.democracy.proposal.dto.ProposalUpdateDto;
+import seoul.democracy.proposal.dto.*;
 import seoul.democracy.proposal.repository.ProposalRepository;
 import seoul.democracy.user.domain.User;
+import seoul.democracy.user.predicate.UserPredicate;
+import seoul.democracy.user.service.UserService;
 import seoul.democracy.user.utils.UserUtils;
 
 import static seoul.democracy.issue.predicate.IssueLikePredicate.equalUserIdAndIssueId;
@@ -49,19 +48,23 @@ public class ProposalService {
     private final OpinionRepository opinionRepository;
     private final OpinionLikeRepository opinionLikeRepository;
 
+    private final UserService userService;
+
     @Autowired
     public ProposalService(ProposalRepository proposalRepository,
                            CategoryRepository categoryRepository,
                            IssueLikeRepository likeRepository,
                            IssueStatsRepository statsRepository,
                            OpinionRepository opinionRepository,
-                           OpinionLikeRepository opinionLikeRepository) {
+                           OpinionLikeRepository opinionLikeRepository,
+                           UserService userService) {
         this.proposalRepository = proposalRepository;
         this.categoryRepository = categoryRepository;
         this.likeRepository = likeRepository;
         this.statsRepository = statsRepository;
         this.opinionRepository = opinionRepository;
         this.opinionLikeRepository = opinionLikeRepository;
+        this.userService = userService;
     }
 
     public ProposalDto getProposal(Predicate predicate, Expression<ProposalDto> projection) {
@@ -226,5 +229,22 @@ public class ProposalService {
     public Proposal editAdminComment(ProposalAdminCommentEditDto editDto) {
         Proposal proposal = getProposal(editDto.getProposalId());
         return proposal.editAdminComment(editDto.getComment());
+    }
+
+    /**
+     * 담당자 할당
+     */
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public Proposal assignManager(ProposalManagerAssignDto assignDto) {
+        Proposal proposal = getProposal(assignDto.getProposalId());
+        if (proposal.getStats().getLikeCount() < 50)
+            throw new BadRequestException("likeCount", "error.likeCount", "공감수 50이상 제안만 담당자 지정이 가능합니다.");
+
+        User manager = userService.getUser(UserPredicate.equalId(assignDto.getManagerId()));
+        if (!manager.getRole().isManager())
+            throw new BadRequestException("role", "error.role", "매니저만 담당자로 설정가능합니다.");
+
+        return proposal.assignManager(manager);
     }
 }

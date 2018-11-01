@@ -41,6 +41,10 @@ public class UserService {
         return userRepository.findAll(predicate, pageable, projection);
     }
 
+    public User getUser(Predicate predicate) {
+        return userRepository.findOne(predicate);
+    }
+
     private User getUser(String email) {
         User user = userRepository.findOne(equalEmail(email));
         if (user == null)
@@ -74,4 +78,5 @@ public class UserService {
     private boolean existsEmail(String email) {
         return userRepository.exists(equalEmail(email.trim()));
     }
+
 }

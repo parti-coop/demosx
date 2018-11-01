@@ -14,7 +14,8 @@ import seoul.democracy.opinion.dto.ProposalOpinionDto;
 
 import static seoul.democracy.issue.domain.QIssue.issue;
 import static seoul.democracy.opinion.domain.QProposalOpinion.proposalOpinion;
-import static seoul.democracy.user.domain.QUser.user;
+import static seoul.democracy.user.dto.UserDto.createdBy;
+import static seoul.democracy.user.dto.UserDto.modifiedBy;
 
 public class OpinionRepositoryImpl extends QueryDslRepositorySupport implements OpinionRepositoryCustom {
 
@@ -27,8 +28,8 @@ public class OpinionRepositoryImpl extends QueryDslRepositorySupport implements 
     private JPQLQuery getQuery(Expression<ProposalOpinionDto> projection) {
         JPQLQuery query = from(proposalOpinion);
         if (projection == ProposalOpinionDto.projection) {
-            query.innerJoin(proposalOpinion.createdBy, user);
-            query.innerJoin(proposalOpinion.modifiedBy, user);
+            query.innerJoin(proposalOpinion.createdBy, createdBy);
+            query.innerJoin(proposalOpinion.modifiedBy, modifiedBy);
             query.innerJoin(proposalOpinion.issue, issue);
         }
         return query;

@@ -20,12 +20,13 @@ public class ProposalDto {
 
     public final static QBean<ProposalDto> projection = Projections.fields(ProposalDto.class,
         proposal.id, proposal.createdDate, proposal.modifiedDate,
-        UserDto.projectionForBasic.as("createdBy"),
-        UserDto.projectionForBasic.as("modifiedBy"),
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        UserDto.projectionForBasicByModifiedBy.as("modifiedBy"),
         proposal.createdIp, proposal.modifiedIp, proposal.opinionType,
         CategoryDto.projection.as("category"),
         IssueStatsDto.projection.as("stats"),
         proposal.adminCommentDate, proposal.adminComment,
+        UserDto.projectionForBasic.as("manager"),
         proposal.status, proposal.title, proposal.content);
 
     private Long id;
@@ -46,6 +47,8 @@ public class ProposalDto {
 
     private LocalDateTime adminCommentDate;
     private String adminComment;
+
+    private UserDto manager;
 
     private String title;
     private String content;

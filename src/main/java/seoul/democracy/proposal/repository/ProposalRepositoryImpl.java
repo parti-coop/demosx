@@ -15,6 +15,8 @@ import static seoul.democracy.issue.domain.QCategory.category;
 import static seoul.democracy.issue.domain.QIssueStats.issueStats;
 import static seoul.democracy.proposal.domain.QProposal.proposal;
 import static seoul.democracy.user.domain.QUser.user;
+import static seoul.democracy.user.dto.UserDto.createdBy;
+import static seoul.democracy.user.dto.UserDto.modifiedBy;
 
 public class ProposalRepositoryImpl extends QueryDslRepositorySupport implements ProposalRepositoryCustom {
 
@@ -25,10 +27,11 @@ public class ProposalRepositoryImpl extends QueryDslRepositorySupport implements
     private JPQLQuery getQuery(Expression<ProposalDto> projection) {
         JPQLQuery query = from(proposal);
         if (projection == ProposalDto.projection) {
-            query.innerJoin(proposal.createdBy, user);
-            query.innerJoin(proposal.modifiedBy, user);
+            query.innerJoin(proposal.createdBy, createdBy);
+            query.innerJoin(proposal.modifiedBy, modifiedBy);
             query.innerJoin(proposal.category, category);
             query.innerJoin(proposal.stats, issueStats);
+            query.leftJoin(proposal.manager, user);
         }
         return query;
     }

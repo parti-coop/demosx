@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mysema.query.types.Projections;
 import com.mysema.query.types.QBean;
 import lombok.Data;
+import seoul.democracy.user.domain.QUser;
 import seoul.democracy.user.domain.Role;
 import seoul.democracy.user.domain.User;
 
@@ -15,6 +16,8 @@ import static seoul.democracy.user.domain.QUser.user;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
+    public final static QUser createdBy = new QUser("createdBy");
+    public final static QUser modifiedBy = new QUser("modifiedBy");
 
     public final static QBean<UserDto> projection = Projections.fields(UserDto.class,
         user.id, user.createdDate, user.role, user.status, user.email, user.name, user.photo, user.loginDate,
@@ -24,7 +27,9 @@ public class UserDto {
         user.id, user.createdDate, user.role, user.status, user.email, user.name, user.loginDate);
 
     //public final static QBean<UserDto> projectionForMe = Projections.fields(UserDto.class, user.id, user.email, user.role);
-    public final static QBean<UserDto> projectionForBasic = Projections.fields(UserDto.class, user.email, user.name);
+    public final static QBean<UserDto> projectionForBasic = Projections.fields(UserDto.class, user.id, user.email, user.name);
+    public final static QBean<UserDto> projectionForBasicByCreatedBy = Projections.fields(UserDto.class, createdBy.id, createdBy.email, createdBy.name);
+    public final static QBean<UserDto> projectionForBasicByModifiedBy = Projections.fields(UserDto.class, modifiedBy.id, modifiedBy.email, modifiedBy.name);
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")

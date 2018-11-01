@@ -84,8 +84,7 @@ ALTER TABLE `TB_USER_LOGIN`
 CREATE TABLE `TB_ISSUE` (
 	`ISSUE_ID`           BIGINT(20) UNSIGNED NOT NULL COMMENT '이슈ID', -- 이슈ID
 	`ISSUE_DTYPE`        CHAR(1)             NOT NULL COMMENT '이슈종류', -- 이슈종류
-	`REG_DT`             DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP
-	 COMMENT '등록일시', -- 등록일시
+	`REG_DT`             DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '등록일시', -- 등록일시
 	`CHG_DT`             DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '수정일시', -- 수정일시
 	`REG_ID`             BIGINT(20) UNSIGNED NOT NULL COMMENT '등록ID', -- 등록ID
 	`CHG_ID`             BIGINT(20) UNSIGNED NOT NULL COMMENT '수정ID', -- 수정ID
@@ -94,6 +93,7 @@ CREATE TABLE `TB_ISSUE` (
 	`CATE_ID`            BIGINT(20) UNSIGNED NOT NULL COMMENT '범주ID', -- 범주ID
 	`STATS_ID`           BIGINT(20) UNSIGNED NOT NULL COMMENT '통계ID', -- 통계ID
 	`ISSUE_STATUS`       VARCHAR(12)         NOT NULL COMMENT '이슈상태', -- 이슈상태
+	`ISSUE_PROCESS`      VARCHAR(12)         NOT NULL COMMENT '이슈과정', -- 이슈과정
 	`OPINION_TYPE`       VARCHAR(12)         NOT NULL COMMENT '의견타입', -- 의견타입
 	`ISSUE_TITLE`        VARCHAR(300)        NOT NULL COMMENT '이슈제목', -- 이슈제목
 	`ISSUE_CONTENT`      LONGTEXT            NULL     COMMENT '이슈내용', -- 이슈내용

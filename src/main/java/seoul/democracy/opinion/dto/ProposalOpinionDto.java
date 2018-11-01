@@ -16,8 +16,8 @@ public class ProposalOpinionDto {
 
     public final static QBean<ProposalOpinionDto> projection = Projections.fields(ProposalOpinionDto.class,
         proposalOpinion.id, proposalOpinion.createdDate, proposalOpinion.modifiedDate,
-        UserDto.projectionForBasic.as("createdBy"),
-        UserDto.projectionForBasic.as("modifiedBy"),
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        UserDto.projectionForBasicByModifiedBy.as("modifiedBy"),
         proposalOpinion.createdIp, proposalOpinion.modifiedIp,
         IssueDto.projectionForBasic.as("issue"),
         proposalOpinion.likeCount, proposalOpinion.content, proposalOpinion.status, proposalOpinion.vote);
