@@ -16,6 +16,10 @@ import seoul.democracy.issue.predicate.IssueLikePredicate;
 import seoul.democracy.issue.repository.CategoryRepository;
 import seoul.democracy.issue.repository.IssueLikeRepository;
 import seoul.democracy.issue.repository.IssueStatsRepository;
+import seoul.democracy.opinion.domain.ProposalOpinion;
+import seoul.democracy.opinion.dto.ProposalOpinionCreateDto;
+import seoul.democracy.opinion.dto.ProposalOpinionDto;
+import seoul.democracy.opinion.repository.OpinionRepository;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.ProposalCreateDto;
 import seoul.democracy.proposal.dto.ProposalDto;
@@ -35,15 +39,19 @@ public class ProposalService {
     private final IssueLikeRepository likeRepository;
     private final IssueStatsRepository statsRepository;
 
+    private final OpinionRepository opinionRepository;
+
     @Autowired
     public ProposalService(ProposalRepository proposalRepository,
                            CategoryRepository categoryRepository,
                            IssueLikeRepository likeRepository,
-                           IssueStatsRepository statsRepository) {
+                           IssueStatsRepository statsRepository,
+                           OpinionRepository opinionRepository) {
         this.proposalRepository = proposalRepository;
         this.categoryRepository = categoryRepository;
         this.likeRepository = likeRepository;
         this.statsRepository = statsRepository;
+        this.opinionRepository = opinionRepository;
     }
 
     public ProposalDto getProposal(Predicate predicate, Expression<ProposalDto> projection) {
@@ -107,7 +115,7 @@ public class ProposalService {
         User user = UserUtils.getLoginUser();
 
         IssueLike like = likeRepository.findOne(equalUserIdAndIssueId(user.getId(), id));
-        if(like == null)
+        if (like == null)
             throw new NotFoundException("공감 상태가 아닙니다.");
 
         Proposal proposal = getProposal(id);
@@ -115,5 +123,21 @@ public class ProposalService {
         likeRepository.delete(like);
 
         return like;
+    }
+
+    /**
+     * 의견
+     */
+    @Transactional
+    public ProposalOpinion createOpinion(ProposalOpinionCreateDto createDto, String ip) {
+        Proposal proposal = getProposal(createDto.getProposalId());
+
+        ProposalOpinion opinion = proposal.createOpinion(createDto.getContent(), ip);
+
+        return opinionRepository.save(opinion);
+    }
+
+    public ProposalOpinionDto getOpinion(Predicate predicate, Expression<ProposalOpinionDto> projection) {
+        return opinionRepository.findOne(predicate, projection);
     }
 }

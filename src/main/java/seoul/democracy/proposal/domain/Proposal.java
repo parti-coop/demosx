@@ -6,6 +6,7 @@ import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.domain.IssueStats;
 import seoul.democracy.opinion.domain.OpinionType;
+import seoul.democracy.opinion.domain.ProposalOpinion;
 import seoul.democracy.proposal.dto.ProposalCreateDto;
 import seoul.democracy.proposal.dto.ProposalUpdateDto;
 
@@ -23,19 +24,6 @@ public class Proposal extends Issue {
     @Enumerated(EnumType.STRING)
     @Column(name = "ISSUE_STATUS")
     private Status status;
-
-    /**
-     * 이슈 제목
-     */
-    @Column(name = "ISSUE_TITLE")
-    private String title;
-
-    /**
-     * 이슈 내용
-     */
-    @Lob
-    @Column(name = "ISSUE_CONTENT")
-    private String content;
 
     public Proposal(Category category, String title, String content, String ip) {
         this.stats = IssueStats.create();
@@ -66,6 +54,10 @@ public class Proposal extends Issue {
         this.status = Status.DELETE;
 
         return this;
+    }
+
+    public ProposalOpinion createOpinion(String content, String ip) {
+        return ProposalOpinion.create(this, content, ip);
     }
 
     public enum Status {
