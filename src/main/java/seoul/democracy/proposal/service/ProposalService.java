@@ -257,4 +257,14 @@ public class ProposalService {
         Proposal proposal = getProposal(editDto.getProposalId());
         return proposal.editManagerComment(editDto.getComment());
     }
+
+    /**
+     * 제안 블럭
+     */
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public Proposal blockProposal(Long proposalId) {
+        Proposal proposal = getProposal(proposalId);
+        return proposal.block();
+    }
 }

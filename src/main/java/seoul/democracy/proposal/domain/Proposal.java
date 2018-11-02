@@ -93,14 +93,12 @@ public class Proposal extends Issue {
         this.modifiedIp = ip;
         this.title = updateDto.getTitle();
         this.content = updateDto.getContent();
-
         return this;
     }
 
     public Proposal delete(String ip) {
         this.modifiedIp = ip;
         this.status = Status.DELETE;
-
         return this;
     }
 
@@ -124,6 +122,11 @@ public class Proposal extends Issue {
         this.managerComment = comment;
         this.managerCommentDate = LocalDateTime.now();
         this.process = Process.COMPLETE;
+        return this;
+    }
+
+    public Proposal block() {
+        this.status = Status.BLOCK;
         return this;
     }
 
