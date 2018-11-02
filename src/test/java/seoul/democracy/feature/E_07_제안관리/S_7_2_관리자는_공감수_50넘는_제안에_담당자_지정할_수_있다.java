@@ -1,4 +1,4 @@
-package seoul.democracy.feature;
+package seoul.democracy.feature.E_07_제안관리;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -18,8 +18,6 @@ import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.dto.ProposalManagerAssignDto;
 import seoul.democracy.proposal.service.ProposalService;
 
-import java.time.format.DateTimeFormatter;
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static seoul.democracy.proposal.dto.ProposalDto.projection;
@@ -38,9 +36,6 @@ import static seoul.democracy.proposal.predicate.ProposalPredicate.equalId;
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class S_7_2_관리자는_공감수_50넘는_제안에_담당자_지정할_수_있다 {
-
-    private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
-    private final static String ip = "127.0.0.2";
 
     @Autowired
     private ProposalService proposalService;

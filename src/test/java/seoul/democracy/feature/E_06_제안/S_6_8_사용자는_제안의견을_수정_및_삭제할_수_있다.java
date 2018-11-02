@@ -1,4 +1,4 @@
-package seoul.democracy.feature;
+package seoul.democracy.feature.E_06_제안;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;

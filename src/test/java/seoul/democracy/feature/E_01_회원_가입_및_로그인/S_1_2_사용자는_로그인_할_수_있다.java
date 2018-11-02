@@ -1,4 +1,4 @@
-package seoul.democracy.feature;
+package seoul.democracy.feature.E_01_회원_가입_및_로그인;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
