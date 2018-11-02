@@ -38,4 +38,20 @@ public class IssueStatsRepositoryImpl extends QueryDslRepositorySupport implemen
             .set(issueStats.likeCount, issueStats.likeCount.subtract(constant))
             .execute();
     }
+
+    @Override
+    public void increaseOpinion(Long statsId) {
+        update(issueStats)
+            .where(issueStats.id.eq(statsId))
+            .set(issueStats.opinionCount, issueStats.opinionCount.add(constant))
+            .execute();
+    }
+
+    @Override
+    public void decreaseOpinion(Long statsId) {
+        update(issueStats)
+            .where(issueStats.id.eq(statsId))
+            .set(issueStats.opinionCount, issueStats.opinionCount.subtract(constant))
+            .execute();
+    }
 }

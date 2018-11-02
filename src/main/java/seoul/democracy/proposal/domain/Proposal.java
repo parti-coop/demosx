@@ -125,8 +125,9 @@ public class Proposal extends Issue {
         return this;
     }
 
-    public Proposal block() {
+    public Proposal block(String ip) {
         this.status = Status.BLOCK;
+        this.modifiedIp = ip;
         return this;
     }
 

@@ -16,10 +16,10 @@ public interface OpinionRepositoryCustom {
     /**
      * 제안의견 공감
      */
-    void selectLike(Long opinionId);
+    void increaseLike(Long opinionId);
 
     /**
      * 제안의견 공감 해제
      */
-    void unselectLike(Long opinionId);
+    void decreaseLike(Long opinionId);
 }

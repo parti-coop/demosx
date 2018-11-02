@@ -13,4 +13,14 @@ public interface IssueStatsRepositoryCustom {
      * 제안 공감 해제
      */
     void unselectLikeProposal(Long statsId);
+
+    /**
+     * 의견 증가
+     */
+    void increaseOpinion(Long statsId);
+
+    /**
+     * 의견 감소
+     */
+    void decreaseOpinion(Long statsId);
 }

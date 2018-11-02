@@ -117,7 +117,12 @@ public abstract class Opinion {
     public Opinion delete(String ip) {
         this.status = Status.DELETE;
         this.modifiedIp = ip;
+        return this;
+    }
 
+    public Opinion block(String ip) {
+        this.status = Status.BLOCK;
+        this.modifiedIp = ip;
         return this;
     }
 

@@ -17,6 +17,8 @@ import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.domain.ProposalOpinion;
 import seoul.democracy.opinion.dto.ProposalOpinionDto;
 import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
+import seoul.democracy.proposal.dto.ProposalDto;
+import seoul.democracy.proposal.predicate.ProposalPredicate;
 import seoul.democracy.proposal.service.ProposalService;
 
 import java.time.LocalDateTime;
@@ -73,6 +75,9 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
         assertThat(opinionDto.getModifiedIp(), is(ip));
 
         assertThat(opinionDto.getContent(), is(updateDto.getContent()));
+
+        ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
+        assertThat(proposalDto.getStats().getOpinionCount(), is(1L));
     }
 
     /**
@@ -90,6 +95,9 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
         assertThat(opinionDto.getModifiedIp(), is(ip));
 
         assertThat(opinionDto.getStatus(), is(Opinion.Status.DELETE));
+
+        ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
+        assertThat(proposalDto.getStats().getOpinionCount(), is(0L));
     }
 
     /**

@@ -54,7 +54,7 @@ public class OpinionRepositoryImpl extends QueryDslRepositorySupport implements 
     }
 
     @Override
-    public void selectLike(Long opinionId) {
+    public void increaseLike(Long opinionId) {
         update(proposalOpinion)
             .where(proposalOpinion.id.eq(opinionId))
             .set(proposalOpinion.likeCount, proposalOpinion.likeCount.add(constant))
@@ -62,7 +62,7 @@ public class OpinionRepositoryImpl extends QueryDslRepositorySupport implements 
     }
 
     @Override
-    public void unselectLike(Long opinionId) {
+    public void decreaseLike(Long opinionId) {
         update(proposalOpinion)
             .where(proposalOpinion.id.eq(opinionId))
             .set(proposalOpinion.likeCount, proposalOpinion.likeCount.subtract(constant))

@@ -125,6 +125,16 @@ public class ProposalService {
     }
 
     /**
+     * 제안 블럭
+     */
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public Proposal block(Long proposalId, String ip) {
+        Proposal proposal = getProposal(proposalId);
+        return proposal.block(ip);
+    }
+
+    /**
      * 공감
      */
     @Transactional
@@ -155,69 +165,6 @@ public class ProposalService {
         statsRepository.unselectLikeProposal(proposal.getStatsId());
         likeRepository.delete(like);
 
-        return like;
-    }
-
-    /**
-     * 의견 등록
-     */
-    @Transactional
-    public ProposalOpinion createOpinion(ProposalOpinionCreateDto createDto, String ip) {
-        Proposal proposal = getProposal(createDto.getProposalId());
-
-        ProposalOpinion opinion = proposal.createOpinion(createDto.getContent(), ip);
-
-        return opinionRepository.save(opinion);
-    }
-
-    /**
-     * 의견 수정
-     */
-    @Transactional
-    @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
-    public ProposalOpinion updateOpinion(ProposalOpinionUpdateDto updateDto, String ip) {
-        return getOpinion(updateDto.getOpinionId()).update(updateDto, ip);
-    }
-
-    /**
-     * 의견 삭제
-     */
-    @Transactional
-    @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
-    public Opinion deleteOpinion(Long opinionId, String ip) {
-        return getOpinion(opinionId).delete(ip);
-    }
-
-    /**
-     * 의견 공감
-     */
-    @Transactional
-    public OpinionLike selectOpinionLike(Long opinionId, String ip) {
-        User user = UserUtils.getLoginUser();
-        if (opinionLikeRepository.exists(equalUserIdAndOpinionId(user.getId(), opinionId)))
-            throw new AlreadyExistsException("이미 공감하였습니다.");
-
-        Opinion opinion = getOpinion(opinionId);
-        opinionRepository.selectLike(opinionId);
-
-        OpinionLike like = OpinionLike.create(user, opinion, ip);
-        return opinionLikeRepository.save(like);
-    }
-
-    /**
-     * 의견 공감해제
-     */
-    @Transactional
-    public OpinionLike unselectOpinionLike(Long opinionId) {
-        User user = UserUtils.getLoginUser();
-
-        OpinionLike like = opinionLikeRepository.findOne(equalUserIdAndOpinionId(user.getId(), opinionId));
-        if (like == null)
-            throw new NotFoundException("공감 상태가 아닙니다.");
-
-        Opinion opinion = getOpinion(opinionId);
-        opinionRepository.unselectLike(opinion.getId());
-        opinionLikeRepository.delete(like);
         return like;
     }
 
@@ -259,12 +206,81 @@ public class ProposalService {
     }
 
     /**
-     * 제안 블럭
+     * 의견 등록
+     */
+    @Transactional
+    public ProposalOpinion createOpinion(ProposalOpinionCreateDto createDto, String ip) {
+        Proposal proposal = getProposal(createDto.getProposalId());
+
+        ProposalOpinion opinion = proposal.createOpinion(createDto.getContent(), ip);
+        statsRepository.increaseOpinion(proposal.getStatsId());
+        return opinionRepository.save(opinion);
+    }
+
+    /**
+     * 의견 수정
+     */
+    @Transactional
+    @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
+    public ProposalOpinion updateOpinion(ProposalOpinionUpdateDto updateDto, String ip) {
+        return getOpinion(updateDto.getOpinionId()).update(updateDto, ip);
+    }
+
+    /**
+     * 의견 삭제
+     */
+    @Transactional
+    @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
+    public Opinion deleteOpinion(Long opinionId, String ip) {
+        Opinion opinion = getOpinion(opinionId);
+
+        statsRepository.decreaseOpinion(opinion.getIssue().getStatsId());
+        return opinion.delete(ip);
+    }
+
+    /**
+     * 의견 블럭
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Proposal blockProposal(Long proposalId) {
-        Proposal proposal = getProposal(proposalId);
-        return proposal.block();
+    public Opinion blockOpinion(Long opinionId, String ip) {
+        Opinion opinion = getOpinion(opinionId);
+
+        statsRepository.decreaseOpinion(opinion.getIssue().getStatsId());
+        return opinion.block(ip);
     }
+
+    /**
+     * 의견 공감
+     */
+    @Transactional
+    public OpinionLike selectOpinionLike(Long opinionId, String ip) {
+        User user = UserUtils.getLoginUser();
+        if (opinionLikeRepository.exists(equalUserIdAndOpinionId(user.getId(), opinionId)))
+            throw new AlreadyExistsException("이미 공감하였습니다.");
+
+        Opinion opinion = getOpinion(opinionId);
+        opinionRepository.increaseLike(opinionId);
+
+        OpinionLike like = OpinionLike.create(user, opinion, ip);
+        return opinionLikeRepository.save(like);
+    }
+
+    /**
+     * 의견 공감해제
+     */
+    @Transactional
+    public OpinionLike unselectOpinionLike(Long opinionId) {
+        User user = UserUtils.getLoginUser();
+
+        OpinionLike like = opinionLikeRepository.findOne(equalUserIdAndOpinionId(user.getId(), opinionId));
+        if (like == null)
+            throw new NotFoundException("공감 상태가 아닙니다.");
+
+        Opinion opinion = getOpinion(opinionId);
+        opinionRepository.decreaseLike(opinion.getId());
+        opinionLikeRepository.delete(like);
+        return like;
+    }
+
 }

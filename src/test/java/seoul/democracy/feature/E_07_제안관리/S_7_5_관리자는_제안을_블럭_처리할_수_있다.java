@@ -17,6 +17,7 @@ import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.service.ProposalService;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.Matchers.is;
@@ -39,6 +40,7 @@ import static seoul.democracy.proposal.predicate.ProposalPredicate.equalId;
 public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
+    private final static String ip = "127.0.0.2";
 
     @Autowired
     private ProposalService proposalService;
@@ -58,8 +60,13 @@ public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
     @Test
     @WithUserDetails("admin1@googl.co.kr")
     public void T_1_관리자는_제안을_블럭할_수_있다() {
-        Proposal proposal = proposalService.blockProposal(proposalId);
+        final String now = LocalDateTime.now().format(dateTimeFormatter);
+        Proposal proposal = proposalService.block(proposalId, ip);
         ProposalDto proposalDto = proposalService.getProposal(equalId(proposal.getId()), projection);
+        assertThat(proposalDto.getModifiedDate().format(dateTimeFormatter), is(now));
+        assertThat(proposalDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
+        assertThat(proposalDto.getModifiedIp(), is(ip));
+
         assertThat(proposalDto.getStatus(), is(Proposal.Status.BLOCK));
     }
 
@@ -69,7 +76,7 @@ public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
     public void T_2_매니저는_제안을_블럭할_수_없다() {
-        proposalService.blockProposal(proposalId);
+        proposalService.block(proposalId, ip);
     }
 
     /**
@@ -78,7 +85,7 @@ public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_사용자는_제안을_블럭할_수_없다() {
-        proposalService.blockProposal(proposalId);
+        proposalService.block(proposalId, ip);
     }
 
     /**
@@ -87,7 +94,7 @@ public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
     @Test(expected = NotFoundException.class)
     @WithUserDetails("admin1@googl.co.kr")
     public void T_4_관리자는_블럭된_제안을_블럭할_수_없다() {
-        proposalService.blockProposal(blockedProposalId);
+        proposalService.block(blockedProposalId, ip);
     }
 
     /**
@@ -96,6 +103,6 @@ public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
     @Test(expected = NotFoundException.class)
     @WithUserDetails("admin1@googl.co.kr")
     public void T_5_관리자는_삭제된_제안을_블럭할_수_없다() {
-        proposalService.blockProposal(deletedProposalId);
+        proposalService.block(deletedProposalId, ip);
     }
 }
