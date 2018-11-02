@@ -41,7 +41,6 @@ import static seoul.democracy.proposal.predicate.ProposalPredicate.equalId;
 public class S_7_1_관리자는_관리자의견을_등록할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
-    private final static String ip = "127.0.0.2";
 
     @Autowired
     private ProposalService proposalService;

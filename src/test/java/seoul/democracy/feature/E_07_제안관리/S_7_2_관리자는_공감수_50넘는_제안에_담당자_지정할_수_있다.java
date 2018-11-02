@@ -63,6 +63,7 @@ public class S_7_2_관리자는_공감수_50넘는_제안에_담당자_지정할
 
         ProposalDto proposalDto = proposalService.getProposal(equalId(proposal.getId()), projection);
         assertThat(proposalDto.getManager().getId(), is(assignDto.getManagerId()));
+        assertThat(proposalDto.getProcess(), is(Proposal.Process.ASSIGNED));
     }
 
     /**

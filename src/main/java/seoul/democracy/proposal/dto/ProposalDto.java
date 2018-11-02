@@ -25,9 +25,11 @@ public class ProposalDto {
         proposal.createdIp, proposal.modifiedIp, proposal.opinionType,
         CategoryDto.projection.as("category"),
         IssueStatsDto.projection.as("stats"),
+        proposal.status, proposal.process,
         proposal.adminCommentDate, proposal.adminComment,
         UserDto.projectionForBasic.as("manager"),
-        proposal.status, proposal.title, proposal.content);
+        proposal.managerCommentDate, proposal.managerComment,
+        proposal.title, proposal.content);
 
     private Long id;
     private LocalDateTime createdDate;
@@ -44,11 +46,14 @@ public class ProposalDto {
     private List<IssueFile> files;
 
     private Proposal.Status status;
+    private Proposal.Process process;
 
     private LocalDateTime adminCommentDate;
     private String adminComment;
 
     private UserDto manager;
+    private LocalDateTime managerCommentDate;
+    private String managerComment;
 
     private String title;
     private String content;

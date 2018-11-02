@@ -222,7 +222,7 @@ public class ProposalService {
     }
 
     /**
-     * 관리자 댓글
+     * 관리자 답변
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
@@ -246,5 +246,15 @@ public class ProposalService {
             throw new BadRequestException("role", "error.role", "매니저만 담당자로 설정가능합니다.");
 
         return proposal.assignManager(manager);
+    }
+
+    /**
+     * 담당자 답변
+     */
+    @Transactional
+    @PostAuthorize("returnObject.managerId == authentication.principal.user.id")
+    public Proposal editManagerComment(ProposalManagerCommentEditDto editDto) {
+        Proposal proposal = getProposal(editDto.getProposalId());
+        return proposal.editManagerComment(editDto.getComment());
     }
 }

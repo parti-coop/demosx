@@ -55,6 +55,22 @@ public class Proposal extends Issue {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MANAGER_ID")
     private User manager;
+    @Column(name = "MANAGER_ID", insertable = false, updatable = false)
+    private Long managerId;
+
+    /**
+     * 담당자 댓글 일시
+     */
+    @Convert(converter = LocalDateTimeAttributeConverter.class)
+    @Column(name = "MANAGER_COMMENT_DT")
+    private LocalDateTime managerCommentDate;
+
+    /**
+     * 담당자 댓글
+     */
+    @Lob
+    @Column(name = "MANAGER_COMMENT")
+    private String managerComment;
 
     public Proposal(Category category, String title, String content, String ip) {
         this.stats = IssueStats.create();
@@ -100,6 +116,14 @@ public class Proposal extends Issue {
 
     public Proposal assignManager(User manager) {
         this.manager = manager;
+        this.process = Process.ASSIGNED;
+        return this;
+    }
+
+    public Proposal editManagerComment(String comment) {
+        this.managerComment = comment;
+        this.managerCommentDate = LocalDateTime.now();
+        this.process = Process.COMPLETE;
         return this;
     }
 
