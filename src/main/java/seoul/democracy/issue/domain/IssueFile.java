@@ -17,6 +17,12 @@ import javax.persistence.Embeddable;
 public class IssueFile {
 
     /**
+     * 파일 순번
+     */
+    @Column(name = "FILE_SEQ")
+    private Integer seq;
+
+    /**
      * 파일 이름
      */
     @Column(name = "FILE_NAME")

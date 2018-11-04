@@ -24,6 +24,7 @@
                 <prop key="hibernate.jdbc.batch_size">5</prop>
                 <prop key="hibernate.id.new_generator_mappings">true</prop>
                 <prop key="hibernate.hbm2ddl.auto">create</prop>
+                <!--<prop key="hibernate.hbm2ddl.auto">validate</prop>-->
             </props>
         </property>
     </bean>

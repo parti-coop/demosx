@@ -85,6 +85,13 @@ public abstract class Issue {
     protected OpinionType opinionType;
 
     /**
+     * 이슈 상태
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ISSUE_STATUS")
+    protected Status status;
+
+    /**
      * 범주
      */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -103,7 +110,6 @@ public abstract class Issue {
     /**
      * 이슈 파일
      */
-    @OrderColumn(name = "FILE_SEQ", nullable = false)
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "TB_ISSUE_FILE", joinColumns = @JoinColumn(name = "ISSUE_ID"))
     protected List<IssueFile> files;
@@ -121,4 +127,18 @@ public abstract class Issue {
     @Column(name = "ISSUE_CONTENT")
     protected String content;
 
+    public enum Status {
+        OPEN,       // 공개
+        CLOSED,     // 비공개
+        DELETE,     // 삭제
+        BLOCK;      // 관리자삭제
+
+        public boolean isDelete() {
+            return this == DELETE;
+        }
+
+        public boolean isBlock() {
+            return this == BLOCK;
+        }
+    }
 }

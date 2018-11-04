@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.NotFoundException;
+import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.service.ProposalService;
@@ -64,7 +65,7 @@ public class S_6_3_사용자는_제안을_삭제할_수_있다 {
         assertThat(proposalDto.getModifiedBy().getEmail(), is("user1@googl.co.kr"));
         assertThat(proposalDto.getModifiedIp(), is(ip));
 
-        assertThat(proposalDto.getStatus(), is(Proposal.Status.DELETE));
+        assertThat(proposalDto.getStatus(), is(Issue.Status.DELETE));
     }
 
     /**

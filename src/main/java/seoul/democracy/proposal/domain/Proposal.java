@@ -22,13 +22,6 @@ import java.time.LocalDateTime;
 public class Proposal extends Issue {
 
     /**
-     * 이슈 상태
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "ISSUE_STATUS")
-    private Status status;
-
-    /**
      * 이슈 과정
      */
     @Enumerated(EnumType.STRING)
@@ -129,20 +122,6 @@ public class Proposal extends Issue {
         this.status = Status.BLOCK;
         this.modifiedIp = ip;
         return this;
-    }
-
-    public enum Status {
-        OPEN,       // 공개
-        DELETE,     // 삭제
-        BLOCK;        // 관리자삭제
-
-        public boolean isDelete() {
-            return this == DELETE;
-        }
-
-        public boolean isBlock() {
-            return this == BLOCK;
-        }
     }
 
     public enum Process {

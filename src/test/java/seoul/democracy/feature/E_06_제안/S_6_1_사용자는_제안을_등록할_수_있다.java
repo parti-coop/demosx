@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.BadRequestException;
+import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.opinion.domain.OpinionType;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.ProposalCreateDto;
@@ -59,7 +60,7 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_1_사용자는_제목_내용_카테고리_첨부파일로_제안을_등록할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        ProposalCreateDto createDto = ProposalCreateDto.of("제안합니다.", "제안내용입니다.", "복지");
+        ProposalCreateDto createDto = ProposalCreateDto.of("복지", "제안합니다.", "제안내용입니다.");
         Proposal proposal = proposalService.create(createDto, ip);
         assertThat(proposal.getId(), is(notNullValue()));
 
@@ -81,7 +82,7 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
         assertThat(proposalDto.getStats().getNoCount(), is(0L));
         assertThat(proposalDto.getStats().getEtcCount(), is(0L));
 
-        assertThat(proposalDto.getStatus(), is(Proposal.Status.OPEN));
+        assertThat(proposalDto.getStatus(), is(Issue.Status.OPEN));
 
         assertThat(proposalDto.getTitle(), is(createDto.getTitle()));
         assertThat(proposalDto.getContent(), is(createDto.getContent()));
