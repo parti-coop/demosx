@@ -34,7 +34,7 @@ import static seoul.democracy.debate.predicate.DebatePredicate.equalId;
 
 /**
  * epic : 9. 토론관리
- * story : 3. 관리자는 토론을 등록할 수 있다.
+ * story : 9.3 관리자는 토론을 등록할 수 있다.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -155,7 +155,7 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
      * 5. 사용자는 토론을 등록할 수 없다.
      */
     @Test(expected = AccessDeniedException.class)
-    @WithUserDetails("manager1@googl.co.kr")
+    @WithUserDetails("user1@googl.co.kr")
     public void T_5_사용자는_토론을_등록할_수_없다() {
         DebateCreateDto createDto = DebateCreateDto.of("thumbnail.jpg", "복지", OpinionType.DEBATE,
             LocalDate.of(2019, 10, 10), LocalDate.of(2019, 12, 12),

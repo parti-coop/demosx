@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import seoul.democracy.common.converter.LocalDateAttributeConverter;
 import seoul.democracy.debate.dto.DebateCreateDto;
+import seoul.democracy.debate.dto.DebateUpdateDto;
 import seoul.democracy.issue.domain.*;
 import seoul.democracy.issue.dto.IssueFileDto;
 import seoul.democracy.opinion.domain.OpinionType;
@@ -90,6 +91,32 @@ public class Debate extends Issue {
             createDto.getStartDate(), createDto.getEndDate(),
             createDto.getTitle(), createDto.getContent(), createDto.getStatus(),
             files, relations, ip);
+    }
+
+    public Debate update(DebateUpdateDto updateDto, Category category, String ip) {
+        this.status = updateDto.getStatus();
+        this.category = category;
+        this.startDate = updateDto.getStartDate();
+        this.endDate = updateDto.getEndDate();
+        this.thumbnail = updateDto.getThumbnail();
+        this.title = updateDto.getTitle();
+        this.content = updateDto.getContent();
+        this.modifiedIp = ip;
+
+        List<IssueFile> files = new ArrayList<>();
+        for (int i = 0; i < updateDto.getFiles().size(); i++) {
+            IssueFileDto fileDto = updateDto.getFiles().get(i);
+            files.add(IssueFile.of(i, fileDto.getName(), fileDto.getUrl()));
+        }
+        this.files = files;
+
+        List<IssueRelation> relations = new ArrayList<>();
+        for (int i = 0; i < updateDto.getRelations().size(); i++) {
+            relations.add(IssueRelation.create(i, updateDto.getRelations().get(i)));
+        }
+        this.relations = relations;
+
+        return this;
     }
 
     public enum Process {
