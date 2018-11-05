@@ -39,6 +39,12 @@ public class IssueStats {
     private Long opinionCount;
 
     /**
+     * 참여자수
+     */
+    @Column(name = "APPLICANT_CNT", insertable = false, updatable = false)
+    private Long applicantCount;
+
+    /**
      * 찬성수
      */
     @Column(name = "YES_CNT", insertable = false, updatable = false)

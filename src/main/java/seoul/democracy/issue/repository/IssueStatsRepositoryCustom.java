@@ -23,4 +23,14 @@ public interface IssueStatsRepositoryCustom {
      * 의견 감소
      */
     void decreaseOpinion(Long statsId);
+
+    /**
+     * 참여자 수 증가
+     */
+    void increaseApplicant(Long statsId);
+
+    /**
+     * 참여자 수 감소
+     */
+    void decreaseApplicant(Long statsId);
 }

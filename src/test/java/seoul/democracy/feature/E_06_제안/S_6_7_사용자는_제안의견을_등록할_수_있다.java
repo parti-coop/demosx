@@ -80,6 +80,7 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
 
         ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
         assertThat(proposalDto.getStats().getOpinionCount(), is(2L));
+        assertThat(proposalDto.getStats().getApplicantCount(), is(2L));
     }
 
     /**
@@ -97,6 +98,7 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
 
         ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
         assertThat(proposalDto.getStats().getOpinionCount(), is(2L));
+        assertThat(proposalDto.getStats().getApplicantCount(), is(1L));
     }
 
     /**

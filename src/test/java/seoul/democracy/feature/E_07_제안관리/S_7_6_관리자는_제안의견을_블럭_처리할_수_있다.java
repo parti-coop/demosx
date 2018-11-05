@@ -49,6 +49,7 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
     private final Long opinionId = 1L;
     private final Long deletedOpinionId = 2L;
     private final Long blockedOpinionId = 3L;
+    private final Long multiOpinionId = 11L;
 
     @Before
     public void setUp() throws Exception {
@@ -73,6 +74,7 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
 
         ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
         assertThat(proposalDto.getStats().getOpinionCount(), is(0L));
+        assertThat(proposalDto.getStats().getApplicantCount(), is(0L));
     }
 
     /**
@@ -109,5 +111,26 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_5_관리자는_삭제된_제안의견을_블럭할_수_없다() {
         proposalService.blockOpinion(deletedOpinionId, ip);
+    }
+
+    /**
+     * 6. 관리자는 여러 제안의견 중 하나를 블럭할 수 있다.
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_6_관리자는_여러_제안의견_중_하나를_블럭할_수_있다() {
+        final String now = LocalDateTime.now().format(dateTimeFormatter);
+        Opinion opinion = proposalService.blockOpinion(multiOpinionId, ip);
+
+        ProposalOpinionDto opinionDto = proposalService.getOpinion(ProposalOpinionPredicate.equalId(opinion.getId()), ProposalOpinionDto.projection);
+        assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
+        assertThat(opinionDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
+        assertThat(opinionDto.getModifiedIp(), is(ip));
+
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
+        assertThat(proposalDto.getStats().getOpinionCount(), is(1L));
+        assertThat(proposalDto.getStats().getApplicantCount(), is(1L));
     }
 }

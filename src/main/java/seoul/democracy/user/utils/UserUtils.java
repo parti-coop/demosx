@@ -28,4 +28,8 @@ public class UserUtils {
     public static String getEmail() {
         return getLoginUser().getEmail();
     }
+
+    public static Long getUserId() {
+        return getLoginUser().getId();
+    }
 }

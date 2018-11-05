@@ -35,6 +35,7 @@ import seoul.democracy.user.utils.UserUtils;
 
 import static seoul.democracy.issue.predicate.IssueLikePredicate.equalUserIdAndIssueId;
 import static seoul.democracy.opinion.predicate.OpinionLikePredicate.equalUserIdAndOpinionId;
+import static seoul.democracy.opinion.predicate.OpinionPredicate.equalIssueIdAndCreatedByIdAndStatus;
 
 @Service
 @Transactional(readOnly = true)
@@ -206,6 +207,13 @@ public class ProposalService {
     }
 
     /**
+     * 해당 issue에 로그인 사용자 의견이 있는가?
+     */
+    private boolean existsOpinion(Long issueId, Long userId) {
+        return opinionRepository.exists(equalIssueIdAndCreatedByIdAndStatus(issueId, userId, Opinion.Status.OPEN));
+    }
+
+    /**
      * 의견 등록
      */
     @Transactional
@@ -214,6 +222,10 @@ public class ProposalService {
 
         ProposalOpinion opinion = proposal.createOpinion(createDto.getContent(), ip);
         statsRepository.increaseOpinion(proposal.getStatsId());
+
+        if (!existsOpinion(proposal.getId(), UserUtils.getUserId()))
+            statsRepository.increaseApplicant(proposal.getStatsId());
+
         return opinionRepository.save(opinion);
     }
 
@@ -233,9 +245,15 @@ public class ProposalService {
     @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
     public Opinion deleteOpinion(Long opinionId, String ip) {
         Opinion opinion = getOpinion(opinionId);
+        opinion.delete(ip);
+        opinionRepository.save(opinion);
 
         statsRepository.decreaseOpinion(opinion.getIssue().getStatsId());
-        return opinion.delete(ip);
+
+        if (!existsOpinion(opinion.getIssue().getId(), opinion.getCreatedById()))
+            statsRepository.decreaseApplicant(opinion.getIssue().getStatsId());
+
+        return opinion;
     }
 
     /**
@@ -245,9 +263,15 @@ public class ProposalService {
     @PreAuthorize("hasRole('ADMIN')")
     public Opinion blockOpinion(Long opinionId, String ip) {
         Opinion opinion = getOpinion(opinionId);
+        opinion.block(ip);
+        opinionRepository.save(opinion);
 
         statsRepository.decreaseOpinion(opinion.getIssue().getStatsId());
-        return opinion.block(ip);
+
+        if (!existsOpinion(opinion.getIssue().getId(), opinion.getCreatedById()))
+            statsRepository.decreaseApplicant(opinion.getIssue().getStatsId());
+
+        return opinion;
     }
 
     /**
@@ -271,9 +295,7 @@ public class ProposalService {
      */
     @Transactional
     public OpinionLike unselectOpinionLike(Long opinionId) {
-        User user = UserUtils.getLoginUser();
-
-        OpinionLike like = opinionLikeRepository.findOne(equalUserIdAndOpinionId(user.getId(), opinionId));
+        OpinionLike like = opinionLikeRepository.findOne(equalUserIdAndOpinionId(UserUtils.getUserId(), opinionId));
         if (like == null)
             throw new NotFoundException("공감 상태가 아닙니다.");
 

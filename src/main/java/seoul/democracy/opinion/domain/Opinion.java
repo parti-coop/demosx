@@ -95,7 +95,7 @@ public abstract class Opinion {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "OPINION_STATUS")
-    private ProposalOpinion.Status status;
+    private Status status;
 
     /**
      * 의견 내용
