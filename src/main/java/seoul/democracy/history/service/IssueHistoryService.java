@@ -29,6 +29,13 @@ public class IssueHistoryService {
         this.issueRepository = issueRepository;
     }
 
+    private IssueHistory getHistory(Long historyId) {
+        IssueHistory history = historyRepository.findOne(historyId);
+        if (history == null)
+            throw new NotFoundException("해당 히스토리를 찾을 수 없습니다.");
+        return history;
+    }
+
     public IssueHistoryDto getHistory(Predicate predicate, QBean<IssueHistoryDto> projection) {
         return historyRepository.findOne(predicate, projection);
     }
@@ -54,10 +61,15 @@ public class IssueHistoryService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public IssueHistory update(IssueHistoryUpdateDto updateDto, String ip) {
-        IssueHistory history = historyRepository.findOne(updateDto.getHistoryId());
-        if (history == null)
-            throw new NotFoundException("해당 히스토리를 찾을 수 없습니다.");
+        return getHistory(updateDto.getHistoryId()).update(updateDto.getContent(), ip);
+    }
 
-        return history.update(updateDto.getContent(), ip);
+    /**
+     * 히스토리 삭제
+     */
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public IssueHistory delete(Long historyId, String ip) {
+        return getHistory(historyId).delete(ip);
     }
 }

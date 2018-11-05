@@ -110,6 +110,15 @@ public class IssueHistory {
         return this;
     }
 
+    public IssueHistory delete(String ip) {
+        if (this.status.isDelete())
+            throw new NotFoundException("해당 히스토리를 찾을 수 없습니다.");
+
+        this.status = Status.DELETE;
+        this.modifiedIp = ip;
+        return this;
+    }
+
     public enum Status {
         OPEN,
         DELETE;
