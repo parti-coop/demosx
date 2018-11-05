@@ -51,9 +51,15 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     @Autowired
     private DebateService debateService;
 
+    private DebateCreateDto createDto;
 
     @Before
     public void setUp() throws Exception {
+        createDto = DebateCreateDto.of("thumbnail.jpg", "복지", OpinionType.PROPOSAL,
+            LocalDate.of(2019, 10, 10), LocalDate.of(2019, 12, 12),
+            "토론 + 제안의견", "제안의견인 토론입니다.", Issue.Status.OPEN,
+            Arrays.asList(IssueFileDto.of("파일1", "file1"), IssueFileDto.of("파일2", "file2")),
+            Arrays.asList(1L, 2L));
     }
 
     /**
@@ -63,11 +69,6 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_1_관리자는_제안의견으로_토론을_등록할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        DebateCreateDto createDto = DebateCreateDto.of("thumbnail.jpg", "복지", OpinionType.PROPOSAL,
-            LocalDate.of(2019, 10, 10), LocalDate.of(2019, 12, 12),
-            "토론 + 제안의견", "제안의견인 토론입니다.", Issue.Status.OPEN,
-            Arrays.asList(IssueFileDto.of("파일1", "file1"), IssueFileDto.of("파일2", "file2")),
-            Arrays.asList(1L, 2L));
 
         Debate debate = debateService.create(createDto, ip);
         assertThat(debate.getId(), is(notNullValue()));
@@ -109,12 +110,7 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     @Test
     @WithUserDetails("admin1@googl.co.kr")
     public void T_2_관리자는_토론의견으로_토론을_등록할_수_있다() {
-        DebateCreateDto createDto = DebateCreateDto.of("thumbnail.jpg", "복지", OpinionType.DEBATE,
-            LocalDate.of(2019, 10, 10), LocalDate.of(2019, 12, 12),
-            "토론 + 토론의견", "토론의견인 토론입니다.", Issue.Status.OPEN,
-            Arrays.asList(IssueFileDto.of("파일1", "file1"), IssueFileDto.of("파일2", "file2")),
-            Arrays.asList(1L, 2L));
-
+        createDto.setOpinionType(OpinionType.DEBATE);
         Debate debate = debateService.create(createDto, ip);
 
         DebateDto debateDto = debateService.getDebate(equalId(debate.getId()), projection, true, true);
@@ -127,12 +123,7 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     @Test(expected = BadRequestException.class)
     @WithUserDetails("admin1@googl.co.kr")
     public void T_3_존재하지_않는_카테고리로_토론을_등록할_수_없다() {
-        DebateCreateDto createDto = DebateCreateDto.of("thumbnail.jpg", "없는 카테고리", OpinionType.DEBATE,
-            LocalDate.of(2019, 10, 10), LocalDate.of(2019, 12, 12),
-            "없는 카테고리로 토론 등록", "제안의견인 토론입니다.", Issue.Status.OPEN,
-            Arrays.asList(IssueFileDto.of("파일1", "file1"), IssueFileDto.of("파일2", "file2")),
-            Arrays.asList(1L, 2L));
-
+        createDto.setCategory("없는 카테고리");
         debateService.create(createDto, ip);
     }
 
@@ -142,12 +133,6 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
     public void T_4_매니저는_토론을_등록할_수_없다() {
-        DebateCreateDto createDto = DebateCreateDto.of("thumbnail.jpg", "복지", OpinionType.DEBATE,
-            LocalDate.of(2019, 10, 10), LocalDate.of(2019, 12, 12),
-            "매니저는 토론을 등록할 수 없다.", "제안의견인 토론입니다.", Issue.Status.OPEN,
-            Arrays.asList(IssueFileDto.of("파일1", "file1"), IssueFileDto.of("파일2", "file2")),
-            Arrays.asList(1L, 2L));
-
         debateService.create(createDto, ip);
     }
 
@@ -157,12 +142,6 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_5_사용자는_토론을_등록할_수_없다() {
-        DebateCreateDto createDto = DebateCreateDto.of("thumbnail.jpg", "복지", OpinionType.DEBATE,
-            LocalDate.of(2019, 10, 10), LocalDate.of(2019, 12, 12),
-            "사용자는 토론을 등록할 수 없다.", "제안의견인 토론입니다.", Issue.Status.OPEN,
-            Arrays.asList(IssueFileDto.of("파일1", "file1"), IssueFileDto.of("파일2", "file2")),
-            Arrays.asList(1L, 2L));
-
         debateService.create(createDto, ip);
     }
 }

@@ -10,6 +10,7 @@ import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.history.domain.IssueHistory;
 import seoul.democracy.history.dto.IssueHistoryCreateDto;
 import seoul.democracy.history.dto.IssueHistoryDto;
+import seoul.democracy.history.dto.IssueHistoryUpdateDto;
 import seoul.democracy.history.repository.IssueHistoryRepository;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.repository.IssueRepository;
@@ -32,6 +33,9 @@ public class IssueHistoryService {
         return historyRepository.findOne(predicate, projection);
     }
 
+    /**
+     * 히스토리 등록
+     */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public IssueHistory create(IssueHistoryCreateDto createDto, String ip) {
@@ -44,4 +48,16 @@ public class IssueHistoryService {
         return historyRepository.save(history);
     }
 
+    /**
+     * 히스토리 수정
+     */
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public IssueHistory update(IssueHistoryUpdateDto updateDto, String ip) {
+        IssueHistory history = historyRepository.findOne(updateDto.getHistoryId());
+        if (history == null)
+            throw new NotFoundException("해당 히스토리를 찾을 수 없습니다.");
+
+        return history.update(updateDto.getContent(), ip);
+    }
 }

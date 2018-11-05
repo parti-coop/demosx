@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
+import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.user.domain.User;
 
@@ -100,8 +101,21 @@ public class IssueHistory {
         return new IssueHistory(issue, content, ip);
     }
 
+    public IssueHistory update(String content, String ip) {
+        if (this.status.isDelete())
+            throw new NotFoundException("해당 히스토리를 찾을 수 없습니다.");
+
+        this.content = content;
+        this.modifiedIp = ip;
+        return this;
+    }
+
     public enum Status {
         OPEN,
-        DELETE
+        DELETE;
+
+        public boolean isDelete() {
+            return this == DELETE;
+        }
     }
 }
