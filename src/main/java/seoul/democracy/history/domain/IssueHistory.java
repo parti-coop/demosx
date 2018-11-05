@@ -1,4 +1,4 @@
-package seoul.democracy.opinion.domain;
+package seoul.democracy.history.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,28 +9,26 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.issue.domain.Issue;
-import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
 import seoul.democracy.user.domain.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-/**
- * 의견
- */
 @Getter
 @NoArgsConstructor
-@Entity(name = "TB_OPINION")
+@Entity(name = "TB_ISSUE_HISTORY")
 @EntityListeners(AuditingEntityListener.class)
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "OPINION_DTYPE", columnDefinition = "char(1)")
-public abstract class Opinion {
+public class IssueHistory {
 
     @Id
     @GeneratedValue(generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    @Column(name = "OPINION_ID")
+    @Column(name = "HISTORY_ID")
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "ISSUE_ID", updatable = false, nullable = false)
+    private Issue issue;
 
     /**
      * 등록 일시
@@ -75,67 +73,35 @@ public abstract class Opinion {
      * 수정 아이피
      */
     @Column(name = "CHG_IP")
-    protected String modifiedIp;
+    private String modifiedIp;
 
     /**
-     * 이슈
-     */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ISSUE_ID", updatable = false, nullable = false)
-    private Issue issue;
-
-    /**
-     * 공감수
-     */
-    @Column(name = "LIKE_CNT", insertable = false, updatable = false)
-    private Long likeCount;
-
-    /**
-     * 의견 상태
+     * 히스토리 상태
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "OPINION_STATUS")
-    private ProposalOpinion.Status status;
+    @Column(name = "HISTORY_STATUS")
+    private Status status;
 
     /**
-     * 의견 내용
+     * 히스토리 내용
      */
-    @Column(name = "OPINION_CONTENT")
-    protected String content;
+    @Lob
+    @Column(name = "HISTORY_CONTENT")
+    private String content;
 
-    Opinion(Issue issue, String content, String ip) {
+    private IssueHistory(Issue issue, String content, String ip) {
+        this.status = Status.OPEN;
         this.issue = issue;
         this.content = content;
         this.createdIp = this.modifiedIp = ip;
-
-        this.status = Status.OPEN;
     }
 
-    public abstract ProposalOpinion update(ProposalOpinionUpdateDto updateDto, String ip);
-
-    public Opinion delete(String ip) {
-        this.status = Status.DELETE;
-        this.modifiedIp = ip;
-        return this;
-    }
-
-    public Opinion block(String ip) {
-        this.status = Status.BLOCK;
-        this.modifiedIp = ip;
-        return this;
+    public static IssueHistory create(Issue issue, String content, String ip) {
+        return new IssueHistory(issue, content, ip);
     }
 
     public enum Status {
         OPEN,
-        DELETE,
-        BLOCK;
-
-        public boolean isDelete() {
-            return this == DELETE;
-        }
-
-        public boolean isBlock() {
-            return this == BLOCK;
-        }
+        DELETE
     }
 }

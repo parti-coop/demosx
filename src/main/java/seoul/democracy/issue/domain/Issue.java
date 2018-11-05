@@ -8,7 +8,10 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
+import seoul.democracy.common.exception.BadRequestException;
+import seoul.democracy.history.domain.IssueHistory;
 import seoul.democracy.opinion.domain.OpinionType;
+import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.user.domain.User;
 
 import javax.persistence.*;
@@ -126,6 +129,13 @@ public abstract class Issue {
     @Lob
     @Column(name = "ISSUE_CONTENT")
     protected String content;
+
+    public IssueHistory createHistory(String content, String ip) {
+        if (this instanceof Proposal)
+            throw new BadRequestException("issueId", "error.issueId", "제안은 히스토리를 등록할 수 없습니다.");
+
+        return IssueHistory.create(this, content, ip);
+    }
 
     public enum Status {
         OPEN,       // 공개

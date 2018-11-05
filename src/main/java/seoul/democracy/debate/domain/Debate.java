@@ -70,8 +70,7 @@ public class Debate extends Issue {
         this.thumbnail = thumbnail;
         this.title = title;
         this.content = content;
-        this.createdIp = ip;
-        this.modifiedIp = ip;
+        this.createdIp = this.modifiedIp = ip;
 
         this.files = files;
         this.relations = relations;

@@ -1,0 +1,37 @@
+package seoul.democracy.history.dto;
+
+import com.mysema.query.types.Projections;
+import com.mysema.query.types.QBean;
+import lombok.Data;
+import seoul.democracy.history.domain.IssueHistory;
+import seoul.democracy.issue.dto.IssueDto;
+import seoul.democracy.user.dto.UserDto;
+
+import java.time.LocalDateTime;
+
+import static seoul.democracy.history.domain.QIssueHistory.issueHistory;
+
+@Data
+public class IssueHistoryDto {
+
+    public final static QBean<IssueHistoryDto> projection = Projections.fields(IssueHistoryDto.class,
+        issueHistory.id, issueHistory.createdDate, issueHistory.modifiedDate,
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        UserDto.projectionForBasicByModifiedBy.as("modifiedBy"),
+        issueHistory.createdIp, issueHistory.modifiedIp,
+        IssueDto.projectionForBasic.as("issue"),
+        issueHistory.status, issueHistory.content);
+
+    private Long id;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
+    private UserDto createdBy;
+    private UserDto modifiedBy;
+    private String createdIp;
+    private String modifiedIp;
+
+    private IssueDto issue;
+
+    private IssueHistory.Status status;
+    private String content;
+}

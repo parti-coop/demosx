@@ -73,8 +73,7 @@ public class Proposal extends Issue {
         this.category = category;
         this.title = title;
         this.content = content;
-        this.createdIp = ip;
-        this.modifiedIp = ip;
+        this.createdIp = this.modifiedIp = ip;
 
     }
 
