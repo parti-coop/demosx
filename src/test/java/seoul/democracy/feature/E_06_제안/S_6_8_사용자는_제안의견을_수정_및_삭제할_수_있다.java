@@ -18,6 +18,7 @@ import seoul.democracy.opinion.domain.ProposalOpinion;
 import seoul.democracy.opinion.dto.ProposalOpinionDto;
 import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
 import seoul.democracy.opinion.predicate.ProposalOpinionPredicate;
+import seoul.democracy.opinion.service.OpinionService;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.predicate.ProposalPredicate;
 import seoul.democracy.proposal.service.ProposalService;
@@ -56,6 +57,9 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     private Long multiOpinionId = 11L;
 
     @Autowired
+    private OpinionService opinionService;
+
+    @Autowired
     private ProposalService proposalService;
 
     @Before
@@ -70,9 +74,9 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     public void T_01_사용자는_본인의견을_수정할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
         ProposalOpinionUpdateDto updateDto = ProposalOpinionUpdateDto.of(opinionId, "제안의견 수정합니다.");
-        ProposalOpinion opinion = proposalService.updateOpinion(updateDto, ip);
+        ProposalOpinion opinion = opinionService.updateOpinion(updateDto, ip);
 
-        ProposalOpinionDto opinionDto = proposalService.getOpinion(equalId(opinion.getId()), projection);
+        ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(opinionDto.getModifiedBy().getEmail(), is("user1@googl.co.kr"));
         assertThat(opinionDto.getModifiedIp(), is(ip));
@@ -91,9 +95,9 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @WithUserDetails("user1@googl.co.kr")
     public void T_02_사용자는_본인의견을_삭제할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        Opinion opinion = proposalService.deleteOpinion(opinionId, ip);
+        Opinion opinion = opinionService.deleteOpinion(opinionId, ip);
 
-        ProposalOpinionDto opinionDto = proposalService.getOpinion(equalId(opinion.getId()), projection);
+        ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(opinionDto.getModifiedBy().getEmail(), is("user1@googl.co.kr"));
         assertThat(opinionDto.getModifiedIp(), is(ip));
@@ -112,7 +116,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @WithUserDetails("user2@googl.co.kr")
     public void T_03_다른_사용자의_의견을_수정할_수_없다() {
         ProposalOpinionUpdateDto updateDto = ProposalOpinionUpdateDto.of(opinionId, "다른 사용자가 제안의견을 수정합니다.");
-        proposalService.updateOpinion(updateDto, ip);
+        opinionService.updateOpinion(updateDto, ip);
     }
 
     /**
@@ -121,7 +125,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user2@googl.co.kr")
     public void T_04_다른_사용자의_의견을_삭제할_수_없다() {
-        proposalService.deleteOpinion(opinionId, ip);
+        opinionService.deleteOpinion(opinionId, ip);
     }
 
     /**
@@ -131,7 +135,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @WithUserDetails("user1@googl.co.kr")
     public void T_05_없는_의견을_수정할_수_없다() {
         ProposalOpinionUpdateDto updateDto = ProposalOpinionUpdateDto.of(notExistsId, "없는 제안의견 수정합니다.");
-        proposalService.updateOpinion(updateDto, ip);
+        opinionService.updateOpinion(updateDto, ip);
     }
 
     /**
@@ -140,7 +144,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_06_없는_의견을_삭제할_수_없다() {
-        proposalService.deleteOpinion(notExistsId, ip);
+        opinionService.deleteOpinion(notExistsId, ip);
     }
 
     /**
@@ -150,7 +154,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @WithUserDetails("user1@googl.co.kr")
     public void T_07_삭제된_의견을_수정할_수_없다() {
         ProposalOpinionUpdateDto updateDto = ProposalOpinionUpdateDto.of(deletedOpinionId, "삭제된 의견은 수정할 수 없다.");
-        proposalService.updateOpinion(updateDto, ip);
+        opinionService.updateOpinion(updateDto, ip);
     }
 
     /**
@@ -159,7 +163,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_08_삭제된_의견을_삭제할_수_없다() {
-        proposalService.deleteOpinion(deletedOpinionId, ip);
+        opinionService.deleteOpinion(deletedOpinionId, ip);
     }
 
     /**
@@ -169,7 +173,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @WithUserDetails("user1@googl.co.kr")
     public void T_09_블럭된_의견을_수정할_수_없다() {
         ProposalOpinionUpdateDto updateDto = ProposalOpinionUpdateDto.of(blockedOpinionId, "블럭된 의견은 수정할 수 없다.");
-        proposalService.updateOpinion(updateDto, ip);
+        opinionService.updateOpinion(updateDto, ip);
     }
 
     /**
@@ -178,7 +182,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_10_블럭된_의견을_삭제할_수_없다() {
-        proposalService.deleteOpinion(blockedOpinionId, ip);
+        opinionService.deleteOpinion(blockedOpinionId, ip);
     }
 
     /**
@@ -188,9 +192,9 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @WithUserDetails("user1@googl.co.kr")
     public void T_11_사용자는_여러_제안의견_중_하나를_삭제할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        Opinion opinion = proposalService.deleteOpinion(multiOpinionId, ip);
+        Opinion opinion = opinionService.deleteOpinion(multiOpinionId, ip);
 
-        ProposalOpinionDto opinionDto = proposalService.getOpinion(ProposalOpinionPredicate.equalId(opinion.getId()), ProposalOpinionDto.projection);
+        ProposalOpinionDto opinionDto = opinionService.getOpinion(ProposalOpinionPredicate.equalId(opinion.getId()), ProposalOpinionDto.projection);
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(opinionDto.getModifiedBy().getEmail(), is("user1@googl.co.kr"));
         assertThat(opinionDto.getModifiedIp(), is(ip));

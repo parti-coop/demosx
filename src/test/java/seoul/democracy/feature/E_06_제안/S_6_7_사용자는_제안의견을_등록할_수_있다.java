@@ -15,6 +15,7 @@ import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.opinion.domain.ProposalOpinion;
 import seoul.democracy.opinion.dto.ProposalOpinionCreateDto;
 import seoul.democracy.opinion.dto.ProposalOpinionDto;
+import seoul.democracy.opinion.service.OpinionService;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.predicate.ProposalPredicate;
 import seoul.democracy.proposal.service.ProposalService;
@@ -46,6 +47,9 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
     private final static String ip = "127.0.0.2";
 
     @Autowired
+    private OpinionService opinionService;
+
+    @Autowired
     private ProposalService proposalService;
 
     @Before
@@ -60,10 +64,10 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
     public void T_1_사용자는_제안의견을_등록할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
         ProposalOpinionCreateDto createDto = ProposalOpinionCreateDto.of(1L, "새 제안의견 입니다.");
-        ProposalOpinion opinion = proposalService.createOpinion(createDto, ip);
+        ProposalOpinion opinion = opinionService.createOpinion(createDto, ip);
         assertThat(opinion.getId(), is(notNullValue()));
 
-        ProposalOpinionDto opinionDto = proposalService.getOpinion(equalId(opinion.getId()), projection);
+        ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getCreatedDate().format(dateTimeFormatter), is(now));
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(opinionDto.getCreatedBy().getEmail(), is("user2@googl.co.kr"));
@@ -90,10 +94,10 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_2_사용자는_여러번_제안_의견을_등록할_수_있다() {
         ProposalOpinionCreateDto createDto = ProposalOpinionCreateDto.of(1L, "다시 제안의견 입니다.");
-        ProposalOpinion opinion = proposalService.createOpinion(createDto, ip);
+        ProposalOpinion opinion = opinionService.createOpinion(createDto, ip);
         assertThat(opinion.getId(), is(notNullValue()));
 
-        ProposalOpinionDto opinionDto = proposalService.getOpinion(equalId(opinion.getId()), projection);
+        ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getIssue().getId(), is(createDto.getProposalId()));
 
         ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
@@ -109,7 +113,7 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
     public void T_3_삭제된_제안에_의견을_등록할_수_없다() {
         Long deletedProposalId = 2L;
         ProposalOpinionCreateDto createDto = ProposalOpinionCreateDto.of(deletedProposalId, "삭제된 제안의 제안의견 입니다.");
-        proposalService.createOpinion(createDto, ip);
+        opinionService.createOpinion(createDto, ip);
     }
 
     /**
@@ -120,6 +124,6 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
     public void T_3_블럭된_제안에_의견을_등록할_수_없다() {
         Long deletedProposalId = 3L;
         ProposalOpinionCreateDto createDto = ProposalOpinionCreateDto.of(deletedProposalId, "블럭된 제안의 제안의견 입니다.");
-        proposalService.createOpinion(createDto, ip);
+        opinionService.createOpinion(createDto, ip);
     }
 }

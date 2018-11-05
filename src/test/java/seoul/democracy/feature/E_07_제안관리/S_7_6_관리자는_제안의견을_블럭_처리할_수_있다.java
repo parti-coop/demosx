@@ -16,6 +16,7 @@ import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.dto.ProposalOpinionDto;
 import seoul.democracy.opinion.predicate.ProposalOpinionPredicate;
+import seoul.democracy.opinion.service.OpinionService;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.predicate.ProposalPredicate;
 import seoul.democracy.proposal.service.ProposalService;
@@ -44,6 +45,9 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
     private final static String ip = "127.0.0.2";
 
     @Autowired
+    private OpinionService opinionService;
+
+    @Autowired
     private ProposalService proposalService;
 
     private final Long opinionId = 1L;
@@ -63,9 +67,9 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_1_관리자는_제안의견을_블럭할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        Opinion opinion = proposalService.blockOpinion(opinionId, ip);
+        Opinion opinion = opinionService.blockOpinion(opinionId, ip);
 
-        ProposalOpinionDto opinionDto = proposalService.getOpinion(ProposalOpinionPredicate.equalId(opinion.getId()), ProposalOpinionDto.projection);
+        ProposalOpinionDto opinionDto = opinionService.getOpinion(ProposalOpinionPredicate.equalId(opinion.getId()), ProposalOpinionDto.projection);
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(opinionDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
         assertThat(opinionDto.getModifiedIp(), is(ip));
@@ -83,7 +87,7 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
     public void T_2_매니저는_제안의견을_블럭할_수_없다() {
-        proposalService.blockOpinion(opinionId, ip);
+        opinionService.blockOpinion(opinionId, ip);
     }
 
     /**
@@ -92,7 +96,7 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_사용자는_제안의견을_블럭할_수_없다() {
-        proposalService.blockOpinion(opinionId, ip);
+        opinionService.blockOpinion(opinionId, ip);
     }
 
     /**
@@ -101,7 +105,7 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
     @Test(expected = NotFoundException.class)
     @WithUserDetails("admin1@googl.co.kr")
     public void T_4_관리자는_블럭된_제안의견을_블럭할_수_없다() {
-        proposalService.blockOpinion(blockedOpinionId, ip);
+        opinionService.blockOpinion(blockedOpinionId, ip);
     }
 
     /**
@@ -110,7 +114,7 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
     @Test(expected = NotFoundException.class)
     @WithUserDetails("admin1@googl.co.kr")
     public void T_5_관리자는_삭제된_제안의견을_블럭할_수_없다() {
-        proposalService.blockOpinion(deletedOpinionId, ip);
+        opinionService.blockOpinion(deletedOpinionId, ip);
     }
 
     /**
@@ -120,9 +124,9 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_6_관리자는_여러_제안의견_중_하나를_블럭할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        Opinion opinion = proposalService.blockOpinion(multiOpinionId, ip);
+        Opinion opinion = opinionService.blockOpinion(multiOpinionId, ip);
 
-        ProposalOpinionDto opinionDto = proposalService.getOpinion(ProposalOpinionPredicate.equalId(opinion.getId()), ProposalOpinionDto.projection);
+        ProposalOpinionDto opinionDto = opinionService.getOpinion(ProposalOpinionPredicate.equalId(opinion.getId()), ProposalOpinionDto.projection);
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(opinionDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
         assertThat(opinionDto.getModifiedIp(), is(ip));

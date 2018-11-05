@@ -15,15 +15,15 @@ import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.opinion.domain.OpinionLike;
 import seoul.democracy.opinion.dto.ProposalOpinionDto;
-import seoul.democracy.opinion.predicate.ProposalOpinionPredicate;
 import seoul.democracy.opinion.repository.OpinionLikeRepository;
-import seoul.democracy.proposal.service.ProposalService;
+import seoul.democracy.opinion.service.OpinionService;
 
 import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static seoul.democracy.opinion.predicate.OpinionLikePredicate.equalUserId;
+import static seoul.democracy.opinion.predicate.ProposalOpinionPredicate.equalId;
 
 
 /**
@@ -43,7 +43,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     private final static String ip = "127.0.0.2";
 
     @Autowired
-    private ProposalService proposalService;
+    private OpinionService opinionService;
 
     @Autowired
     private OpinionLikeRepository likeRepository;
@@ -63,12 +63,12 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @WithUserDetails("user2@googl.co.kr")
     public void T_1_사용자는_제안의견에_공감할_수_있다() {
 
-        OpinionLike like = proposalService.selectOpinionLike(opinionId, ip);
+        OpinionLike like = opinionService.selectOpinionLike(opinionId, ip);
 
         long count = likeRepository.count(equalUserId(like.getId().getUserId()));
         assertThat(count, is(1L));
 
-        ProposalOpinionDto opinionDto = proposalService.getOpinion(ProposalOpinionPredicate.equalId(opinionId), ProposalOpinionDto.projection);
+        ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinionId), ProposalOpinionDto.projection);
         assertThat(opinionDto.getLikeCount(), is(2L));
     }
 
@@ -78,12 +78,12 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test
     @WithUserDetails("user1@googl.co.kr")
     public void T_2_사용자는_공감된_제안의견에_공감해제할_수_있다() {
-        OpinionLike like = proposalService.unselectOpinionLike(opinionId);
+        OpinionLike like = opinionService.unselectOpinionLike(opinionId);
 
         long count = likeRepository.count(equalUserId(like.getId().getUserId()));
         assertThat(count, is(2L));
 
-        ProposalOpinionDto opinionDto = proposalService.getOpinion(ProposalOpinionPredicate.equalId(opinionId), ProposalOpinionDto.projection);
+        ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinionId), ProposalOpinionDto.projection);
         assertThat(opinionDto.getLikeCount(), is(0L));
     }
 
@@ -93,7 +93,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = AlreadyExistsException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_이미_공감한_제안의견에_다시_공감할_수_없다() {
-        proposalService.selectOpinionLike(opinionId, ip);
+        opinionService.selectOpinionLike(opinionId, ip);
     }
 
     /**
@@ -102,7 +102,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user2@googl.co.kr")
     public void T_4_공감하지_않은_제안의견에_공감해제할_수_없다() {
-        proposalService.unselectOpinionLike(opinionId);
+        opinionService.unselectOpinionLike(opinionId);
     }
 
     /**
@@ -111,7 +111,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user2@googl.co.kr")
     public void T_5_삭제된_제안의견에_공감할_수_없다() {
-        proposalService.selectOpinionLike(deletedOpinionId, ip);
+        opinionService.selectOpinionLike(deletedOpinionId, ip);
     }
 
     /**
@@ -120,7 +120,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user2@googl.co.kr")
     public void T_6_블럭된_제안의견에_공감할_수_없다() {
-        proposalService.selectOpinionLike(blockedOpinionId, ip);
+        opinionService.selectOpinionLike(blockedOpinionId, ip);
     }
 
     /**
@@ -129,7 +129,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_7_삭제된_제안의견에_공감해제할_수_없다() {
-        proposalService.unselectOpinionLike(deletedOpinionId);
+        opinionService.unselectOpinionLike(deletedOpinionId);
     }
 
     /**
@@ -138,6 +138,6 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_8_블럭된_제안의견에_공감해제할_수_없다() {
-        proposalService.unselectOpinionLike(blockedOpinionId);
+        opinionService.unselectOpinionLike(blockedOpinionId);
     }
 }
