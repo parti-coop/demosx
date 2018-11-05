@@ -4,13 +4,13 @@ import com.mysema.query.types.Expression;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import seoul.democracy.opinion.dto.ProposalOpinionDto;
+import seoul.democracy.opinion.dto.OpinionDto;
 
 public interface OpinionRepositoryCustom {
 
-    Page<ProposalOpinionDto> findAll(Predicate predicate, Pageable pageable, Expression<ProposalOpinionDto> projection);
+    Page<OpinionDto> findAll(Predicate predicate, Pageable pageable, Expression<OpinionDto> projection);
 
-    ProposalOpinionDto findOne(Predicate predicate, Expression<ProposalOpinionDto> projection);
+    <T extends OpinionDto> T findOne(Predicate predicate, Expression<T> projection);
 
 
     /**

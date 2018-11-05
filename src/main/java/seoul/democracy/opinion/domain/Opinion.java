@@ -9,7 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.issue.domain.Issue;
-import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
+import seoul.democracy.opinion.dto.OpinionUpdateDto;
 import seoul.democracy.user.domain.User;
 
 import javax.persistence.*;
@@ -98,6 +98,13 @@ public abstract class Opinion {
     private Status status;
 
     /**
+     * 의견 투표
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "OPINION_VOTE", updatable = false)
+    protected Vote vote;
+
+    /**
      * 의견 내용
      */
     @Column(name = "OPINION_CONTENT")
@@ -111,7 +118,11 @@ public abstract class Opinion {
         this.status = Status.OPEN;
     }
 
-    public abstract ProposalOpinion update(ProposalOpinionUpdateDto updateDto, String ip);
+    public Opinion update(OpinionUpdateDto updateDto, String ip) {
+        this.content = updateDto.getContent();
+        this.modifiedIp = ip;
+        return this;
+    }
 
     public Opinion delete(String ip) {
         this.status = Status.DELETE;
@@ -137,5 +148,11 @@ public abstract class Opinion {
         public boolean isBlock() {
             return this == BLOCK;
         }
+    }
+
+    public enum Vote {
+        YES,
+        NO,
+        ETC
     }
 }

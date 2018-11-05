@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class ProposalOpinionUpdateDto {
+public class OpinionUpdateDto {
 
     @NotNull
     private Long opinionId;

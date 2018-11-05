@@ -9,17 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.NotFoundException;
+import seoul.democracy.issue.domain.Issue;
+import seoul.democracy.issue.repository.IssueRepository;
 import seoul.democracy.issue.repository.IssueStatsRepository;
 import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.domain.OpinionLike;
-import seoul.democracy.opinion.domain.ProposalOpinion;
-import seoul.democracy.opinion.dto.ProposalOpinionCreateDto;
+import seoul.democracy.opinion.dto.OpinionCreateDto;
+import seoul.democracy.opinion.dto.OpinionUpdateDto;
 import seoul.democracy.opinion.dto.ProposalOpinionDto;
-import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
 import seoul.democracy.opinion.repository.OpinionLikeRepository;
 import seoul.democracy.opinion.repository.OpinionRepository;
-import seoul.democracy.proposal.domain.Proposal;
-import seoul.democracy.proposal.repository.ProposalRepository;
 import seoul.democracy.user.domain.User;
 import seoul.democracy.user.utils.UserUtils;
 
@@ -34,17 +33,17 @@ public class OpinionService {
     private final OpinionLikeRepository opinionLikeRepository;
     private final IssueStatsRepository statsRepository;
 
-    private final ProposalRepository proposalRepository;
+    private final IssueRepository issueRepository;
 
     @Autowired
     public OpinionService(OpinionRepository opinionRepository,
                           OpinionLikeRepository opinionLikeRepository,
                           IssueStatsRepository statsRepository,
-                          ProposalRepository proposalRepository) {
+                          IssueRepository issueRepository) {
         this.opinionRepository = opinionRepository;
         this.opinionLikeRepository = opinionLikeRepository;
         this.statsRepository = statsRepository;
-        this.proposalRepository = proposalRepository;
+        this.issueRepository = issueRepository;
     }
 
     public ProposalOpinionDto getOpinion(Predicate predicate, Expression<ProposalOpinionDto> projection) {
@@ -58,12 +57,12 @@ public class OpinionService {
         return opinion;
     }
 
-    private Proposal getProposal(Long proposalId) {
-        Proposal proposal = proposalRepository.findOne(proposalId);
-        if (proposal == null || proposal.getStatus().isDelete() || proposal.getStatus().isBlock())
+    private Issue getIssue(Long proposalId) {
+        Issue issue = issueRepository.findOne(proposalId);
+        if (issue == null || !issue.getStatus().isOpen())
             throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
 
-        return proposal;
+        return issue;
     }
 
     /**
@@ -77,14 +76,14 @@ public class OpinionService {
      * 의견 등록
      */
     @Transactional
-    public ProposalOpinion createOpinion(ProposalOpinionCreateDto createDto, String ip) {
-        Proposal proposal = getProposal(createDto.getProposalId());
+    public Opinion createOpinion(OpinionCreateDto createDto, String ip) {
+        Issue issue = getIssue(createDto.getProposalId());
 
-        ProposalOpinion opinion = proposal.createOpinion(createDto.getContent(), ip);
-        statsRepository.increaseOpinion(proposal.getStatsId());
+        Opinion opinion = issue.createOpinion(createDto, ip);
+        statsRepository.increaseOpinion(issue.getStatsId());
 
-        if (!existsOpinion(proposal.getId(), UserUtils.getUserId()))
-            statsRepository.increaseApplicant(proposal.getStatsId());
+        if (!existsOpinion(issue.getId(), UserUtils.getUserId()))
+            statsRepository.increaseApplicant(issue.getStatsId());
 
         return opinionRepository.save(opinion);
     }
@@ -94,7 +93,7 @@ public class OpinionService {
      */
     @Transactional
     @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
-    public ProposalOpinion updateOpinion(ProposalOpinionUpdateDto updateDto, String ip) {
+    public Opinion updateOpinion(OpinionUpdateDto updateDto, String ip) {
         return getOpinion(updateDto.getOpinionId()).update(updateDto, ip);
     }
 

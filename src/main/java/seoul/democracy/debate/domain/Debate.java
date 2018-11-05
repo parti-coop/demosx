@@ -7,7 +7,11 @@ import seoul.democracy.debate.dto.DebateCreateDto;
 import seoul.democracy.debate.dto.DebateUpdateDto;
 import seoul.democracy.issue.domain.*;
 import seoul.democracy.issue.dto.IssueFileDto;
+import seoul.democracy.opinion.domain.DebateOpinion;
+import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.domain.OpinionType;
+import seoul.democracy.opinion.domain.ProposalOpinion;
+import seoul.democracy.opinion.dto.OpinionCreateDto;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -116,6 +120,13 @@ public class Debate extends Issue {
         this.relations = relations;
 
         return this;
+    }
+
+    @Override
+    public Opinion createOpinion(OpinionCreateDto createDto, String ip) {
+        return opinionType == OpinionType.PROPOSAL ?
+                   ProposalOpinion.create(this, createDto.getContent(), ip) :
+                   DebateOpinion.create(this, createDto.getVote(), createDto.getContent(), ip);
     }
 
     public enum Process {

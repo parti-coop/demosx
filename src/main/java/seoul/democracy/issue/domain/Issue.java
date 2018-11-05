@@ -10,7 +10,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.history.domain.IssueHistory;
+import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.domain.OpinionType;
+import seoul.democracy.opinion.dto.OpinionCreateDto;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.user.domain.User;
 
@@ -137,11 +139,17 @@ public abstract class Issue {
         return IssueHistory.create(this, content, ip);
     }
 
+    public abstract Opinion createOpinion(OpinionCreateDto createDto, String ip);
+
     public enum Status {
         OPEN,       // 공개
         CLOSED,     // 비공개
         DELETE,     // 삭제
         BLOCK;      // 관리자삭제
+
+        public boolean isOpen() {
+            return this == OPEN;
+        }
 
         public boolean isDelete() {
             return this == DELETE;

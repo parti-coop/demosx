@@ -13,16 +13,15 @@ import javax.persistence.Entity;
 @Getter
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue("P")
-public class ProposalOpinion extends Opinion {
+@DiscriminatorValue("D")
+public class DebateOpinion extends Opinion {
 
-
-    private ProposalOpinion(Issue issue, String content, String ip) {
+    private DebateOpinion(Issue issue, Vote vote, String content, String ip) {
         super(issue, content, ip);
-        this.vote = Vote.ETC;
+        this.vote = vote;
     }
 
-    public static ProposalOpinion create(Issue issue, String content, String ip) {
-        return new ProposalOpinion(issue, content, ip);
+    public static DebateOpinion create(Issue issue, Vote vote, String content, String ip) {
+        return new DebateOpinion(issue, vote, content, ip);
     }
 }

@@ -8,6 +8,7 @@ import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.domain.IssueStats;
 import seoul.democracy.opinion.domain.OpinionType;
 import seoul.democracy.opinion.domain.ProposalOpinion;
+import seoul.democracy.opinion.dto.OpinionCreateDto;
 import seoul.democracy.proposal.dto.ProposalCreateDto;
 import seoul.democracy.proposal.dto.ProposalUpdateDto;
 import seoul.democracy.user.domain.User;
@@ -94,10 +95,6 @@ public class Proposal extends Issue {
         return this;
     }
 
-    public ProposalOpinion createOpinion(String content, String ip) {
-        return ProposalOpinion.create(this, content, ip);
-    }
-
     public Proposal editAdminComment(String comment) {
         this.adminComment = comment;
         this.adminCommentDate = LocalDateTime.now();
@@ -121,6 +118,11 @@ public class Proposal extends Issue {
         this.status = Status.BLOCK;
         this.modifiedIp = ip;
         return this;
+    }
+
+    @Override
+    public ProposalOpinion createOpinion(OpinionCreateDto createDto, String ip) {
+        return ProposalOpinion.create(this, createDto.getContent(), ip);
     }
 
     public enum Process {

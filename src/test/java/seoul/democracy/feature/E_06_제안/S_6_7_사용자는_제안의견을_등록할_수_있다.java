@@ -12,8 +12,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.NotFoundException;
-import seoul.democracy.opinion.domain.ProposalOpinion;
-import seoul.democracy.opinion.dto.ProposalOpinionCreateDto;
+import seoul.democracy.opinion.domain.Opinion;
+import seoul.democracy.opinion.dto.OpinionCreateDto;
 import seoul.democracy.opinion.dto.ProposalOpinionDto;
 import seoul.democracy.opinion.service.OpinionService;
 import seoul.democracy.proposal.dto.ProposalDto;
@@ -63,8 +63,8 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
     @WithUserDetails("user2@googl.co.kr")
     public void T_1_사용자는_제안의견을_등록할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        ProposalOpinionCreateDto createDto = ProposalOpinionCreateDto.of(1L, "새 제안의견 입니다.");
-        ProposalOpinion opinion = opinionService.createOpinion(createDto, ip);
+        OpinionCreateDto createDto = OpinionCreateDto.of(1L, "새 제안의견 입니다.");
+        Opinion opinion = opinionService.createOpinion(createDto, ip);
         assertThat(opinion.getId(), is(notNullValue()));
 
         ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
@@ -79,8 +79,8 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
 
         assertThat(opinionDto.getLikeCount(), is(0L));
         assertThat(opinionDto.getContent(), is(createDto.getContent()));
-        assertThat(opinionDto.getStatus(), is(ProposalOpinion.Status.OPEN));
-        assertThat(opinionDto.getVote(), is(ProposalOpinion.Vote.NONE));
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.OPEN));
+        assertThat(opinionDto.getVote(), is(Opinion.Vote.ETC));
 
         ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
         assertThat(proposalDto.getStats().getOpinionCount(), is(2L));
@@ -93,8 +93,8 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
     @Test
     @WithUserDetails("user1@googl.co.kr")
     public void T_2_사용자는_여러번_제안_의견을_등록할_수_있다() {
-        ProposalOpinionCreateDto createDto = ProposalOpinionCreateDto.of(1L, "다시 제안의견 입니다.");
-        ProposalOpinion opinion = opinionService.createOpinion(createDto, ip);
+        OpinionCreateDto createDto = OpinionCreateDto.of(1L, "다시 제안의견 입니다.");
+        Opinion opinion = opinionService.createOpinion(createDto, ip);
         assertThat(opinion.getId(), is(notNullValue()));
 
         ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
@@ -112,7 +112,7 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_삭제된_제안에_의견을_등록할_수_없다() {
         Long deletedProposalId = 2L;
-        ProposalOpinionCreateDto createDto = ProposalOpinionCreateDto.of(deletedProposalId, "삭제된 제안의 제안의견 입니다.");
+        OpinionCreateDto createDto = OpinionCreateDto.of(deletedProposalId, "삭제된 제안의 제안의견 입니다.");
         opinionService.createOpinion(createDto, ip);
     }
 
@@ -123,7 +123,7 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_블럭된_제안에_의견을_등록할_수_없다() {
         Long deletedProposalId = 3L;
-        ProposalOpinionCreateDto createDto = ProposalOpinionCreateDto.of(deletedProposalId, "블럭된 제안의 제안의견 입니다.");
+        OpinionCreateDto createDto = OpinionCreateDto.of(deletedProposalId, "블럭된 제안의 제안의견 입니다.");
         opinionService.createOpinion(createDto, ip);
     }
 }

@@ -14,9 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.opinion.domain.Opinion;
-import seoul.democracy.opinion.domain.ProposalOpinion;
+import seoul.democracy.opinion.dto.OpinionUpdateDto;
 import seoul.democracy.opinion.dto.ProposalOpinionDto;
-import seoul.democracy.opinion.dto.ProposalOpinionUpdateDto;
 import seoul.democracy.opinion.predicate.ProposalOpinionPredicate;
 import seoul.democracy.opinion.service.OpinionService;
 import seoul.democracy.proposal.dto.ProposalDto;
@@ -73,8 +72,8 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @WithUserDetails("user1@googl.co.kr")
     public void T_01_사용자는_본인의견을_수정할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        ProposalOpinionUpdateDto updateDto = ProposalOpinionUpdateDto.of(opinionId, "제안의견 수정합니다.");
-        ProposalOpinion opinion = opinionService.updateOpinion(updateDto, ip);
+        OpinionUpdateDto updateDto = OpinionUpdateDto.of(opinionId, "제안의견 수정합니다.");
+        Opinion opinion = opinionService.updateOpinion(updateDto, ip);
 
         ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
@@ -115,7 +114,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user2@googl.co.kr")
     public void T_03_다른_사용자의_의견을_수정할_수_없다() {
-        ProposalOpinionUpdateDto updateDto = ProposalOpinionUpdateDto.of(opinionId, "다른 사용자가 제안의견을 수정합니다.");
+        OpinionUpdateDto updateDto = OpinionUpdateDto.of(opinionId, "다른 사용자가 제안의견을 수정합니다.");
         opinionService.updateOpinion(updateDto, ip);
     }
 
@@ -134,7 +133,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_05_없는_의견을_수정할_수_없다() {
-        ProposalOpinionUpdateDto updateDto = ProposalOpinionUpdateDto.of(notExistsId, "없는 제안의견 수정합니다.");
+        OpinionUpdateDto updateDto = OpinionUpdateDto.of(notExistsId, "없는 제안의견 수정합니다.");
         opinionService.updateOpinion(updateDto, ip);
     }
 
@@ -153,7 +152,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_07_삭제된_의견을_수정할_수_없다() {
-        ProposalOpinionUpdateDto updateDto = ProposalOpinionUpdateDto.of(deletedOpinionId, "삭제된 의견은 수정할 수 없다.");
+        OpinionUpdateDto updateDto = OpinionUpdateDto.of(deletedOpinionId, "삭제된 의견은 수정할 수 없다.");
         opinionService.updateOpinion(updateDto, ip);
     }
 
@@ -172,7 +171,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_09_블럭된_의견을_수정할_수_없다() {
-        ProposalOpinionUpdateDto updateDto = ProposalOpinionUpdateDto.of(blockedOpinionId, "블럭된 의견은 수정할 수 없다.");
+        OpinionUpdateDto updateDto = OpinionUpdateDto.of(blockedOpinionId, "블럭된 의견은 수정할 수 없다.");
         opinionService.updateOpinion(updateDto, ip);
     }
 
