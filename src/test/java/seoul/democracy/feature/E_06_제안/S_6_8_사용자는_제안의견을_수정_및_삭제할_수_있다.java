@@ -52,7 +52,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
     private Long blockedOpinionId = 3L;
     private Long notExistsId = 999L;
 
-    private Long multiOpinionId = 11L;
+    private Long multiOpinionId = 31L;
 
     @Autowired
     private OpinionService opinionService;

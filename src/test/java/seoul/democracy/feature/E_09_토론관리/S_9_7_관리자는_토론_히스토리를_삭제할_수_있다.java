@@ -45,8 +45,8 @@ public class S_9_7_관리자는_토론_히스토리를_삭제할_수_있다 {
     @Autowired
     private IssueHistoryService historyService;
 
-    private final Long historyId = 11L;
-    private final Long deletedHistoryId = 12L;
+    private final Long historyId = 101L;
+    private final Long deletedHistoryId = 102L;
     private final Long notExistsId = 999L;
 
     @Before

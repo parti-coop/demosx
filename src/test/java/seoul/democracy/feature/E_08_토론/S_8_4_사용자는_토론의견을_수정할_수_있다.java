@@ -53,10 +53,10 @@ public class S_8_4_사용자는_토론의견을_수정할_수_있다 {
     @Autowired
     private DebateService debateService;
 
-    private final Long opinionIdInProgress = 21L;
-    private final Long deletedOpinionId = 22L;
-    private final Long blockedOpinionId = 23L;
-    private final Long opinionIdInComplete = 41L;
+    private final Long opinionIdInProgress = 111L;
+    private final Long deletedOpinionId = 112L;
+    private final Long blockedOpinionId = 113L;
+    private final Long opinionIdInComplete = 151L;
     private final Long notExistsOpinionId = 999L;
 
 

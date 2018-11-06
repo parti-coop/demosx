@@ -54,13 +54,13 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
     @Autowired
     private DebateService debateService;
 
-    private final Long debateIdInOpenWithProposal = 11L;
-    private final Long debateIdInProgressWithProposal = 12L;
+    private final Long debateIdInOpenWithProposal = 101L;
+    private final Long debateIdInProgressWithProposal = 111L;
 
-    private final Long debateIdInOpenWithDebate = 21L;
-    private final Long debateIdInProgressWithDebate = 22L;
+    private final Long debateIdInOpenWithDebate = 121L;
+    private final Long debateIdInProgressWithDebate = 131L;
 
-    private final Long closedDebateId = 31L;
+    private final Long closedDebateId = 141L;
 
 
     @Before
@@ -141,11 +141,11 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
         assertThat(opinionDto.getVote(), is(createDto.getVote()));
 
         DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
-        assertThat(debateDto.getStats().getOpinionCount(), is(1L));
-        assertThat(debateDto.getStats().getYesCount(), is(1L));
+        assertThat(debateDto.getStats().getOpinionCount(), is(2L));
+        assertThat(debateDto.getStats().getYesCount(), is(2L));
         assertThat(debateDto.getStats().getNoCount(), is(0L));
         assertThat(debateDto.getStats().getEtcCount(), is(0L));
-        assertThat(debateDto.getStats().getApplicantCount(), is(1L));
+        assertThat(debateDto.getStats().getApplicantCount(), is(2L));
     }
 
     /**
@@ -161,11 +161,11 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
         assertThat(opinionDto.getVote(), is(createDto.getVote()));
 
         DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
-        assertThat(debateDto.getStats().getOpinionCount(), is(1L));
-        assertThat(debateDto.getStats().getYesCount(), is(0L));
+        assertThat(debateDto.getStats().getOpinionCount(), is(2L));
+        assertThat(debateDto.getStats().getYesCount(), is(1L));
         assertThat(debateDto.getStats().getNoCount(), is(1L));
         assertThat(debateDto.getStats().getEtcCount(), is(0L));
-        assertThat(debateDto.getStats().getApplicantCount(), is(1L));
+        assertThat(debateDto.getStats().getApplicantCount(), is(2L));
     }
 
     /**
@@ -181,11 +181,11 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
         assertThat(opinionDto.getVote(), is(createDto.getVote()));
 
         DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
-        assertThat(debateDto.getStats().getOpinionCount(), is(1L));
-        assertThat(debateDto.getStats().getYesCount(), is(0L));
+        assertThat(debateDto.getStats().getOpinionCount(), is(2L));
+        assertThat(debateDto.getStats().getYesCount(), is(1L));
         assertThat(debateDto.getStats().getNoCount(), is(0L));
         assertThat(debateDto.getStats().getEtcCount(), is(1L));
-        assertThat(debateDto.getStats().getApplicantCount(), is(1L));
+        assertThat(debateDto.getStats().getApplicantCount(), is(2L));
     }
 
     /**

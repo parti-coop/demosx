@@ -41,7 +41,7 @@ public class S_7_2_관리자는_공감수_50넘는_제안에_담당자_지정할
     private ProposalService proposalService;
 
     private final Long proposalIdUnder50Like = 1L;
-    private final Long proposalIdOver50Like = 4L;
+    private final Long proposalIdOver50Like = 51L;
 
     private final Long adminId = 1L;
     private final Long managerId = 11L;

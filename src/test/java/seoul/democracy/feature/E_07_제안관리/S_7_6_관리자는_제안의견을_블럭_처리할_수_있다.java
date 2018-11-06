@@ -54,7 +54,7 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
     private final Long opinionId = 1L;
     private final Long deletedOpinionId = 2L;
     private final Long blockedOpinionId = 3L;
-    private final Long multiOpinionId = 11L;
+    private final Long multiOpinionId = 31L;
 
     @Before
     public void setUp() throws Exception {

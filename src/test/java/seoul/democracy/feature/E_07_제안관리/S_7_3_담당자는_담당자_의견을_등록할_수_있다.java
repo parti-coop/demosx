@@ -44,8 +44,8 @@ public class S_7_3_담당자는_담당자_의견을_등록할_수_있다 {
     @Autowired
     private ProposalService proposalService;
 
-    private final Long assignedProposalId = 5L;
-    private final Long completedProposalId = 6L;
+    private final Long assignedProposalId = 41L;
+    private final Long completedProposalId = 51L;
 
     @Before
     public void setUp() throws Exception {

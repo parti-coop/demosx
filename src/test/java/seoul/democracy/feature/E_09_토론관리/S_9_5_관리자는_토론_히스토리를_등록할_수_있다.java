@@ -49,7 +49,7 @@ public class S_9_5_관리자는_토론_히스토리를_등록할_수_있다 {
     private IssueHistoryService historyService;
 
     private Long proposalId = 1L;
-    private Long debateId = 11L;
+    private Long debateId = 101L;
     private Long notExistsId = 999L;
 
     private IssueHistoryCreateDto createDto;
