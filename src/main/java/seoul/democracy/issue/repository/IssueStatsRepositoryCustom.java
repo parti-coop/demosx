@@ -30,9 +30,19 @@ public interface IssueStatsRepositoryCustom {
     void increaseYesOpinion(Long statsId);
 
     /**
+     * 찬성 의견 감소
+     */
+    void decreaseYesOpinion(Long statsId);
+
+    /**
      * 반대 의견 증가
      */
     void increaseNoOpinion(Long statsId);
+
+    /**
+     * 반대 의견 감소
+     */
+    void decreaseNoOpinion(Long statsId);
 
     /**
      * 참여자 수 증가

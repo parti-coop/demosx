@@ -82,8 +82,8 @@ public class S_8_4_사용자는_토론의견을_수정할_수_있다 {
         assertThat(opinionDto.getContent(), is(updateDto.getContent()));
 
         DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
-        assertThat(debateDto.getStats().getOpinionCount(), is(1L));
-        assertThat(debateDto.getStats().getApplicantCount(), is(1L));
+        assertThat(debateDto.getStats().getOpinionCount(), is(3L));
+        assertThat(debateDto.getStats().getApplicantCount(), is(2L));
     }
 
     /**

@@ -64,10 +64,26 @@ public class IssueStatsRepositoryImpl extends QueryDslRepositorySupport implemen
     }
 
     @Override
+    public void decreaseYesOpinion(Long statsId) {
+        update(issueStats)
+            .where(issueStats.id.eq(statsId))
+            .set(issueStats.yesCount, issueStats.yesCount.subtract(constant))
+            .execute();
+    }
+
+    @Override
     public void increaseNoOpinion(Long statsId) {
         update(issueStats)
             .where(issueStats.id.eq(statsId))
             .set(issueStats.noCount, issueStats.noCount.add(constant))
+            .execute();
+    }
+
+    @Override
+    public void decreaseNoOpinion(Long statsId) {
+        update(issueStats)
+            .where(issueStats.id.eq(statsId))
+            .set(issueStats.noCount, issueStats.noCount.subtract(constant))
             .execute();
     }
 
