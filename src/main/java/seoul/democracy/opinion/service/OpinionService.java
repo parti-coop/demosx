@@ -66,7 +66,7 @@ public class OpinionService {
     }
 
     /**
-     * 해당 issue에 로그인 사용자 의견이 있는가?
+     * 해당 issue에 사용자 의견이 있는가?
      */
     private boolean existsOpinion(Long issueId, Long userId) {
         return opinionRepository.exists(equalIssueIdAndCreatedByIdAndStatus(issueId, userId, Opinion.Status.OPEN));

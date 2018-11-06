@@ -18,8 +18,6 @@ import seoul.democracy.opinion.dto.OpinionDto;
 import seoul.democracy.opinion.repository.OpinionLikeRepository;
 import seoul.democracy.opinion.service.OpinionService;
 
-import java.time.format.DateTimeFormatter;
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static seoul.democracy.opinion.dto.OpinionDto.projection;
@@ -40,7 +38,6 @@ import static seoul.democracy.opinion.predicate.OpinionPredicate.equalId;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 {
 
-    private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
 
     @Autowired

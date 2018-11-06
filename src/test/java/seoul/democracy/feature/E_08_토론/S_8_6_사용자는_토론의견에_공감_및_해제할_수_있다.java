@@ -11,11 +11,20 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import seoul.democracy.proposal.service.ProposalService;
+import seoul.democracy.common.exception.AlreadyExistsException;
+import seoul.democracy.common.exception.NotFoundException;
+import seoul.democracy.opinion.domain.OpinionLike;
+import seoul.democracy.opinion.dto.OpinionDto;
+import seoul.democracy.opinion.repository.OpinionLikeRepository;
+import seoul.democracy.opinion.service.OpinionService;
 
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static seoul.democracy.opinion.dto.OpinionDto.projection;
+import static seoul.democracy.opinion.predicate.OpinionLikePredicate.equalUserId;
+import static seoul.democracy.opinion.predicate.OpinionPredicate.equalId;
 
 
 /**
@@ -35,7 +44,16 @@ public class S_8_6_사용자는_토론의견에_공감_및_해제할_수_있다 
     private final static String ip = "127.0.0.2";
 
     @Autowired
-    private ProposalService proposalService;
+    private OpinionService opinionService;
+
+    @Autowired
+    private OpinionLikeRepository likeRepository;
+
+    private final Long opinionId = 111L;
+    private final Long likedOpinionId = 151L;
+
+    private final Long deletedOpinionId = 112L;
+    private final Long blockedOpinionId = 113L;
 
     @Before
     public void setUp() throws Exception {
@@ -47,70 +65,82 @@ public class S_8_6_사용자는_토론의견에_공감_및_해제할_수_있다 
     @Test
     @WithUserDetails("user2@googl.co.kr")
     public void T_1_사용자는_의견에_공감할_수_있다() {
-        fail();
+        OpinionLike like = opinionService.selectOpinionLike(opinionId, ip);
+
+        long count = likeRepository.count(equalUserId(like.getId().getUserId()));
+        assertThat(count, is(1L));
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinionId), projection);
+        assertThat(opinionDto.getLikeCount(), is(1L));
     }
 
     /**
      * 2. 사용자는 공감된 의견에 공감해제할 수 있다.
      */
     @Test
-    @WithUserDetails("user1@googl.co.kr")
+    @WithUserDetails("user3@googl.co.kr")
     public void T_2_사용자는_공감된_의견에_공감해제할_수_있다() {
-        fail();
+        OpinionLike like = opinionService.unselectOpinionLike(likedOpinionId);
+
+        long count = likeRepository.count(equalUserId(like.getId().getUserId()));
+        assertThat(count, is(0L));
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(likedOpinionId), OpinionDto.projection);
+        assertThat(opinionDto.getLikeCount(), is(0L));
     }
 
     /**
      * 3. 이미 공감한 의견에 다시 공감할 수 없다.
      */
-    @Test
-    @WithUserDetails("user1@googl.co.kr")
+    @Test(expected = AlreadyExistsException.class)
+    @WithUserDetails("user3@googl.co.kr")
     public void T_3_이미_공감한_의견에_다시_공감할_수_없다() {
-        fail();
+        opinionService.selectOpinionLike(likedOpinionId, ip);
     }
 
     /**
      * 4. 공감하지 않은 의견에 공감해제할 수 없다.
      */
-    @Test
+    @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_4_공감하지_않은_의견에_공감해제할_수_없다() {
-        fail();
+        opinionService.unselectOpinionLike(opinionId);
     }
 
     /**
      * 5. 삭제된 의견에 공감할 수 없다.
      */
-    @Test
+    @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_5_삭제된_의견에_공감할_수_없다() {
-        fail();
+        opinionService.selectOpinionLike(deletedOpinionId, ip);
     }
 
     /**
      * 6. 블럭된 의견에 공감할 수 없다.
      */
-    @Test
+    @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_6_블럭된_의견에_공감할_수_없다() {
-        fail();
+        opinionService.selectOpinionLike(blockedOpinionId, ip);
     }
 
     /**
      * 7. 삭제된 의견에 공감해제할 수 없다.
      */
-    @Test
-    @WithUserDetails("user1@googl.co.kr")
+    @Test(expected = NotFoundException.class)
+    @WithUserDetails("user4@googl.co.kr")
     public void T_7_삭제된_의견에_공감해제할_수_없다() {
-        fail();
+        opinionService.unselectOpinionLike(deletedOpinionId);
     }
 
     /**
      * 8. 블럭된 의견에 공감해제할 수 없다.
      */
-    @Test
-    @WithUserDetails("user1@googl.co.kr")
+    @Test(expected = NotFoundException.class)
+    @WithUserDetails("user4@googl.co.kr")
     public void T_8_블럭된_의견에_공감해제할_수_없다() {
-        fail();
+        opinionService.unselectOpinionLike(blockedOpinionId);
     }
 
 }
