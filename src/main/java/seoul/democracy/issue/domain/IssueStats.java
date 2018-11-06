@@ -33,12 +33,6 @@ public class IssueStats {
     private Long likeCount;
 
     /**
-     * 의견수
-     */
-    @Column(name = "OPINION_CNT", insertable = false, updatable = false)
-    private Long opinionCount;
-
-    /**
      * 참여자수
      */
     @Column(name = "APPLICANT_CNT", insertable = false, updatable = false)

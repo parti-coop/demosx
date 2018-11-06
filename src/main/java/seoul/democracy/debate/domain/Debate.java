@@ -3,6 +3,7 @@ package seoul.democracy.debate.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import seoul.democracy.common.converter.LocalDateAttributeConverter;
+import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.debate.dto.DebateCreateDto;
 import seoul.democracy.debate.dto.DebateUpdateDto;
 import seoul.democracy.issue.domain.*;
@@ -124,6 +125,9 @@ public class Debate extends Issue {
 
     @Override
     public Opinion createOpinion(OpinionCreateDto createDto, String ip) {
+        if (!process.isProgress())
+            throw new BadRequestException("process", "error.progress", "토론 진행상태가 아닙니다.");
+
         return opinionType == OpinionType.PROPOSAL ?
                    ProposalOpinion.create(this, createDto.getContent(), ip) :
                    DebateOpinion.create(this, createDto.getVote(), createDto.getContent(), ip);

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.dto.OpinionCreateDto;
-import seoul.democracy.opinion.dto.ProposalOpinionDto;
+import seoul.democracy.opinion.dto.OpinionDto;
 import seoul.democracy.opinion.service.OpinionService;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.predicate.ProposalPredicate;
@@ -26,8 +26,8 @@ import java.time.format.DateTimeFormatter;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static seoul.democracy.opinion.dto.ProposalOpinionDto.projection;
-import static seoul.democracy.opinion.predicate.ProposalOpinionPredicate.equalId;
+import static seoul.democracy.opinion.dto.OpinionDto.projection;
+import static seoul.democracy.opinion.predicate.OpinionPredicate.equalId;
 
 
 /**
@@ -67,7 +67,7 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
         Opinion opinion = opinionService.createOpinion(createDto, ip);
         assertThat(opinion.getId(), is(notNullValue()));
 
-        ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getCreatedDate().format(dateTimeFormatter), is(now));
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(opinionDto.getCreatedBy().getEmail(), is("user2@googl.co.kr"));
@@ -75,7 +75,7 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
         assertThat(opinionDto.getCreatedIp(), is(ip));
         assertThat(opinionDto.getModifiedIp(), is(ip));
 
-        assertThat(opinionDto.getIssue().getId(), is(createDto.getProposalId()));
+        assertThat(opinionDto.getIssue().getId(), is(createDto.getIssueId()));
 
         assertThat(opinionDto.getLikeCount(), is(0L));
         assertThat(opinionDto.getContent(), is(createDto.getContent()));
@@ -97,8 +97,8 @@ public class S_6_7_사용자는_제안의견을_등록할_수_있다 {
         Opinion opinion = opinionService.createOpinion(createDto, ip);
         assertThat(opinion.getId(), is(notNullValue()));
 
-        ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
-        assertThat(opinionDto.getIssue().getId(), is(createDto.getProposalId()));
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getIssue().getId(), is(createDto.getIssueId()));
 
         ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
         assertThat(proposalDto.getStats().getOpinionCount(), is(2L));

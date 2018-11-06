@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.opinion.domain.OpinionLike;
-import seoul.democracy.opinion.dto.ProposalOpinionDto;
+import seoul.democracy.opinion.dto.OpinionDto;
 import seoul.democracy.opinion.repository.OpinionLikeRepository;
 import seoul.democracy.opinion.service.OpinionService;
 
@@ -22,8 +22,9 @@ import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static seoul.democracy.opinion.dto.OpinionDto.projection;
 import static seoul.democracy.opinion.predicate.OpinionLikePredicate.equalUserId;
-import static seoul.democracy.opinion.predicate.ProposalOpinionPredicate.equalId;
+import static seoul.democracy.opinion.predicate.OpinionPredicate.equalId;
 
 
 /**
@@ -68,7 +69,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
         long count = likeRepository.count(equalUserId(like.getId().getUserId()));
         assertThat(count, is(1L));
 
-        ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinionId), ProposalOpinionDto.projection);
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinionId), projection);
         assertThat(opinionDto.getLikeCount(), is(2L));
     }
 
@@ -83,7 +84,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
         long count = likeRepository.count(equalUserId(like.getId().getUserId()));
         assertThat(count, is(2L));
 
-        ProposalOpinionDto opinionDto = opinionService.getOpinion(equalId(opinionId), ProposalOpinionDto.projection);
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinionId), OpinionDto.projection);
         assertThat(opinionDto.getLikeCount(), is(0L));
     }
 

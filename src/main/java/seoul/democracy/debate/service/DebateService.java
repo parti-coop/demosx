@@ -16,7 +16,6 @@ import seoul.democracy.debate.dto.DebateUpdateDto;
 import seoul.democracy.debate.repository.DebateRepository;
 import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.repository.CategoryRepository;
-import seoul.democracy.issue.repository.IssueRepository;
 
 import static seoul.democracy.issue.predicate.CategoryPredicate.equalName;
 
@@ -26,15 +25,12 @@ public class DebateService {
 
     private final DebateRepository debateRepository;
     private final CategoryRepository categoryRepository;
-    private final IssueRepository issueRepository;
 
     @Autowired
     public DebateService(DebateRepository debateRepository,
-                         CategoryRepository categoryRepository,
-                         IssueRepository issueRepository) {
+                         CategoryRepository categoryRepository) {
         this.debateRepository = debateRepository;
         this.categoryRepository = categoryRepository;
-        this.issueRepository = issueRepository;
     }
 
     public DebateDto getDebate(Predicate predicate, Expression<DebateDto> projection, boolean withFiles, boolean withRelations) {

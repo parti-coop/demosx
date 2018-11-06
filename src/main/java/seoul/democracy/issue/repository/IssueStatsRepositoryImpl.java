@@ -40,18 +40,34 @@ public class IssueStatsRepositoryImpl extends QueryDslRepositorySupport implemen
     }
 
     @Override
-    public void increaseOpinion(Long statsId) {
+    public void increaseEtcOpinion(Long statsId) {
         update(issueStats)
             .where(issueStats.id.eq(statsId))
-            .set(issueStats.opinionCount, issueStats.opinionCount.add(constant))
+            .set(issueStats.etcCount, issueStats.etcCount.add(constant))
             .execute();
     }
 
     @Override
-    public void decreaseOpinion(Long statsId) {
+    public void decreaseEtcOpinion(Long statsId) {
         update(issueStats)
             .where(issueStats.id.eq(statsId))
-            .set(issueStats.opinionCount, issueStats.opinionCount.subtract(constant))
+            .set(issueStats.etcCount, issueStats.etcCount.subtract(constant))
+            .execute();
+    }
+
+    @Override
+    public void increaseYesOpinion(Long statsId) {
+        update(issueStats)
+            .where(issueStats.id.eq(statsId))
+            .set(issueStats.yesCount, issueStats.yesCount.add(constant))
+            .execute();
+    }
+
+    @Override
+    public void increaseNoOpinion(Long statsId) {
+        update(issueStats)
+            .where(issueStats.id.eq(statsId))
+            .set(issueStats.noCount, issueStats.noCount.add(constant))
             .execute();
     }
 

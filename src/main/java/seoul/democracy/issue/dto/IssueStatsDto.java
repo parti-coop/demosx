@@ -11,14 +11,17 @@ public class IssueStatsDto {
 
     public final static QBean<IssueStatsDto> projection = Projections.fields(IssueStatsDto.class,
         issueStats.viewCount, issueStats.likeCount,
-        issueStats.opinionCount, issueStats.applicantCount,
+        issueStats.applicantCount,
         issueStats.yesCount, issueStats.noCount, issueStats.etcCount);
 
     private Long viewCount;
     private Long likeCount;
-    private Long opinionCount;
     private Long applicantCount;
     private Long yesCount;
     private Long noCount;
     private Long etcCount;
+
+    public Long getOpinionCount() {
+        return yesCount + noCount + etcCount;
+    }
 }

@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 public class OpinionCreateDto {
 
     @NotNull
-    private Long proposalId;
+    private Long issueId;
 
     @NotNull
     private Opinion.Vote vote;
@@ -24,8 +24,8 @@ public class OpinionCreateDto {
     @Size(max = 1000)
     private String content;
 
-    private OpinionCreateDto(Long proposalId, String content) {
-        this.proposalId = proposalId;
+    private OpinionCreateDto(Long issueId, String content) {
+        this.issueId = issueId;
         this.content = content;
     }
 

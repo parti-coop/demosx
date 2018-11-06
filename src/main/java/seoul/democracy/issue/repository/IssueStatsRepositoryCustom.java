@@ -15,14 +15,24 @@ public interface IssueStatsRepositoryCustom {
     void unselectLikeProposal(Long statsId);
 
     /**
-     * 의견 증가
+     * 기타 의견 증가
      */
-    void increaseOpinion(Long statsId);
+    void increaseEtcOpinion(Long statsId);
 
     /**
-     * 의견 감소
+     * 기타 의견 감소
      */
-    void decreaseOpinion(Long statsId);
+    void decreaseEtcOpinion(Long statsId);
+
+    /**
+     * 찬성 의견 증가
+     */
+    void increaseYesOpinion(Long statsId);
+
+    /**
+     * 반대 의견 증가
+     */
+    void increaseNoOpinion(Long statsId);
 
     /**
      * 참여자 수 증가
@@ -33,4 +43,5 @@ public interface IssueStatsRepositoryCustom {
      * 참여자 수 감소
      */
     void decreaseApplicant(Long statsId);
+
 }

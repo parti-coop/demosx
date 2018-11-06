@@ -14,8 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.opinion.domain.Opinion;
-import seoul.democracy.opinion.dto.ProposalOpinionDto;
-import seoul.democracy.opinion.predicate.ProposalOpinionPredicate;
+import seoul.democracy.opinion.dto.OpinionDto;
 import seoul.democracy.opinion.service.OpinionService;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.predicate.ProposalPredicate;
@@ -26,6 +25,8 @@ import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static seoul.democracy.opinion.dto.OpinionDto.projection;
+import static seoul.democracy.opinion.predicate.OpinionPredicate.equalId;
 
 
 /**
@@ -69,7 +70,7 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
         Opinion opinion = opinionService.blockOpinion(opinionId, ip);
 
-        ProposalOpinionDto opinionDto = opinionService.getOpinion(ProposalOpinionPredicate.equalId(opinion.getId()), ProposalOpinionDto.projection);
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(opinionDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
         assertThat(opinionDto.getModifiedIp(), is(ip));
@@ -126,7 +127,7 @@ public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
         Opinion opinion = opinionService.blockOpinion(multiOpinionId, ip);
 
-        ProposalOpinionDto opinionDto = opinionService.getOpinion(ProposalOpinionPredicate.equalId(opinion.getId()), ProposalOpinionDto.projection);
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(opinionDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
         assertThat(opinionDto.getModifiedIp(), is(ip));

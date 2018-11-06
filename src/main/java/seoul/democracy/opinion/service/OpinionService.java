@@ -15,8 +15,8 @@ import seoul.democracy.issue.repository.IssueStatsRepository;
 import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.domain.OpinionLike;
 import seoul.democracy.opinion.dto.OpinionCreateDto;
+import seoul.democracy.opinion.dto.OpinionDto;
 import seoul.democracy.opinion.dto.OpinionUpdateDto;
-import seoul.democracy.opinion.dto.ProposalOpinionDto;
 import seoul.democracy.opinion.repository.OpinionLikeRepository;
 import seoul.democracy.opinion.repository.OpinionRepository;
 import seoul.democracy.user.domain.User;
@@ -46,7 +46,7 @@ public class OpinionService {
         this.issueRepository = issueRepository;
     }
 
-    public ProposalOpinionDto getOpinion(Predicate predicate, Expression<ProposalOpinionDto> projection) {
+    public OpinionDto getOpinion(Predicate predicate, Expression<OpinionDto> projection) {
         return opinionRepository.findOne(predicate, projection);
     }
 
@@ -77,13 +77,25 @@ public class OpinionService {
      */
     @Transactional
     public Opinion createOpinion(OpinionCreateDto createDto, String ip) {
-        Issue issue = getIssue(createDto.getProposalId());
+        Issue issue = getIssue(createDto.getIssueId());
 
         Opinion opinion = issue.createOpinion(createDto, ip);
-        statsRepository.increaseOpinion(issue.getStatsId());
+        Long statsId = issue.getStatsId();
 
-        if (!existsOpinion(issue.getId(), UserUtils.getUserId()))
-            statsRepository.increaseApplicant(issue.getStatsId());
+        // 토론의견일 경우 하나의 의견만 가능
+        boolean existsOpinion = existsOpinion(issue.getId(), UserUtils.getUserId());
+        if(existsOpinion && issue.getOpinionType().isDebate())
+            throw new AlreadyExistsException("토론의견은 하나만 가능합니다. 기존 의견 삭제 후 다시 등록해 주세요.");
+
+        if(!existsOpinion)
+            statsRepository.increaseApplicant(statsId);
+
+        if (opinion.getVote() == Opinion.Vote.ETC)
+            statsRepository.increaseEtcOpinion(statsId);
+        else if (opinion.getVote() == Opinion.Vote.YES)
+            statsRepository.increaseYesOpinion(statsId);
+        else if (opinion.getVote() == Opinion.Vote.NO)
+            statsRepository.increaseNoOpinion(statsId);
 
         return opinionRepository.save(opinion);
     }
@@ -107,7 +119,7 @@ public class OpinionService {
         opinion.delete(ip);
         opinionRepository.save(opinion);
 
-        statsRepository.decreaseOpinion(opinion.getIssue().getStatsId());
+        statsRepository.decreaseEtcOpinion(opinion.getIssue().getStatsId());
 
         if (!existsOpinion(opinion.getIssue().getId(), opinion.getCreatedById()))
             statsRepository.decreaseApplicant(opinion.getIssue().getStatsId());
@@ -125,7 +137,7 @@ public class OpinionService {
         opinion.block(ip);
         opinionRepository.save(opinion);
 
-        statsRepository.decreaseOpinion(opinion.getIssue().getStatsId());
+        statsRepository.decreaseEtcOpinion(opinion.getIssue().getStatsId());
 
         if (!existsOpinion(opinion.getIssue().getId(), opinion.getCreatedById()))
             statsRepository.decreaseApplicant(opinion.getIssue().getStatsId());
