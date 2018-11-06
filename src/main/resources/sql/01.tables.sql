@@ -33,6 +33,7 @@ CREATE TABLE `TB_USER` (
 	`USER_NAME`   VARCHAR(100)        NOT NULL COMMENT '회원이름', -- 회원이름
 	`USER_PASSWD` VARCHAR(64)         NOT NULL COMMENT '회원비밀번호', -- 회원비밀번호
 	`LOGIN_DT`    DATETIME            NULL     COMMENT '로그인일시', -- 로그인일시
+	`LOGIN_IP`    VARCHAR(15)         NULL     COMMENT '로그인아이피', -- 로그인아이피
 	`USER_TOKEN`  CHAR(32)            NULL     COMMENT '회원토큰', -- 회원토큰
 	`IMG_URL`     VARCHAR(300)        NULL     COMMENT '이미지URL', -- 이미지URL
 	`DEPART1`     VARCHAR(100)        NULL     COMMENT '부서1', -- 부서1

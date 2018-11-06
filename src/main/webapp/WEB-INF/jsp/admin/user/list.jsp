@@ -30,7 +30,8 @@
                   <th>가입일</th>
                   <th>이름</th>
                   <th>이메일</th>
-                  <th>최근로그인일</th>
+                  <th>마지막 로그인 IP</th>
+                  <th>마지막 로그인 일시</th>
                 </tr>
                 </thead>
               </table>
@@ -158,7 +159,16 @@
           { data: 'createdDate' },
           { data: 'name', orderable: false },
           { data: 'email', orderable: false },
-          { data: 'loginDate', orderable: false }
+          {
+            data: function (item) {
+              return item.loginIp || '';
+            }, orderable: false
+          },
+          {
+            data: function (item) {
+              return item.loginDate || '';
+            }, orderable: false
+          }
         ]
       });
 

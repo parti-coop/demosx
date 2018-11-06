@@ -20,11 +20,11 @@ public class UserDto {
     public final static QUser modifiedBy = new QUser("modifiedBy");
 
     public final static QBean<UserDto> projection = Projections.fields(UserDto.class,
-        user.id, user.createdDate, user.role, user.status, user.email, user.name, user.photo, user.loginDate,
+        user.id, user.createdDate, user.role, user.status, user.email, user.name, user.photo, user.loginDate, user.loginIp,
         user.department.department1.as("department1"), user.department.department2.as("department2"), user.department.department3.as("department3"));
 
     public final static QBean<UserDto> projectionForAdminList = Projections.fields(UserDto.class,
-        user.id, user.createdDate, user.role, user.status, user.email, user.name, user.loginDate);
+        user.id, user.createdDate, user.role, user.status, user.email, user.name, user.loginDate, user.loginIp);
 
     //public final static QBean<UserDto> projectionForMe = Projections.fields(UserDto.class, user.id, user.email, user.role);
     public final static QBean<UserDto> projectionForBasic = Projections.fields(UserDto.class, user.id, user.email, user.name);
@@ -39,8 +39,9 @@ public class UserDto {
     private String email;
     private String name;
     private String photo;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime loginDate;
+    private String loginIp;
 
     private String department1;
     private String department2;

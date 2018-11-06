@@ -80,6 +80,12 @@ public class User implements Serializable {
     private LocalDateTime loginDate;
 
     /**
+     * 로그인 아이피
+     */
+    @Column(name = "LOGIN_IP", insertable = false, updatable = false)
+    private String loginIp;
+
+    /**
      * 회원 토큰 : 인증이나 패스워드 찾기 시에 사용됨
      */
     @Column(name = "USER_TOKEN", columnDefinition = "char(32)")
