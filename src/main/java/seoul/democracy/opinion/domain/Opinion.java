@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
+import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.opinion.dto.OpinionUpdateDto;
 import seoul.democracy.user.domain.User;
@@ -119,6 +120,9 @@ public abstract class Opinion {
     }
 
     public Opinion update(OpinionUpdateDto updateDto, String ip) {
+        if(!issue.isUpdatableOpinion())
+            throw new BadRequestException("process", "error.process", "해당 의견은 수정할 수 없습니다.");
+
         this.content = updateDto.getContent();
         this.modifiedIp = ip;
         return this;

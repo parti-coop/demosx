@@ -125,6 +125,11 @@ public class Proposal extends Issue {
         return ProposalOpinion.create(this, createDto.getContent(), ip);
     }
 
+    @Override
+    public boolean isUpdatableOpinion() {
+        return status.isOpen();
+    }
+
     public enum Process {
         INIT,       // 초기상태
         ASSIGNED,   // 답변대기

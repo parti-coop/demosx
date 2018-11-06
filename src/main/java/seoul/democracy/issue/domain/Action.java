@@ -18,4 +18,9 @@ public class Action extends Issue {
     public Opinion createOpinion(OpinionCreateDto createDto, String ip) {
         throw new UnsupportedOperationException("실행은 의견을 지원하지 않습니다.");
     }
+
+    @Override
+    public boolean isUpdatableOpinion() {
+        return false;
+    }
 }

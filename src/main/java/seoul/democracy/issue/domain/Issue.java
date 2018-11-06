@@ -141,6 +141,8 @@ public abstract class Issue {
 
     public abstract Opinion createOpinion(OpinionCreateDto createDto, String ip);
 
+    public abstract boolean isUpdatableOpinion();
+
     public enum Status {
         OPEN,       // 공개
         CLOSED,     // 비공개

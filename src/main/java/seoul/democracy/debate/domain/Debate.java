@@ -133,6 +133,11 @@ public class Debate extends Issue {
                    DebateOpinion.create(this, createDto.getVote(), createDto.getContent(), ip);
     }
 
+    @Override
+    public boolean isUpdatableOpinion() {
+        return status.isOpen() && process.isProgress();
+    }
+
     public enum Process {
         INIT,
         PROGRESS,       // 진행 중
