@@ -119,16 +119,7 @@ public class OpinionService {
         opinion.delete(ip);
         opinionRepository.save(opinion);
 
-        Long statsId = opinion.getIssue().getStatsId();
-        if (opinion.getVote() == Opinion.Vote.ETC)
-            statsRepository.decreaseEtcOpinion(statsId);
-        else if (opinion.getVote() == Opinion.Vote.YES)
-            statsRepository.decreaseYesOpinion(statsId);
-        else if (opinion.getVote() == Opinion.Vote.NO)
-            statsRepository.decreaseNoOpinion(statsId);
-
-        if (!existsOpinion(opinion.getIssue().getId(), opinion.getCreatedById()))
-            statsRepository.decreaseApplicant(opinion.getIssue().getStatsId());
+        decreaseIssueStatsByOpinion(opinion);
 
         return opinion;
     }
@@ -143,12 +134,22 @@ public class OpinionService {
         opinion.block(ip);
         opinionRepository.save(opinion);
 
-        statsRepository.decreaseEtcOpinion(opinion.getIssue().getStatsId());
+        decreaseIssueStatsByOpinion(opinion);
+
+        return opinion;
+    }
+
+    private void decreaseIssueStatsByOpinion(Opinion opinion) {
+        Long statsId = opinion.getIssue().getStatsId();
+        if (opinion.getVote() == Opinion.Vote.ETC)
+            statsRepository.decreaseEtcOpinion(statsId);
+        else if (opinion.getVote() == Opinion.Vote.YES)
+            statsRepository.decreaseYesOpinion(statsId);
+        else if (opinion.getVote() == Opinion.Vote.NO)
+            statsRepository.decreaseNoOpinion(statsId);
 
         if (!existsOpinion(opinion.getIssue().getId(), opinion.getCreatedById()))
             statsRepository.decreaseApplicant(opinion.getIssue().getStatsId());
-
-        return opinion;
     }
 
     /**
