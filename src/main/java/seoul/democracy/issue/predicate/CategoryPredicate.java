@@ -14,4 +14,7 @@ public class CategoryPredicate {
         return category.name.eq(name);
     }
 
+    public static Predicate enabled() {
+        return category.enabled.eq(true);
+    }
 }

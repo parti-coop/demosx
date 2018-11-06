@@ -26,7 +26,6 @@ public class UserDto {
     public final static QBean<UserDto> projectionForAdminList = Projections.fields(UserDto.class,
         user.id, user.createdDate, user.role, user.status, user.email, user.name, user.loginDate, user.loginIp);
 
-    //public final static QBean<UserDto> projectionForMe = Projections.fields(UserDto.class, user.id, user.email, user.role);
     public final static QBean<UserDto> projectionForBasic = Projections.fields(UserDto.class, user.id, user.email, user.name);
     public final static QBean<UserDto> projectionForBasicByCreatedBy = Projections.fields(UserDto.class, createdBy.id, createdBy.email, createdBy.name);
     public final static QBean<UserDto> projectionForBasicByModifiedBy = Projections.fields(UserDto.class, modifiedBy.id, modifiedBy.email, modifiedBy.name);

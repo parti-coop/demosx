@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>회원 관리 - Democracy</title>
+  <title>제안 관리 - Democracy</title>
   <%@ include file="../shared/head.jsp" %>
   <link rel="stylesheet" type="text/css" href="<c:url value="/css/dataTables.bootstrap.min.css"/>"/>
   <script type="text/javascript" src="<c:url value="/js/jquery.dataTables.min.js"/>"></script>
@@ -16,7 +16,7 @@
 
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>회원 관리</h1>
+      <h1>제안 관리</h1>
     </section>
 
     <section class="content">
@@ -27,11 +27,23 @@
               <table id="list" class="table table-bordered table-striped" width="100%">
                 <thead>
                 <tr>
-                  <th>가입일</th>
-                  <th>이름</th>
-                  <th>이메일</th>
-                  <th>마지막 로그인 IP</th>
-                  <th>마지막 로그인 일시</th>
+                  <th>작성일</th>
+                  <th>
+                    <select name="category" aria-controls="list" class="form-control input-sm" title="분류">
+                      <option value="">분류선택</option>
+                      <c:forEach var="category" items="${categories}">
+                        <option value="${category.name}">${category.name}</option>
+                      </c:forEach>
+                    </select>
+                  </th>
+                  <th>제목</th>
+                  <th>작성자</th>
+                  <th>조회수</th>
+                  <th>공감수</th>
+                  <th>댓글수</th>
+                  <th>진행사항</th>
+                  <th>담당자</th>
+                  <th>공개여부</th>
                 </tr>
                 </thead>
               </table>
@@ -47,6 +59,11 @@
 <script>
   $(function () {
     var sortColumn = ['createdDate'];
+    var $category = $('select[name=category]');
+    $('select[name=category]').change(function () {
+      table.draw();
+    });
+
     var table = $('#list')
       .on('draw.dt', function () {
         $('[data-toggle="tooltip"]').tooltip({ placement: 'left', html: true });
@@ -55,8 +72,10 @@
         console.log(data);
         data['page'] = data.start / data.length + 1;
         data['size'] = data.length;
-        data['sort'] = [sortColumn[data['order'][0].column] + ',' + data['order'][0].dir, 'name,asc'];
+        data['sort'] = [sortColumn[data['order'][0].column] + ',' + data['order'][0].dir];
         data['search'] = data['search'].value;
+        var category = $category.val();
+        if (category) data['category'] = category;
 
         delete data['draw'];
         delete data['columns'];
@@ -79,7 +98,7 @@
           'infoFiltered': ' (전체 _MAX_ 개)',
           'lengthMenu': '페이지 당 _MENU_ 항목 표시',
           'search': '',
-          'searchPlaceholder': '이름, 이메일 검색',
+          'searchPlaceholder': '제목, 작성자 검색',
           paginate: {
             first: '«',
             previous: '‹',
@@ -100,7 +119,7 @@
         order: [[0, 'desc']],
         serverSide: true,
         ajax: {
-          url: '/admin/ajax/users',
+          url: '/admin/ajax/issue/proposals',
           type: 'GET',
           error: function (e) {
             window.location.href = '/admin/index.do';
@@ -108,16 +127,34 @@
         },
         columns: [
           { data: 'createdDate' },
-          { data: 'name', orderable: false },
-          { data: 'email', orderable: false },
           {
             data: function (item) {
-              return item.loginIp || '';
+              return (item.category) ? item.category.name : '-';
+            }, orderable: false
+          },
+          { data: 'title', orderable: false },
+          { data: 'createdBy.name', orderable: false },
+          { data: 'stats.viewCount', orderable: false },
+          { data: 'stats.likeCount', orderable: false },
+          { data: 'stats.opinionCount', orderable: false },
+          {
+            data: function (item) {
+              if (item.process === 'ASSIGNED') return '답변대기';
+              if (item.process === 'COMPLETE') return '부서답변';
+              return '';
             }, orderable: false
           },
           {
             data: function (item) {
-              return item.loginDate || '';
+              return item.manager.name || '없음';
+            }, orderable: false
+          },
+          {
+            data: function (item) {
+              if(item.status === 'CLOSED') return '비공개';
+              if(item.status === 'DELETE') return '삭제';
+              if(item.status === 'BLOCK') return '비공개';
+              return '공개';
             }, orderable: false
           }
         ]

@@ -12,6 +12,9 @@ public class CategoryDto {
     public final static QBean<CategoryDto> projection = Projections.fields(CategoryDto.class,
         category.id, category.name, category.enabled, category.sequence);
 
+    public final static QBean<CategoryDto> projectionForFilter = Projections.fields(CategoryDto.class,
+        category.name);
+
     private Long id;
     private String name;
     private Boolean enabled;

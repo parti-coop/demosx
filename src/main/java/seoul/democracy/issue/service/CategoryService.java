@@ -15,6 +15,8 @@ import seoul.democracy.issue.dto.CategoryDto;
 import seoul.democracy.issue.dto.CategoryUpdateDto;
 import seoul.democracy.issue.repository.CategoryRepository;
 
+import java.util.List;
+
 import static seoul.democracy.issue.predicate.CategoryPredicate.equalId;
 import static seoul.democracy.issue.predicate.CategoryPredicate.equalName;
 
@@ -31,6 +33,10 @@ public class CategoryService {
 
     public CategoryDto getCategory(Predicate predicate, Expression<CategoryDto> projection) {
         return categoryRepository.findOne(predicate, projection);
+    }
+
+    public List<CategoryDto> getCategories(Predicate predicate, Expression<CategoryDto> projection) {
+        return categoryRepository.findAll(predicate, projection);
     }
 
     @Transactional

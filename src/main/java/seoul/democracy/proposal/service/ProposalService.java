@@ -3,6 +3,8 @@ package seoul.democracy.proposal.service;
 import com.mysema.query.types.Expression;
 import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -53,6 +55,10 @@ public class ProposalService {
 
     public ProposalDto getProposal(Predicate predicate, Expression<ProposalDto> projection) {
         return proposalRepository.findOne(predicate, projection);
+    }
+
+    public Page<ProposalDto> getProposals(Predicate predicate, Pageable pageable, Expression<ProposalDto> projection) {
+        return proposalRepository.findAll(predicate, pageable, projection);
     }
 
     private Proposal getProposal(Long proposalId) {

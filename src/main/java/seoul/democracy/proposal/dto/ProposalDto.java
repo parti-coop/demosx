@@ -1,5 +1,7 @@
 package seoul.democracy.proposal.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mysema.query.types.Projections;
 import com.mysema.query.types.QBean;
 import lombok.Data;
@@ -17,6 +19,7 @@ import java.util.List;
 import static seoul.democracy.proposal.domain.QProposal.proposal;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProposalDto {
 
     public final static QBean<ProposalDto> projection = Projections.fields(ProposalDto.class,
@@ -32,7 +35,17 @@ public class ProposalDto {
         proposal.managerCommentDate, proposal.managerComment,
         proposal.title, proposal.content);
 
+    public final static QBean<ProposalDto> projectionForAdminList = Projections.fields(ProposalDto.class,
+        proposal.id, proposal.createdDate,
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        CategoryDto.projection.as("category"),
+        IssueStatsDto.projection.as("stats"),
+        proposal.status, proposal.process,
+        UserDto.projectionForBasic.as("manager"),
+        proposal.title);
+
     private Long id;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private UserDto createdBy;

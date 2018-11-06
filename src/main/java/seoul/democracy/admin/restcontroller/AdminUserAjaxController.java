@@ -13,7 +13,7 @@ import seoul.democracy.user.dto.UserDto;
 import seoul.democracy.user.service.UserService;
 
 import static seoul.democracy.user.dto.UserDto.projectionForAdminList;
-import static seoul.democracy.user.predicate.UserPredicate.containsNameAndEmail;
+import static seoul.democracy.user.predicate.UserPredicate.containsNameOrEmail;
 
 @RestController
 @RequestMapping("/admin/ajax/users")
@@ -30,6 +30,6 @@ public class AdminUserAjaxController {
     public Page<UserDto> getUsers(@RequestParam(value = "search") String search,
                                   @PageableDefault Pageable pageable) {
 
-        return userService.getUsers(containsNameAndEmail(search), pageable, projectionForAdminList);
+        return userService.getUsers(containsNameOrEmail(search), pageable, projectionForAdminList);
     }
 }
