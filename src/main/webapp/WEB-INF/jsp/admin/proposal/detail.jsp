@@ -156,8 +156,34 @@
         $(this).val(categoryValue);
         return;
       }
-      categoryValue = $(this).val();
-
+      $.ajax({
+        headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
+        url: '/admin/ajax/issue/proposals/${proposal.id}/category',
+        type: 'PATCH',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({
+          proposalId: ${proposal.id},
+          category: $(this).val()
+        }),
+        success: function (data) {
+          categoryValue = $(this).val();
+        },
+        error: function (error) {
+          $categorySelect.val(categoryValue);
+          if (error.status === 403) {
+            window.location.reload();
+            return;
+          }
+          if (error.responseJSON.fieldErrors) {
+            var msg = error.responseJSON.fieldErrors.map(function (item) {
+              return item.fieldError;
+            }).join('/n');
+            alert(msg);
+          } else alert(error.responseJSON.msg);
+        },
+        complete: function() {}
+      });
     })
   });
 </script>

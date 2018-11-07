@@ -22,7 +22,6 @@ import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.*;
 import seoul.democracy.proposal.repository.ProposalRepository;
 import seoul.democracy.user.domain.User;
-import seoul.democracy.user.predicate.UserPredicate;
 import seoul.democracy.user.service.UserService;
 import seoul.democracy.user.utils.UserUtils;
 
@@ -63,8 +62,7 @@ public class ProposalService {
 
     private Proposal getProposal(Long proposalId) {
         Proposal proposal = proposalRepository.findOne(proposalId);
-        if (proposal == null || !proposal.getStatus().isOpen())
-            throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
+        if (proposal == null) throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
 
         return proposal;
     }
@@ -93,8 +91,8 @@ public class ProposalService {
      */
     @Transactional
     @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
-    public Proposal delete(Long id, String ip) {
-        Proposal proposal = getProposal(id);
+    public Proposal delete(Long proposalId, String ip) {
+        Proposal proposal = getProposal(proposalId);
         return proposal.delete(ip);
     }
 
@@ -109,6 +107,16 @@ public class ProposalService {
     }
 
     /**
+     * 제안 공개
+     */
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public Proposal open(Long proposalId, String ip) {
+        Proposal proposal = getProposal(proposalId);
+        return proposal.open(ip);
+    }
+
+    /**
      * 카테고리 변경
      */
     @Transactional
@@ -116,7 +124,7 @@ public class ProposalService {
     public Proposal updateCategory(ProposalCategoryUpdateDto updateDto, String ip) {
         Proposal proposal = getProposal(updateDto.getProposalId());
 
-        if(proposal.getCategory() != null && updateDto.getCategory().equals(proposal.getCategory().getName()))
+        if (proposal.getCategory() != null && updateDto.getCategory().equals(proposal.getCategory().getName()))
             return proposal;
 
         Category category = categoryRepository.findOne(equalName(updateDto.getCategory()));
@@ -136,10 +144,13 @@ public class ProposalService {
             throw new AlreadyExistsException("이미 공감하였습니다.");
 
         Proposal proposal = getProposal(issueId);
+
+        IssueLike like = proposal.createLike(user, ip);
+        likeRepository.save(like);
+
         statsRepository.selectLikeProposal(proposal.getStatsId());
 
-        IssueLike like = IssueLike.create(user, proposal, ip);
-        return likeRepository.save(like);
+        return like;
     }
 
     /**
@@ -177,12 +188,7 @@ public class ProposalService {
     @PreAuthorize("hasRole('ADMIN')")
     public Proposal assignManager(ProposalManagerAssignDto assignDto) {
         Proposal proposal = getProposal(assignDto.getProposalId());
-        if (proposal.getStats().getLikeCount() < 50)
-            throw new BadRequestException("likeCount", "error.likeCount", "공감수 50이상 제안만 담당자 지정이 가능합니다.");
-
-        User manager = userService.getUser(UserPredicate.equalId(assignDto.getManagerId()));
-        if (!manager.getRole().isManager())
-            throw new BadRequestException("role", "error.role", "매니저만 담당자로 설정가능합니다.");
+        User manager = userService.getUser(assignDto.getManagerId());
 
         return proposal.assignManager(manager);
     }

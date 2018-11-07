@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.BadRequestException;
+import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.ProposalCategoryUpdateDto;
 import seoul.democracy.proposal.dto.ProposalDto;
@@ -25,7 +26,7 @@ import static org.junit.Assert.assertThat;
 
 /**
  * epic : 7. 제안관리
- * story : 7.7. 관리자는 제안을 분류할 수 있다.
+ * story : 7.8. 관리자는 제안을 분류할 수 있다.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -34,7 +35,7 @@ import static org.junit.Assert.assertThat;
 @Transactional
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class S_7_7_관리자는_제안을_분류할_수_있다 {
+public class S_7_8_관리자는_제안을_분류할_수_있다 {
 
     private final static String ip = "127.0.0.2";
 
@@ -42,6 +43,8 @@ public class S_7_7_관리자는_제안을_분류할_수_있다 {
     private ProposalService proposalService;
 
     private final Long proposalId = 1L;
+    private final Long closedProposalId = 21L;
+    private final Long deletedProposalId = 11L;
 
     private ProposalCategoryUpdateDto updateDto;
 
@@ -100,4 +103,31 @@ public class S_7_7_관리자는_제안을_분류할_수_있다 {
         proposalService.updateCategory(updateDto, ip);
     }
 
+    /**
+     * 6. 비공개된 제안의 카테고리를 변경할 수 있다.
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_6_비공개된_제안의_카테고리를_변경할_수_있다() {
+        updateDto.setProposalId(closedProposalId);
+        Proposal proposal = proposalService.updateCategory(updateDto, ip);
+
+        ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(proposal.getId()), ProposalDto.projection);
+        assertThat(proposalDto.getStatus(), is(Issue.Status.CLOSED));
+        assertThat(proposalDto.getCategory().getName(), is(updateDto.getCategory()));
+    }
+
+    /**
+     * 7. 삭제된 제안의 카테고리를 변경할 수 있다.
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_7_삭제된_제안의_카테고리를_변경할_수_있다() {
+        updateDto.setProposalId(deletedProposalId);
+        Proposal proposal = proposalService.updateCategory(updateDto, ip);
+
+        ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(proposal.getId()), ProposalDto.projection);
+        assertThat(proposalDto.getStatus(), is(Issue.Status.DELETE));
+        assertThat(proposalDto.getCategory().getName(), is(updateDto.getCategory()));
+    }
 }

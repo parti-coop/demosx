@@ -31,7 +31,7 @@ import static seoul.democracy.opinion.predicate.OpinionPredicate.equalId;
 
 /**
  * epic : 7. 제안관리
- * story : 7.6 관리자는 제안의견을 블럭 처리할 수 있다.
+ * story : 7.7 관리자는 제안의견을 블럭 처리할 수 있다.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -40,7 +40,7 @@ import static seoul.democracy.opinion.predicate.OpinionPredicate.equalId;
 @Transactional
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class S_7_6_관리자는_제안의견을_블럭_처리할_수_있다 {
+public class S_7_7_관리자는_제안의견을_블럭_처리할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";

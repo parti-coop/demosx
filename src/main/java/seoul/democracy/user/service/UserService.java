@@ -41,12 +41,8 @@ public class UserService {
         return userRepository.findAll(predicate, pageable, projection);
     }
 
-    public User getUser(Predicate predicate) {
-        return userRepository.findOne(predicate);
-    }
-
-    private User getUser(String email) {
-        User user = userRepository.findOne(equalEmail(email));
+    public User getUser(Long id) {
+        User user = userRepository.findOne(id);
         if (user == null)
             throw new NotFoundException("회원 정보를 찾을 수 없습니다.");
 
@@ -54,7 +50,7 @@ public class UserService {
     }
 
     public User getMe() {
-        return getUser(UserUtils.getEmail());
+        return getUser(UserUtils.getUserId());
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package seoul.democracy.proposal.predicate;
 import com.mysema.query.types.ExpressionUtils;
 import com.mysema.query.types.Predicate;
 import org.springframework.util.StringUtils;
+import seoul.democracy.issue.domain.Issue;
 
 import static seoul.democracy.proposal.domain.QProposal.proposal;
 
@@ -22,5 +23,9 @@ public class ProposalPredicate {
             predicate = ExpressionUtils.and(predicate, proposal.category.name.eq(category));
 
         return predicate;
+    }
+
+    public static Predicate equalIdAndStatus(Long id, Issue.Status status) {
+        return ExpressionUtils.and(proposal.id.eq(id), proposal.status.eq(status));
     }
 }
