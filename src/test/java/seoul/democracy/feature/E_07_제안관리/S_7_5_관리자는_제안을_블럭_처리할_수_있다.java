@@ -68,7 +68,7 @@ public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
         assertThat(proposalDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
         assertThat(proposalDto.getModifiedIp(), is(ip));
 
-        assertThat(proposalDto.getStatus(), is(Issue.Status.BLOCK));
+        assertThat(proposalDto.getStatus(), is(Issue.Status.CLOSED));
     }
 
     /**

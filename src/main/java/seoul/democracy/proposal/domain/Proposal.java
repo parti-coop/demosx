@@ -2,6 +2,7 @@ package seoul.democracy.proposal.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.domain.Issue;
@@ -115,7 +116,7 @@ public class Proposal extends Issue {
     }
 
     public Proposal block(String ip) {
-        this.status = Status.BLOCK;
+        this.status = Status.CLOSED;
         this.modifiedIp = ip;
         return this;
     }
@@ -130,9 +131,13 @@ public class Proposal extends Issue {
         return status.isOpen();
     }
 
+    @Getter
+    @RequiredArgsConstructor
     public enum Process {
-        INIT,       // 초기상태
-        ASSIGNED,   // 답변대기
-        COMPLETE    // 부서답변
+        INIT(""),       // 초기상태
+        ASSIGNED("답변대기"),   // 답변대기
+        COMPLETE("부서답변");    // 부서답변
+
+        private final String msg;
     }
 }

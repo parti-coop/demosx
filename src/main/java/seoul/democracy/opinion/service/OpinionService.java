@@ -3,6 +3,8 @@ package seoul.democracy.opinion.service;
 import com.mysema.query.types.Expression;
 import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -50,9 +52,13 @@ public class OpinionService {
         return opinionRepository.findOne(predicate, projection);
     }
 
+    public Page<OpinionDto> getOpinions(Predicate predicate, Pageable pageable, Expression<OpinionDto> projection) {
+        return opinionRepository.findAll(predicate, pageable, projection);
+    }
+
     private Opinion getOpinion(Long opinionId) {
         Opinion opinion = opinionRepository.findOne(opinionId);
-        if (opinion == null || opinion.getStatus().isDelete() || opinion.getStatus().isBlock())
+        if (opinion == null || !opinion.getStatus().isOpen())
             throw new NotFoundException("의견이 존재하지 않습니다.");
         return opinion;
     }

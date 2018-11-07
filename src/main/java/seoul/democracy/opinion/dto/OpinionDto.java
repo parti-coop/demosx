@@ -1,5 +1,6 @@
 package seoul.democracy.opinion.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mysema.query.types.Projections;
 import com.mysema.query.types.QBean;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class OpinionDto {
         opinion.likeCount, opinion.content, opinion.status, opinion.vote);
 
     protected Long id;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     protected LocalDateTime createdDate;
     protected LocalDateTime modifiedDate;
     protected UserDto createdBy;

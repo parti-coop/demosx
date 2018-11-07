@@ -2,6 +2,7 @@ package seoul.democracy.issue.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -143,22 +144,25 @@ public abstract class Issue {
 
     public abstract boolean isUpdatableOpinion();
 
+    @Getter
+    @RequiredArgsConstructor
     public enum Status {
-        OPEN,       // 공개
-        CLOSED,     // 비공개
-        DELETE,     // 삭제
-        BLOCK;      // 관리자삭제
+        OPEN("공개"),       // 공개
+        CLOSED("비공개"),     // 비공개, 제안 비공개
+        DELETE("삭제");     // 삭제
+
+        private final String msg;
 
         public boolean isOpen() {
             return this == OPEN;
         }
 
-        public boolean isDelete() {
-            return this == DELETE;
+        public boolean isClosed() {
+            return this == CLOSED;
         }
 
-        public boolean isBlock() {
-            return this == BLOCK;
+        public boolean isDelete() {
+            return this == DELETE;
         }
     }
 }

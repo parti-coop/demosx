@@ -63,7 +63,7 @@ public class ProposalService {
 
     private Proposal getProposal(Long proposalId) {
         Proposal proposal = proposalRepository.findOne(proposalId);
-        if (proposal == null || proposal.getStatus().isDelete() || proposal.getStatus().isBlock())
+        if (proposal == null || !proposal.getStatus().isOpen())
             throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
 
         return proposal;

@@ -12,11 +12,14 @@ public class OpinionPredicate {
         return opinion.id.eq(id);
     }
 
+    public static Predicate equalIssueId(Long issueId) {
+        return opinion.issue.id.eq(issueId);
+    }
+
     public static Predicate equalIssueIdAndCreatedByIdAndStatus(Long issueId, Long userId, Opinion.Status status) {
         return ExpressionUtils.allOf(
             opinion.issue.id.eq(issueId),
             opinion.createdBy.id.eq(userId),
             opinion.status.eq(status));
     }
-
 }

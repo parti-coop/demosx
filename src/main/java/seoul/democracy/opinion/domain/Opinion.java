@@ -120,7 +120,7 @@ public abstract class Opinion {
     }
 
     public Opinion update(OpinionUpdateDto updateDto, String ip) {
-        if(!issue.isUpdatableOpinion())
+        if (!issue.isUpdatableOpinion())
             throw new BadRequestException("process", "error.process", "해당 의견은 수정할 수 없습니다.");
 
         this.content = updateDto.getContent();
@@ -144,6 +144,10 @@ public abstract class Opinion {
         OPEN,
         DELETE,
         BLOCK;
+
+        public boolean isOpen() {
+            return this == OPEN;
+        }
 
         public boolean isDelete() {
             return this == DELETE;

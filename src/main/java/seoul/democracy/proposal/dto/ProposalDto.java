@@ -35,6 +35,9 @@ public class ProposalDto {
         proposal.managerCommentDate, proposal.managerComment,
         proposal.title, proposal.content);
 
+    /**
+     * 관리자 제안 리스트에서 사용됨
+     */
     public final static QBean<ProposalDto> projectionForAdminList = Projections.fields(ProposalDto.class,
         proposal.id, proposal.createdDate,
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
@@ -43,6 +46,20 @@ public class ProposalDto {
         proposal.status, proposal.process,
         UserDto.projectionForBasic.as("manager"),
         proposal.title);
+
+    /**
+     * 관리자 제안 상세에서 사용됨
+     */
+    public final static QBean<ProposalDto> projectionForAdminDetail = Projections.fields(ProposalDto.class,
+        proposal.id, proposal.createdDate,
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        CategoryDto.projection.as("category"),
+        IssueStatsDto.projection.as("stats"),
+        proposal.status, proposal.process,
+        proposal.adminComment,
+        UserDto.projectionForBasic.as("manager"),
+        proposal.managerComment,
+        proposal.title, proposal.content);
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -60,14 +60,11 @@
   $(function () {
     var sortColumn = ['createdDate'];
     var $category = $('select[name=category]');
-    $('select[name=category]').change(function () {
+    $category.change(function () {
       table.draw();
     });
 
     var table = $('#list')
-      .on('draw.dt', function () {
-        $('[data-toggle="tooltip"]').tooltip({ placement: 'left', html: true });
-      })
       .on('preXhr.dt', function (e, settings, data) {
         console.log(data);
         data['page'] = data.start / data.length + 1;
@@ -132,7 +129,11 @@
               return (item.category) ? item.category.name : '-';
             }, orderable: false
           },
-          { data: 'title', orderable: false },
+          {
+            data: function (item) {
+              return '<a href="/admin/issue/proposal-detail.do?id=' + item.id + '">' + item.title + '</a>';
+            }, orderable: false
+          },
           { data: 'createdBy.name', orderable: false },
           { data: 'stats.viewCount', orderable: false },
           { data: 'stats.likeCount', orderable: false },
@@ -151,9 +152,9 @@
           },
           {
             data: function (item) {
-              if(item.status === 'CLOSED') return '비공개';
-              if(item.status === 'DELETE') return '삭제';
-              if(item.status === 'BLOCK') return '비공개';
+              if (item.status === 'CLOSED') return '비공개';
+              if (item.status === 'DELETE') return '삭제';
+              if (item.status === 'BLOCK') return '비공개';
               return '공개';
             }, orderable: false
           }
