@@ -12,9 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
-import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.domain.IssueLike;
-import seoul.democracy.issue.predicate.CategoryPredicate;
 import seoul.democracy.issue.predicate.IssueLikePredicate;
 import seoul.democracy.issue.repository.CategoryRepository;
 import seoul.democracy.issue.repository.IssueLikeRepository;
@@ -74,12 +72,7 @@ public class ProposalService {
      */
     @Transactional
     public Proposal create(ProposalCreateDto createDto, String ip) {
-        Category category = categoryRepository.findOne(CategoryPredicate.equalName(createDto.getCategory()));
-        if (category == null || !category.getEnabled())
-            throw new BadRequestException("category", "error.category", "카테고리를 확인해 주세요.");
-
-        Proposal proposal = Proposal.create(createDto, category, ip);
-
+        Proposal proposal = Proposal.create(createDto, ip);
         return proposalRepository.save(proposal);
     }
 

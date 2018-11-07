@@ -13,9 +13,6 @@ import javax.validation.constraints.Size;
 public class ProposalCreateDto {
 
     @NotBlank
-    private String category;
-
-    @NotBlank
     @Size(max = 100)
     private String title;
 

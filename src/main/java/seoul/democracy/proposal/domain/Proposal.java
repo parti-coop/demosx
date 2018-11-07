@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
-import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.domain.IssueStats;
 import seoul.democracy.opinion.domain.OpinionType;
@@ -67,20 +66,19 @@ public class Proposal extends Issue {
     @Column(name = "MANAGER_COMMENT")
     private String managerComment;
 
-    public Proposal(Category category, String title, String content, String ip) {
+    public Proposal(String title, String content, String ip) {
         this.stats = IssueStats.create();
         this.status = Status.OPEN;
         this.process = Process.INIT;
         this.opinionType = OpinionType.PROPOSAL;
-        this.category = category;
         this.title = title;
         this.content = content;
         this.createdIp = this.modifiedIp = ip;
 
     }
 
-    public static Proposal create(ProposalCreateDto createDto, Category category, String ip) {
-        return new Proposal(category, createDto.getTitle(), createDto.getContent(), ip);
+    public static Proposal create(ProposalCreateDto createDto, String ip) {
+        return new Proposal(createDto.getTitle(), createDto.getContent(), ip);
     }
 
     public Proposal update(ProposalUpdateDto updateDto, String ip) {

@@ -100,8 +100,8 @@ public abstract class Issue {
     /**
      * 범주
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "CATE_ID", updatable = false, nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CATE_ID")
     protected Category category;
 
     /**

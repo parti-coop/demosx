@@ -11,7 +11,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.opinion.domain.OpinionType;
 import seoul.democracy.proposal.domain.Proposal;
@@ -54,13 +53,13 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
     }
 
     /**
-     * 1. 사용자는 제목,내용, 카테고리, 첨부파일로 제안을 등록할 수 있다.
+     * 1. 사용자는 제목,내용으로 제안을 등록할 수 있다.
      */
     @Test
     @WithUserDetails("user1@googl.co.kr")
-    public void T_1_사용자는_제목_내용_카테고리_첨부파일로_제안을_등록할_수_있다() {
+    public void T_1_사용자는_제목_내용으로_제안을_등록할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        ProposalCreateDto createDto = ProposalCreateDto.of("복지", "제안합니다.", "제안내용입니다.");
+        ProposalCreateDto createDto = ProposalCreateDto.of("제안합니다.", "제안내용입니다.");
         Proposal proposal = proposalService.create(createDto, ip);
         assertThat(proposal.getId(), is(notNullValue()));
 
@@ -73,7 +72,6 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
         assertThat(proposalDto.getModifiedIp(), is(ip));
 
         assertThat(proposalDto.getOpinionType(), is(OpinionType.PROPOSAL));
-        assertThat(proposalDto.getCategory().getName(), is(createDto.getCategory()));
 
         assertThat(proposalDto.getStats().getViewCount(), is(0L));
         assertThat(proposalDto.getStats().getLikeCount(), is(0L));
@@ -88,23 +86,4 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
         assertThat(proposalDto.getContent(), is(createDto.getContent()));
     }
 
-    /**
-     * 2. 비공개 카테고리에 제안을 등록할 수 없다.
-     */
-    @Test(expected = BadRequestException.class)
-    @WithUserDetails("user1@googl.co.kr")
-    public void T_2_비공개_카테고리에_제안을_등록할_수_없다() {
-        ProposalCreateDto createDto = ProposalCreateDto.of("제안합니다.", "제안내용입니다.", "비공개");
-        proposalService.create(createDto, ip);
-    }
-
-    /**
-     * 3. 존재하지 않는 카테고리로 제안을 등록할 수없다.
-     */
-    @Test(expected = BadRequestException.class)
-    @WithUserDetails("user1@googl.co.kr")
-    public void T_3_존재하지_않는_카테고리로_제안을_등록할_수_없다() {
-        ProposalCreateDto createDto = ProposalCreateDto.of("제안합니다.", "제안내용입니다.", "notExists");
-        proposalService.create(createDto, ip);
-    }
 }
