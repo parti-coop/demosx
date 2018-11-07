@@ -61,6 +61,13 @@ public class ProposalDto {
         proposal.managerComment,
         proposal.title, proposal.content);
 
+    /**
+     * 담당자 할당 후 사용됨
+     */
+    public final static QBean<ProposalDto> projectionForAssignManager = Projections.fields(ProposalDto.class,
+        proposal.id, UserDto.projectionForBasic.as("manager"));
+
+
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdDate;

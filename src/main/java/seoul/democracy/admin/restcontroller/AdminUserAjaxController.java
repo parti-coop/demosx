@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import seoul.democracy.user.domain.Role;
 import seoul.democracy.user.dto.UserDto;
 import seoul.democracy.user.service.UserService;
 
 import static seoul.democracy.user.dto.UserDto.projectionForAdminList;
+import static seoul.democracy.user.dto.UserDto.projectionForBasic;
 import static seoul.democracy.user.predicate.UserPredicate.containsNameOrEmail;
+import static seoul.democracy.user.predicate.UserPredicate.containsNameOrEmailAndRole;
 
 @RestController
 @RequestMapping("/admin/ajax/users")
@@ -31,5 +34,12 @@ public class AdminUserAjaxController {
                                   @PageableDefault Pageable pageable) {
 
         return userService.getUsers(containsNameOrEmail(search), pageable, projectionForAdminList);
+    }
+
+    @RequestMapping(value = "/managers", method = RequestMethod.GET)
+    public Page<UserDto> getManagers(@RequestParam(value = "search") String search,
+                                     @PageableDefault Pageable pageable) {
+
+        return userService.getUsers(containsNameOrEmailAndRole(search.trim(), Role.ROLE_MANAGER), pageable, projectionForBasic);
     }
 }

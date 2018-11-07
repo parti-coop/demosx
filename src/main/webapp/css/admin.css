@@ -13,3 +13,15 @@
 #tinymce {
     padding-top: 20px;
 }
+
+.display_inline-block {
+    display: inline-block;
+}
+
+.mr-10 {
+    margin-right: 10px;
+}
+
+.mr-20 {
+    margin-right: 20px;
+}
