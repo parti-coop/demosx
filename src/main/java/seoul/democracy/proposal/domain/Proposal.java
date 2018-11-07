@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
+import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.domain.IssueStats;
 import seoul.democracy.opinion.domain.OpinionType;
@@ -115,6 +116,12 @@ public class Proposal extends Issue {
 
     public Proposal block(String ip) {
         this.status = Status.CLOSED;
+        this.modifiedIp = ip;
+        return this;
+    }
+
+    public Proposal updateCategory(Category category, String ip) {
+        this.category = category;
         this.modifiedIp = ip;
         return this;
     }

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
+import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.domain.IssueLike;
 import seoul.democracy.issue.predicate.IssueLikePredicate;
 import seoul.democracy.issue.repository.CategoryRepository;
@@ -25,6 +26,7 @@ import seoul.democracy.user.predicate.UserPredicate;
 import seoul.democracy.user.service.UserService;
 import seoul.democracy.user.utils.UserUtils;
 
+import static seoul.democracy.issue.predicate.CategoryPredicate.equalName;
 import static seoul.democracy.issue.predicate.IssueLikePredicate.equalUserIdAndIssueId;
 
 @Service
@@ -104,6 +106,24 @@ public class ProposalService {
     public Proposal block(Long proposalId, String ip) {
         Proposal proposal = getProposal(proposalId);
         return proposal.block(ip);
+    }
+
+    /**
+     * 카테고리 변경
+     */
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public Proposal updateCategory(ProposalCategoryUpdateDto updateDto, String ip) {
+        Proposal proposal = getProposal(updateDto.getProposalId());
+
+        if(proposal.getCategory() != null && updateDto.getCategory().equals(proposal.getCategory().getName()))
+            return proposal;
+
+        Category category = categoryRepository.findOne(equalName(updateDto.getCategory()));
+        if (category == null || !category.getEnabled())
+            throw new BadRequestException("category", "error.category", "카테고리를 확인해 주세요.");
+
+        return proposal.updateCategory(category, ip);
     }
 
     /**
