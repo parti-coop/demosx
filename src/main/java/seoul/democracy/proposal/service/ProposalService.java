@@ -157,7 +157,7 @@ public class ProposalService {
      * 공감 해제
      */
     @Transactional
-    public IssueLike unselectLike(Long issueId) {
+    public IssueLike deselectLike(Long issueId) {
         User user = UserUtils.getLoginUser();
 
         IssueLike like = likeRepository.findOne(equalUserIdAndIssueId(user.getId(), issueId));
@@ -165,7 +165,7 @@ public class ProposalService {
             throw new NotFoundException("공감 상태가 아닙니다.");
 
         Proposal proposal = getProposal(issueId);
-        statsRepository.unselectLikeProposal(proposal.getStatsId());
+        statsRepository.deselectLikeProposal(proposal.getStatsId());
         likeRepository.delete(like);
 
         return like;

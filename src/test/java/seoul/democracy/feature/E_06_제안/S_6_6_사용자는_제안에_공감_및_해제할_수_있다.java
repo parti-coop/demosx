@@ -77,7 +77,7 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_2_사용자는_공감된_제안에_공감해제할_수_있다() {
         Long proposalId = 1L;
-        IssueLike like = proposalService.unselectLike(proposalId);
+        IssueLike like = proposalService.deselectLike(proposalId);
 
         long count = likeRepository.count(IssueLikePredicate.equalUserId(like.getId().getUserId()));
         assertThat(count, is(2L));
@@ -103,7 +103,7 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
     @WithUserDetails("user2@googl.co.kr")
     public void T_4_공감하지_않은_제안에_공감해제할_수_없다() {
         Long proposalId = 1L;
-        proposalService.unselectLike(proposalId);
+        proposalService.deselectLike(proposalId);
     }
 
     /**
@@ -133,7 +133,7 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_7_삭제된_제안에_공감해제할_수_없다() {
         Long deleteProposalId = 2L;
-        proposalService.unselectLike(deleteProposalId);
+        proposalService.deselectLike(deleteProposalId);
     }
 
     /**
@@ -143,6 +143,6 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_8_블럭된_제안에_공감해제할_수_없다() {
         Long blockProposalId = 3L;
-        proposalService.unselectLike(blockProposalId);
+        proposalService.deselectLike(blockProposalId);
     }
 }

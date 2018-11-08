@@ -58,7 +58,7 @@ public class OpinionService {
 
     private Opinion getOpinion(Long opinionId) {
         Opinion opinion = opinionRepository.findOne(opinionId);
-        if (opinion == null || !opinion.getStatus().isOpen())
+        if (opinion == null)
             throw new NotFoundException("의견이 존재하지 않습니다.");
         return opinion;
     }
@@ -86,22 +86,8 @@ public class OpinionService {
         Issue issue = getIssue(createDto.getIssueId());
 
         Opinion opinion = issue.createOpinion(createDto, ip);
-        Long statsId = issue.getStatsId();
 
-        // 토론의견일 경우 하나의 의견만 가능
-        boolean existsOpinion = existsOpinion(issue.getId(), UserUtils.getUserId());
-        if(existsOpinion && issue.getOpinionType().isDebate())
-            throw new AlreadyExistsException("토론의견은 하나만 가능합니다. 기존 의견 삭제 후 다시 등록해 주세요.");
-
-        if(!existsOpinion)
-            statsRepository.increaseApplicant(statsId);
-
-        if (opinion.getVote() == Opinion.Vote.ETC)
-            statsRepository.increaseEtcOpinion(statsId);
-        else if (opinion.getVote() == Opinion.Vote.YES)
-            statsRepository.increaseYesOpinion(statsId);
-        else if (opinion.getVote() == Opinion.Vote.NO)
-            statsRepository.increaseNoOpinion(statsId);
+        increaseIssueStatsByOpinion(opinion, UserUtils.getUserId());
 
         return opinionRepository.save(opinion);
     }
@@ -145,6 +131,38 @@ public class OpinionService {
         return opinion;
     }
 
+    /**
+     * 의견 공개
+     */
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public Opinion openOpinion(Long opinionId, String ip) {
+        Opinion opinion = getOpinion(opinionId);
+
+        increaseIssueStatsByOpinion(opinion, opinion.getCreatedById());
+
+        return opinion.open(ip);
+    }
+
+    private void increaseIssueStatsByOpinion(Opinion opinion, Long userId) {
+        Issue issue = opinion.getIssue();
+        Long statsId = issue.getStatsId();
+        // 토론의견일 경우 하나의 의견만 가능
+        boolean existsOpinion = existsOpinion(issue.getId(), userId);
+        if (existsOpinion && issue.getOpinionType().isDebate())
+            throw new AlreadyExistsException("토론의견은 하나만 가능합니다. 기존 의견 삭제 후 다시 등록해 주세요.");
+
+        if (!existsOpinion)
+            statsRepository.increaseApplicant(statsId);
+
+        if (opinion.getVote() == Opinion.Vote.ETC)
+            statsRepository.increaseEtcOpinion(statsId);
+        else if (opinion.getVote() == Opinion.Vote.YES)
+            statsRepository.increaseYesOpinion(statsId);
+        else if (opinion.getVote() == Opinion.Vote.NO)
+            statsRepository.increaseNoOpinion(statsId);
+    }
+
     private void decreaseIssueStatsByOpinion(Opinion opinion) {
         Long statsId = opinion.getIssue().getStatsId();
         if (opinion.getVote() == Opinion.Vote.ETC)
@@ -168,24 +186,31 @@ public class OpinionService {
             throw new AlreadyExistsException("이미 공감하였습니다.");
 
         Opinion opinion = getOpinion(opinionId);
+
+        OpinionLike like = opinion.createLike(user, ip);
+        opinionLikeRepository.save(like);
+
         opinionRepository.increaseLike(opinionId);
 
-        OpinionLike like = OpinionLike.create(user, opinion, ip);
-        return opinionLikeRepository.save(like);
+        return like;
     }
 
     /**
      * 의견 공감해제
      */
     @Transactional
-    public OpinionLike unselectOpinionLike(Long opinionId) {
+    public OpinionLike deselectOpinionLike(Long opinionId) {
         OpinionLike like = opinionLikeRepository.findOne(equalUserIdAndOpinionId(UserUtils.getUserId(), opinionId));
         if (like == null)
             throw new NotFoundException("공감 상태가 아닙니다.");
 
         Opinion opinion = getOpinion(opinionId);
+        if (!opinion.getStatus().isOpen())
+            throw new NotFoundException("해당 의견을 찾을 수 없습니다.");
+
         opinionRepository.decreaseLike(opinion.getId());
         opinionLikeRepository.delete(like);
         return like;
     }
+
 }

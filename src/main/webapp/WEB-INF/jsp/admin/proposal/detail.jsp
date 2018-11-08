@@ -330,8 +330,7 @@
             }
           }
         },
-        search: '',
-        searchDelay: 500,
+        searching: false,
         order: [[0, 'desc']],
         serverSide: true,
         ajax: {
@@ -349,13 +348,37 @@
           {
             data: function (item) {
               if (item.status === 'DELETE') return '삭제';
-              if (item.status === 'OPEN') return '공개';
-              if (item.status === 'BLOCK') return '비공개';
-              return '';
+
+              return '<select class="form-control input-sm opinion-status-select" data-status="' + item.status + '" data-id="' + item.id + '">' +
+                '<option value="OPEN"' + (item.status === 'OPEN' ? ' selected' : '') + '>공개</option>' +
+                '<option value="BLOCK"' + (item.status === 'BLOCK' ? ' selected' : '') + '>비공개</option>' +
+                '</select>';
             }, orderable: false
           }
         ]
       });
+
+    $(document).on('change', '.opinion-status-select', function () {
+      var status = $(this).val();
+      if (!confirm((status === 'OPEN' ? '공개' : '비공개') + '로 변경할까요?')) {
+        $(this).val($(this).data('status'));
+        return;
+      }
+
+      var that = $(this);
+      adminAjax({
+        csrf: '${_csrf.token}',
+        url: '/admin/ajax/opinions/' + $(this).data('id') + '/' + status.toLowerCase(),
+        type: 'PATCH',
+        data: null,
+        success: function () {
+          that.data('status', status);
+        },
+        error: function () {
+          that.val(that.data('status'));
+        }
+      });
+    });
   });
 </script>
 <style>

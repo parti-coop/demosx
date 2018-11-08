@@ -26,7 +26,7 @@ import static org.junit.Assert.assertThat;
 
 /**
  * epic : 7. 제안관리
- * story : 7.8. 관리자는 제안을 분류할 수 있다.
+ * story : 7.9 관리자는 제안을 분류할 수 있다.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertThat;
 @Transactional
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class S_7_8_관리자는_제안을_분류할_수_있다 {
+public class S_7_9_관리자는_제안을_분류할_수_있다 {
 
     private final static String ip = "127.0.0.2";
 

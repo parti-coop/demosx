@@ -32,7 +32,7 @@ public class IssueStatsRepositoryImpl extends QueryDslRepositorySupport implemen
     }
 
     @Override
-    public void unselectLikeProposal(Long statsId) {
+    public void deselectLikeProposal(Long statsId) {
         update(issueStats)
             .where(issueStats.id.eq(statsId))
             .set(issueStats.likeCount, issueStats.likeCount.subtract(constant))

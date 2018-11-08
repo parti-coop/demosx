@@ -76,10 +76,10 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test
     @WithUserDetails("user1@googl.co.kr")
     public void T_2_사용자는_공감된_제안의견에_공감해제할_수_있다() {
-        OpinionLike like = opinionService.unselectOpinionLike(opinionId);
+        OpinionLike like = opinionService.deselectOpinionLike(opinionId);
 
         long count = likeRepository.count(equalUserId(like.getId().getUserId()));
-        assertThat(count, is(2L));
+        assertThat(count, is(3L));
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinionId), OpinionDto.projection);
         assertThat(opinionDto.getLikeCount(), is(0L));
@@ -100,7 +100,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user2@googl.co.kr")
     public void T_4_공감하지_않은_제안의견에_공감해제할_수_없다() {
-        opinionService.unselectOpinionLike(opinionId);
+        opinionService.deselectOpinionLike(opinionId);
     }
 
     /**
@@ -127,7 +127,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_7_삭제된_제안의견에_공감해제할_수_없다() {
-        opinionService.unselectOpinionLike(deletedOpinionId);
+        opinionService.deselectOpinionLike(deletedOpinionId);
     }
 
     /**
@@ -136,6 +136,6 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_8_블럭된_제안의견에_공감해제할_수_없다() {
-        opinionService.unselectOpinionLike(blockedOpinionId);
+        opinionService.deselectOpinionLike(blockedOpinionId);
     }
 }

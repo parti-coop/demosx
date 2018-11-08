@@ -12,7 +12,7 @@ public interface IssueStatsRepositoryCustom {
     /**
      * 제안 공감 해제
      */
-    void unselectLikeProposal(Long statsId);
+    void deselectLikeProposal(Long statsId);
 
     /**
      * 기타 의견 증가
