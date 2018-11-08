@@ -4,6 +4,8 @@ package seoul.democracy.debate.service;
 import com.mysema.query.types.Expression;
 import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,10 @@ public class DebateService {
 
     public DebateDto getDebate(Predicate predicate, Expression<DebateDto> projection, boolean withFiles, boolean withRelations) {
         return debateRepository.findOne(predicate, projection, withFiles, withRelations);
+    }
+
+    public Page<DebateDto> getDebates(Predicate predicate, Pageable pageable, Expression<DebateDto> projection, boolean withFiles, boolean withRelations) {
+        return debateRepository.findAll(predicate, pageable, projection, withFiles, withRelations);
     }
 
     private Category getCategory(String categoryName) {

@@ -49,7 +49,7 @@ public class AdminProposalAjaxController {
     @RequestMapping(value = "/{proposalId}/closed", method = RequestMethod.PATCH)
     public ResultInfo closedProposal(@PathVariable("proposalId") Long proposalId,
                                      InetAddress address) {
-        proposalService.block(proposalId, address.getHostName());
+        proposalService.closed(proposalId, address.getHostName());
 
         return ResultInfo.of("비공개 상태입니다.");
     }

@@ -51,7 +51,7 @@
     <ul class="sidebar-menu" data-widget="tree">
       <li class="header">시민제안</li>
       <li><a href="<c:url value="/admin/issue/proposal.do"/>"><i class="fa fa-picture-o"></i> <span>제안관리</span></a></li>
-      <li><a href="<c:url value="/admin/issue/devate.do"/>"><i class="fa fa-picture-o"></i> <span>토론관리</span></a></li>
+      <li><a href="<c:url value="/admin/issue/debate.do"/>"><i class="fa fa-picture-o"></i> <span>토론관리</span></a></li>
       <li><a href="<c:url value="/admin/issue/action.do"/>"><i class="fa fa-picture-o"></i> <span>실행관리</span></a></li>
 
       <li class="header">온라인 공론장</li>

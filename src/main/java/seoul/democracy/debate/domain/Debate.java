@@ -2,6 +2,7 @@ package seoul.democracy.debate.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import seoul.democracy.common.converter.LocalDateAttributeConverter;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.debate.dto.DebateCreateDto;
@@ -138,10 +139,14 @@ public class Debate extends Issue {
         return status.isOpen() && process.isProgress();
     }
 
+    @Getter
+    @RequiredArgsConstructor
     public enum Process {
-        INIT,
-        PROGRESS,       // 진행 중
-        COMPLETE;       // 토론 종료
+        INIT("진행 예정"),
+        PROGRESS("진행 중"),       // 진행 중
+        COMPLETE("진행 완료");       // 토론 종료
+
+        private final String msg;
 
         public boolean isProgress() {
             return this == PROGRESS;

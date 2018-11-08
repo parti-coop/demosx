@@ -1,5 +1,6 @@
 package seoul.democracy.debate.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mysema.query.types.Projections;
 import com.mysema.query.types.QBean;
 import lombok.Data;
@@ -31,7 +32,16 @@ public class DebateDto {
         debate.thumbnail, debate.title, debate.content,
         debate.startDate, debate.endDate);
 
+    public final static QBean<DebateDto> projectionForAdminList = Projections.fields(DebateDto.class,
+        debate.id, debate.createdDate,
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        debate.opinionType,
+        CategoryDto.projection.as("category"),
+        IssueStatsDto.projection.as("stats"),
+        debate.status, debate.process, debate.title);
+
     private Long id;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private UserDto createdBy;

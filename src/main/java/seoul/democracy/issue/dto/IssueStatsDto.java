@@ -21,7 +21,25 @@ public class IssueStatsDto {
     private Long noCount;
     private Long etcCount;
 
-    public Long getOpinionCount() {
+    public long getOpinionCount() {
         return yesCount + noCount + etcCount;
+    }
+
+    public long yesPercent() {
+        long totalCount = getOpinionCount();
+        if(totalCount == 0) return 0;
+        return yesCount * 100 / totalCount;
+    }
+
+    public long noPercent() {
+        long totalCount = getOpinionCount();
+        if(totalCount == 0) return 0;
+        return noCount * 100 / totalCount;
+    }
+
+    public long etcPercent() {
+        long totalCount = getOpinionCount();
+        if(totalCount == 0) return 0;
+        return etcCount * 100 / totalCount;
     }
 }

@@ -41,12 +41,12 @@ public class AdminOpinionAjaxController {
         return ResultInfo.of("비공개 상태입니다.");
     }
 
-    /*@RequestMapping(value = "/{opinionId}/open", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/{opinionId}/open", method = RequestMethod.PATCH)
     public ResultInfo openOpinion(@PathVariable("opinionId") Long opinionId,
                                    InetAddress address) {
 
         opinionService.openOpinion(opinionId, address.getHostAddress());
 
-        return ResultInfo.of("비공개 상태입니다.");
-    }*/
+        return ResultInfo.of("공개 상태입니다.");
+    }
 }

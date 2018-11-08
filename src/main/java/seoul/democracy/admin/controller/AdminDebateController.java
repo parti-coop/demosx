@@ -7,29 +7,29 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import seoul.democracy.debate.dto.DebateDto;
+import seoul.democracy.debate.predicate.DebatePredicate;
+import seoul.democracy.debate.service.DebateService;
 import seoul.democracy.issue.dto.CategoryDto;
 import seoul.democracy.issue.service.CategoryService;
-import seoul.democracy.proposal.dto.ProposalDto;
-import seoul.democracy.proposal.service.ProposalService;
 
 import java.util.List;
 
 import static seoul.democracy.issue.dto.CategoryDto.projectionForFilter;
 import static seoul.democracy.issue.predicate.CategoryPredicate.enabled;
-import static seoul.democracy.proposal.predicate.ProposalPredicate.equalId;
 
 @Controller
 @RequestMapping("/admin/issue")
-public class AdminProposalController {
+public class AdminDebateController {
 
     private final CategoryService categoryService;
-    private final ProposalService proposalService;
+    private final DebateService debateService;
 
     @Autowired
-    public AdminProposalController(CategoryService categoryService,
-                                   ProposalService proposalService) {
+    public AdminDebateController(CategoryService categoryService,
+                                 DebateService debateService) {
         this.categoryService = categoryService;
-        this.proposalService = proposalService;
+        this.debateService = debateService;
     }
 
     @ModelAttribute("categories")
@@ -38,23 +38,23 @@ public class AdminProposalController {
     }
 
     /**
-     * 관리자 > 시민제안 > 제안관리
+     * 관리자 > 시민제안 > 토론관리
      */
-    @RequestMapping(value = "/proposal.do", method = RequestMethod.GET)
-    public String proposalList() {
-        return "/admin/proposal/list";
+    @RequestMapping(value = "/debate.do", method = RequestMethod.GET)
+    public String debateList() {
+        return "/admin/debate/list";
     }
 
     /**
-     * 관리자 > 시민제안 > 제안관리 > 상세
+     * 관리자 > 시민제안 > 토론관리 > 상세
      */
-    @RequestMapping(value = "/proposal-detail.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/debate-detail.do", method = RequestMethod.GET)
     public String proposalDetail(@RequestParam("id") Long id,
                                  Model model) {
 
-        ProposalDto proposalDto = proposalService.getProposal(equalId(id), ProposalDto.projectionForAdminDetail);
-        model.addAttribute("proposal", proposalDto);
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(id), DebateDto.projection, true, true);
+        model.addAttribute("debate", debateDto);
 
-        return "/admin/proposal/detail";
+        return "/admin/debate/detail";
     }
 }

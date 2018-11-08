@@ -62,7 +62,7 @@ public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_1_관리자는_제안을_블럭할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        Proposal proposal = proposalService.block(proposalId, ip);
+        Proposal proposal = proposalService.closed(proposalId, ip);
         ProposalDto proposalDto = proposalService.getProposal(equalId(proposal.getId()), projection);
         assertThat(proposalDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(proposalDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
@@ -77,7 +77,7 @@ public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
     public void T_2_매니저는_제안을_블럭할_수_없다() {
-        proposalService.block(proposalId, ip);
+        proposalService.closed(proposalId, ip);
     }
 
     /**
@@ -86,7 +86,7 @@ public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_사용자는_제안을_블럭할_수_없다() {
-        proposalService.block(proposalId, ip);
+        proposalService.closed(proposalId, ip);
     }
 
     /**
@@ -95,7 +95,7 @@ public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
     @Test(expected = NotFoundException.class)
     @WithUserDetails("admin1@googl.co.kr")
     public void T_4_관리자는_블럭된_제안을_블럭할_수_없다() {
-        proposalService.block(blockedProposalId, ip);
+        proposalService.closed(blockedProposalId, ip);
     }
 
     /**
@@ -104,6 +104,6 @@ public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
     @Test(expected = NotFoundException.class)
     @WithUserDetails("admin1@googl.co.kr")
     public void T_5_관리자는_삭제된_제안을_블럭할_수_없다() {
-        proposalService.block(deletedProposalId, ip);
+        proposalService.closed(deletedProposalId, ip);
     }
 }

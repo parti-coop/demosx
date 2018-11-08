@@ -101,7 +101,7 @@ public class ProposalService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Proposal block(Long proposalId, String ip) {
+    public Proposal closed(Long proposalId, String ip) {
         Proposal proposal = getProposal(proposalId);
         return proposal.block(ip);
     }

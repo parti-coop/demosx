@@ -13,7 +13,11 @@ import seoul.democracy.debate.dto.DebateDto;
 import seoul.democracy.issue.dto.IssueFileDto;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import static com.mysema.query.group.GroupBy.groupBy;
+import static com.mysema.query.group.GroupBy.list;
 import static seoul.democracy.debate.domain.QDebate.debate;
 import static seoul.democracy.issue.domain.QCategory.category;
 import static seoul.democracy.issue.domain.QIssueFile.issueFile;
@@ -35,18 +39,41 @@ public class DebateRepositoryImpl extends QueryDslRepositorySupport implements D
             query.innerJoin(debate.modifiedBy, modifiedBy);
             query.innerJoin(debate.category, category);
             query.innerJoin(debate.stats, issueStats);
+        } else if (projection == DebateDto.projectionForAdminList) {
+            query.innerJoin(debate.createdBy, createdBy);
+            query.innerJoin(debate.category, category);
+            query.innerJoin(debate.stats, issueStats);
         }
         return query;
     }
 
     @Override
-    public Page<DebateDto> findAll(Predicate predicate, Pageable pageable, Expression<DebateDto> projection) {
+    public Page<DebateDto> findAll(Predicate predicate, Pageable pageable, Expression<DebateDto> projection, boolean withFiles, boolean withRelations) {
         SearchResults<DebateDto> results = getQuerydsl()
                                                .applyPagination(
                                                    pageable,
                                                    getQuery(projection)
                                                        .where(predicate))
                                                .listResults(projection);
+        List<Long> debateIds = results.getResults().stream().map(DebateDto::getId).collect(Collectors.toList());
+        if (withFiles && debateIds.size() != 0) {
+            Map<Long, List<IssueFileDto>> filesMap = from(debate)
+                                                         .innerJoin(debate.files, issueFile)
+                                                         .where(debate.id.in(debateIds))
+                                                         .orderBy(issueFile.seq.asc())
+                                                         .transform(groupBy(debate.id).as(list(IssueFileDto.projection)));
+            results.getResults().forEach(debateDto -> debateDto.setFiles(filesMap.get(debateDto.getId())));
+        }
+
+        if (withRelations && debateIds.size() != 0) {
+            Map<Long, List<Long>> relationsMap = from(debate)
+                                                     .innerJoin(debate.relations, issueRelation)
+                                                     .where(debate.id.in(debateIds))
+                                                     .orderBy(issueRelation.seq.asc())
+                                                     .transform(groupBy(debate.id).as(list(issueRelation.issueId)));
+            results.getResults().forEach(debateDto -> debateDto.setRelations(relationsMap.get(debateDto.getId())));
+        }
+
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
@@ -63,7 +90,6 @@ public class DebateRepositoryImpl extends QueryDslRepositorySupport implements D
                                            .orderBy(issueFile.seq.asc())
                                            .list(IssueFileDto.projection);
             debateDto.setFiles(files);
-
         }
 
         if (debateDto != null && withRelations) {
