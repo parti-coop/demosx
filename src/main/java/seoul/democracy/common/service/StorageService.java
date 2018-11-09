@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import seoul.democracy.common.dto.FileType;
+import seoul.democracy.common.dto.UploadFileInfo;
+import seoul.democracy.common.dto.UploadFileType;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
 
@@ -27,7 +28,7 @@ public class StorageService {
     private final Resource uploadPath = new ClassPathResource("../../");
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("/yyyy/MM");
 
-    public String store(FileType type, MultipartFile multipartFile) {
+    public UploadFileInfo store(UploadFileType type, MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
             throw new NotFoundException("empty file : " + multipartFile.getOriginalFilename());
         }
@@ -44,18 +45,18 @@ public class StorageService {
             File file = new File(this.uploadPath.getFile().getPath() + uploadPath, filename);
             if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
 
-            if (type == FileType.ORIGINAL)
+            if (type == UploadFileType.ORIGINAL)
                 FileCopyUtils.copy(multipartFile.getBytes(), file);
             else
                 resizeImage(multipartFile.getInputStream(), file, type);
 
-            return uploadPath + "/" + filename;
+            return UploadFileInfo.of(multipartFile.getOriginalFilename(), uploadPath + "/" + filename);
         } catch (IOException e) {
             throw new BadRequestException("file", "error.file", e.getMessage());
         }
     }
 
-    private void resizeImage(InputStream inputStream, File file, FileType type) throws IOException {
+    private void resizeImage(InputStream inputStream, File file, UploadFileType type) throws IOException {
         BufferedImage sourceImg = ImageIO.read(inputStream);
 
         if (sourceImg == null) {

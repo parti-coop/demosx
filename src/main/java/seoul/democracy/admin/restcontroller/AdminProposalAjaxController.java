@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import seoul.democracy.common.dto.ResultInfo;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.*;
+import seoul.democracy.proposal.predicate.ProposalPredicate;
 import seoul.democracy.proposal.service.ProposalService;
 
 import javax.validation.Valid;
 import java.net.InetAddress;
 
-import static seoul.democracy.proposal.dto.ProposalDto.projectionForAdminList;
-import static seoul.democracy.proposal.dto.ProposalDto.projectionForAssignManager;
+import static seoul.democracy.proposal.dto.ProposalDto.*;
 import static seoul.democracy.proposal.predicate.ProposalPredicate.containsTitleOrCreatedByNameAndEqualCategory;
 import static seoul.democracy.proposal.predicate.ProposalPredicate.equalId;
 
@@ -34,6 +34,12 @@ public class AdminProposalAjaxController {
                                           @RequestParam(value = "category", required = false) String category,
                                           @PageableDefault Pageable pageable) {
         return proposalService.getProposals(containsTitleOrCreatedByNameAndEqualCategory(search, category), pageable, projectionForAdminList);
+    }
+
+    @RequestMapping(value = "/select", method = RequestMethod.GET)
+    public Page<ProposalDto> getProposalsForSelect(@RequestParam(value = "search", required = false) String search,
+                                                   @PageableDefault Pageable pageable) {
+        return proposalService.getProposals(ProposalPredicate.containsTitle(search), pageable, projectionForAdminSelect);
     }
 
     @RequestMapping(value = "/{proposalId}/category", method = RequestMethod.PATCH)

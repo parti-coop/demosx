@@ -8,6 +8,16 @@
   <link rel="stylesheet" type="text/css" href="<c:url value="/css/dataTables.bootstrap.min.css"/>"/>
   <script type="text/javascript" src="<c:url value="/js/jquery.dataTables.min.js"/>"></script>
   <script type="text/javascript" src="<c:url value="/js/dataTables.bootstrap.min.js"/>"></script>
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.3/css/bootstrap-select.min.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.4.4/css/ajax-bootstrap-select.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.3/js/bootstrap-select.min.js"></script>
+  <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.4.4/js/ajax-bootstrap-select.min.js"></script>
+  <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.4.4/js/locale/ajax-bootstrap-select.ko-KR.min.js"></script>
 </head>
 <body class="hold-transition skin-black-light fixed sidebar-mini admin">
 
@@ -16,8 +26,7 @@
 
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>토론 관리 상세 <a href="<c:url value="/admin/issue/debate-edit.do?id=${debate.id}"/>"
-                      class="btn btn-primary btn-sm pull-right">수정하기</a></h1>
+      <h1>토론 관리 상세 - 수정</h1>
     </section>
 
     <section class="content">
@@ -27,21 +36,39 @@
             <div class="box-header with-border">
               <h3 class="box-title">토론</h3>
             </div>
-            <form class="form-horizontal">
+            <form:form commandName="updateDto" class="form-horizontal">
               <div class="box-body">
                 <div class="form-group">
                   <label class="col-sm-2 control-label">썸네일</label>
-                  <div class="col-sm-4">
-                    <img src="${debate.thumbnail}">
+                  <div class="col-sm-10"><p class="form-control-static">${debate.thumbnail}</p></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">타입</label>
+                  <div class="col-sm-2">
+                    <form:select path="opinionType" class="form-control input-sm">
+                      <option value="">의견타입</option>
+                      <form:option value="PROPOSAL" label="제안타입"/>
+                      <form:option value="DEBATE" label="투표타입"/>
+                    </form:select>
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">분류</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.category.name}</p></div>
+                  <div class="col-sm-2">
+                    <select class="form-control input-sm">
+                      <option value="">분류선택</option>
+                      <c:forEach var="category" items="${categories}">
+                        <option value="${category.name}" <c:if
+                            test="${proposal.category.name eq category.name}">selected</c:if>>${category.name}</option>
+                      </c:forEach>
+                    </select>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">제목</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.title}</p></div>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control input-sm">
+                  </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">작성일</label>
@@ -97,8 +124,8 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">연관제안</label>
                   <div class="col-sm-10">
-                    <c:forEach var="issue" items="${debate.issues}" varStatus="status">
-                      <p class="form-control-static">${issue.title}</p>
+                    <c:forEach var="relation" items="${debate.relations}">
+                      <p class="form-control-static">${relation}</p>
                     </c:forEach>
                   </div>
                 </div>
@@ -109,22 +136,7 @@
                   </div>
                 </div>
               </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header with-border">
-              <h3 class="box-title">댓글</h3>
-            </div>
-            <div class="box-body">
-              <jsp:include page="../opinion/list.jsp">
-                <jsp:param name="issueId" value="${debate.id}"/>
-                <jsp:param name="opinionType" value="${debate.opinionType}"/>
-              </jsp:include>
-            </div>
+            </form:form>
           </div>
         </div>
       </div>

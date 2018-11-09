@@ -67,6 +67,12 @@ public class ProposalDto {
     public final static QBean<ProposalDto> projectionForAssignManager = Projections.fields(ProposalDto.class,
         proposal.id, UserDto.projectionForBasic.as("manager"));
 
+    /**
+     * 제안 선택용으로 사용
+     */
+    public final static QBean<ProposalDto> projectionForAdminSelect = Projections.fields(ProposalDto.class,
+        proposal.id, proposal.title);
+
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")

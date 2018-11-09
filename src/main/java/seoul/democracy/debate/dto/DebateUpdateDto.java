@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.dto.IssueFileDto;
 
@@ -29,9 +30,11 @@ public class DebateUpdateDto {
     private String category;
 
     @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
     @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
     @NotBlank
@@ -48,4 +51,10 @@ public class DebateUpdateDto {
 
     private List<Long> relations;
 
+    public static DebateUpdateDto of(DebateDto debateDto) {
+        return of(debateDto.getId(), debateDto.getThumbnail(), debateDto.getCategory().getName(),
+            debateDto.getStartDate(), debateDto.getEndDate(),
+            debateDto.getTitle(), debateDto.getContent(), debateDto.getStatus(),
+            debateDto.getFiles(), debateDto.getRelations());
+    }
 }

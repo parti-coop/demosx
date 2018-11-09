@@ -39,6 +39,13 @@ public abstract class Issue {
     private Long id;
 
     /**
+     * 이슈 종류
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ISSUE_DTYPE", columnDefinition = "char(1)", insertable = false, updatable = false)
+    private IssueType type;
+
+    /**
      * 등록 일시
      */
     @Convert(converter = LocalDateTimeAttributeConverter.class)

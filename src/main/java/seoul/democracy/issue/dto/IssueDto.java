@@ -4,6 +4,7 @@ import com.mysema.query.types.Projections;
 import com.mysema.query.types.QBean;
 import lombok.Data;
 import seoul.democracy.issue.domain.IssueFile;
+import seoul.democracy.issue.domain.IssueType;
 import seoul.democracy.opinion.domain.OpinionType;
 import seoul.democracy.user.dto.UserDto;
 
@@ -16,9 +17,10 @@ import static seoul.democracy.issue.domain.QIssue.issue;
 public class IssueDto {
 
     public final static QBean<IssueDto> projectionForBasic = Projections.fields(IssueDto.class,
-        issue.id, issue.title);
+        issue.id, issue.type, issue.title);
 
     private Long id;
+    private IssueType type;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private UserDto createdBy;

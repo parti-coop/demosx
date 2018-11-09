@@ -7,6 +7,7 @@ import lombok.Data;
 import seoul.democracy.debate.domain.Debate;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.dto.CategoryDto;
+import seoul.democracy.issue.dto.IssueDto;
 import seoul.democracy.issue.dto.IssueFileDto;
 import seoul.democracy.issue.dto.IssueStatsDto;
 import seoul.democracy.opinion.domain.OpinionType;
@@ -66,4 +67,5 @@ public class DebateDto {
     private LocalDate endDate;
 
     private List<Long> relations;
+    private List<IssueDto> issues;
 }

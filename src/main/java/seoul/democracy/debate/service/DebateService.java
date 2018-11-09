@@ -17,9 +17,14 @@ import seoul.democracy.debate.dto.DebateDto;
 import seoul.democracy.debate.dto.DebateUpdateDto;
 import seoul.democracy.debate.repository.DebateRepository;
 import seoul.democracy.issue.domain.Category;
+import seoul.democracy.issue.dto.IssueDto;
 import seoul.democracy.issue.repository.CategoryRepository;
+import seoul.democracy.issue.repository.IssueRepository;
+
+import java.util.List;
 
 import static seoul.democracy.issue.predicate.CategoryPredicate.equalName;
+import static seoul.democracy.issue.predicate.IssuePredicate.equalIdIn;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,16 +32,24 @@ public class DebateService {
 
     private final DebateRepository debateRepository;
     private final CategoryRepository categoryRepository;
+    private final IssueRepository issueRepository;
 
     @Autowired
     public DebateService(DebateRepository debateRepository,
-                         CategoryRepository categoryRepository) {
+                         CategoryRepository categoryRepository,
+                         IssueRepository issueRepository) {
         this.debateRepository = debateRepository;
         this.categoryRepository = categoryRepository;
+        this.issueRepository = issueRepository;
     }
 
     public DebateDto getDebate(Predicate predicate, Expression<DebateDto> projection, boolean withFiles, boolean withRelations) {
-        return debateRepository.findOne(predicate, projection, withFiles, withRelations);
+        DebateDto debateDto = debateRepository.findOne(predicate, projection, withFiles, withRelations);
+        if (withRelations && debateDto.getRelations().size() > 0) {
+            List<IssueDto> issues = issueRepository.findAll(equalIdIn(debateDto.getRelations()), IssueDto.projectionForBasic);
+            debateDto.setIssues(issues);
+        }
+        return debateDto;
     }
 
     public Page<DebateDto> getDebates(Predicate predicate, Pageable pageable, Expression<DebateDto> projection, boolean withFiles, boolean withRelations) {
@@ -71,7 +84,7 @@ public class DebateService {
     @PreAuthorize("hasRole('ADMIN')")
     public Debate update(DebateUpdateDto updateDto, String ip) {
         Debate debate = debateRepository.findOne(updateDto.getId());
-        if(debate == null)
+        if (debate == null)
             throw new NotFoundException("해당 토론을 찾을 수 없습니다.");
 
         Category category = debate.getCategory().getName().equals(updateDto.getCategory()) ?

@@ -109,15 +109,19 @@ public class Debate extends Issue {
         this.modifiedIp = ip;
 
         List<IssueFile> files = new ArrayList<>();
-        for (int i = 0; i < updateDto.getFiles().size(); i++) {
-            IssueFileDto fileDto = updateDto.getFiles().get(i);
-            files.add(IssueFile.of(i, fileDto.getName(), fileDto.getUrl()));
+        if(updateDto.getFiles() != null) {
+            for (int i = 0; i < updateDto.getFiles().size(); i++) {
+                IssueFileDto fileDto = updateDto.getFiles().get(i);
+                files.add(IssueFile.of(i, fileDto.getName(), fileDto.getUrl()));
+            }
         }
         this.files = files;
 
         List<IssueRelation> relations = new ArrayList<>();
-        for (int i = 0; i < updateDto.getRelations().size(); i++) {
-            relations.add(IssueRelation.create(i, updateDto.getRelations().get(i)));
+        if(updateDto.getFiles() != null) {
+            for (int i = 0; i < updateDto.getRelations().size(); i++) {
+                relations.add(IssueRelation.create(i, updateDto.getRelations().get(i)));
+            }
         }
         this.relations = relations;
 
