@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import seoul.democracy.action.dto.ActionCreateDto;
+import seoul.democracy.action.dto.ActionUpdateDto;
 import seoul.democracy.issue.domain.*;
 import seoul.democracy.issue.dto.IssueFileDto;
 import seoul.democracy.opinion.domain.Opinion;
@@ -64,6 +65,34 @@ public class Action extends Issue {
 
         return new Action(category, createDto.getThumbnail(), createDto.getTitle(), createDto.getContent(),
             createDto.getStatus(), files, relations, ip);
+    }
+
+    public Action update(ActionUpdateDto updateDto, Category category, String ip) {
+        this.category = category;
+        this.thumbnail = updateDto.getThumbnail();
+        this.title = updateDto.getTitle();
+        this.content = updateDto.getContent();
+        this.status = updateDto.getStatus();
+        this.modifiedIp = ip;
+
+        List<IssueFile> files = new ArrayList<>();
+        if (updateDto.getFiles() != null) {
+            for (int i = 0; i < updateDto.getFiles().size(); i++) {
+                IssueFileDto fileDto = updateDto.getFiles().get(i);
+                files.add(IssueFile.of(i, fileDto.getName(), fileDto.getUrl()));
+            }
+        }
+        this.files = files;
+
+        List<IssueRelation> relations = new ArrayList<>();
+        if (updateDto.getFiles() != null) {
+            for (int i = 0; i < updateDto.getRelations().size(); i++) {
+                relations.add(IssueRelation.create(i, updateDto.getRelations().get(i)));
+            }
+        }
+        this.relations = relations;
+
+        return this;
     }
 
     @Override

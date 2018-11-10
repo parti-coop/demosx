@@ -13,9 +13,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.action.domain.Action;
-import seoul.democracy.action.dto.ActionCreateDto;
 import seoul.democracy.action.dto.ActionDto;
+import seoul.democracy.action.dto.ActionUpdateDto;
 import seoul.democracy.action.service.ActionService;
+import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.dto.IssueFileDto;
 
@@ -30,7 +31,7 @@ import static seoul.democracy.action.predicate.ActionPredicate.equalId;
 
 /**
  * epic : 11. 실행관리
- * story: 11.1 관리자는 실행을 등록할 수 있다.
+ * story: 11.2 관리자는 실행을 수정할 수 있다.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -39,7 +40,7 @@ import static seoul.democracy.action.predicate.ActionPredicate.equalId;
 @Transactional
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class S_11_1_관리자는_실행을_등록할_수_있다 {
+public class S_11_2_관리자는_실행을_수정할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
@@ -47,65 +48,74 @@ public class S_11_1_관리자는_실행을_등록할_수_있다 {
     @Autowired
     private ActionService actionService;
 
-    private ActionCreateDto createDto;
+    private ActionUpdateDto updateDto;
+
+    private Long notExistsId = 999L;
 
     @Before
     public void setUp() throws Exception {
-        createDto = ActionCreateDto.of("update-thumbnail.jpg", "경제",
+        updateDto = ActionUpdateDto.of(201L, "/images/test-thumbnail.jpg", "경제",
             "실행 등록합니다.", "실행 내용입니다.", Issue.Status.CLOSED,
             Arrays.asList(IssueFileDto.of("파일1", "file1"), IssueFileDto.of("파일2", "file2")),
             Arrays.asList(1L, 101L), null);
     }
 
     /**
-     * 1. 관리자는 실행을 등록할 수 있다.
+     * 1. 관리자는 실행을 수정할 수 있다.
      */
     @Test
     @WithUserDetails("admin1@googl.co.kr")
-    public void T_1_관리자는_실행을_등록할_수_있다() {
+    public void T_1_관리자는_실행을_수정할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
 
-        Action action = actionService.create(createDto, ip);
+        Action action = actionService.update(updateDto, ip);
         assertThat(action.getId(), is(notNullValue()));
 
         ActionDto actionDto = actionService.getAction(equalId(action.getId()), projection);
-        assertThat(actionDto.getCreatedDate().format(dateTimeFormatter), is(now));
         assertThat(actionDto.getModifiedDate().format(dateTimeFormatter), is(now));
-        assertThat(actionDto.getCreatedBy().getEmail(), is("admin1@googl.co.kr"));
         assertThat(actionDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
-        assertThat(actionDto.getCreatedIp(), is(ip));
         assertThat(actionDto.getModifiedIp(), is(ip));
 
-        assertThat(actionDto.getCategory().getName(), is(createDto.getCategory()));
+        assertThat(actionDto.getCategory().getName(), is(updateDto.getCategory()));
 
         assertThat(actionDto.getStats().getViewCount(), is(0L));
 
-        assertThat(actionDto.getThumbnail(), is(createDto.getThumbnail()));
+        assertThat(actionDto.getThumbnail(), is(updateDto.getThumbnail()));
 
-        assertThat(actionDto.getTitle(), is(createDto.getTitle()));
-        assertThat(actionDto.getContent(), is(createDto.getContent()));
+        assertThat(actionDto.getTitle(), is(updateDto.getTitle()));
+        assertThat(actionDto.getContent(), is(updateDto.getContent()));
 
-        assertThat(actionDto.getStatus(), is(createDto.getStatus()));
+        assertThat(actionDto.getStatus(), is(updateDto.getStatus()));
 
-        assertThat(actionDto.getFiles(), contains(createDto.getFiles().toArray(new IssueFileDto[0])));
-        assertThat(actionDto.getRelations(), contains(createDto.getRelations().toArray(new Long[0])));
+        assertThat(actionDto.getFiles(), contains(updateDto.getFiles().toArray(new IssueFileDto[0])));
+        assertThat(actionDto.getRelations(), contains(updateDto.getRelations().toArray(new Long[0])));
     }
 
     /**
-     * 2. 매니저는 실행을 등록할 수 없다.
+     * 2. 매니저는 실행을 수정할 수 없다.
      */
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
-    public void T_2_매니저는_실행을_등록할_수_없다() {
-        actionService.create(createDto, ip);
+    public void T_2_매니저는_실행을_수정할_수_없다() {
+        actionService.update(updateDto, ip);
     }
 
     /**
-     * 3. 사용자는 실행을 등록할 수 없다.
+     * 3. 사용자는 실행을 수정할 수 없다.
      */
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
-    public void T_3_사용자는_실행을_등록할_수_없다() {
-        actionService.create(createDto, ip);
+    public void T_3_사용자는_실행을_수정할_수_없다() {
+        actionService.update(updateDto, ip);
+    }
+
+    /**
+     * 4. 없는 실행을 수정할 수 없다.
+     */
+    @Test(expected = NotFoundException.class)
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_4_없는_실행을_등록할_수_없다() {
+        updateDto.setId(notExistsId);
+        actionService.update(updateDto, ip);
     }
 }
