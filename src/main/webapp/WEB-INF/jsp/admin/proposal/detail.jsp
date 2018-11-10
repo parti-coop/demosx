@@ -9,15 +9,18 @@
   <script type="text/javascript" src="<c:url value="/js/jquery.dataTables.min.js"/>"></script>
   <script type="text/javascript" src="<c:url value="/js/dataTables.bootstrap.min.js"/>"></script>
 
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.3/css/bootstrap-select.min.css">
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.4.4/css/ajax-bootstrap-select.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.3/js/bootstrap-select.min.js"></script>
-  <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.4.4/js/ajax-bootstrap-select.min.js"></script>
-  <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.4.4/js/locale/ajax-bootstrap-select.ko-KR.min.js"></script>
+  <!-- select2 -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/i18n/ko.js"></script>
+
+  <style>
+    #assign-manager-btn {
+      width: 80px;
+    }
+    .select-manager-input-wrapper {
+      margin-right: 80px;
+    }
+  </style>
 </head>
 <body class="hold-transition skin-black-light fixed sidebar-mini admin">
 
@@ -113,8 +116,10 @@
                   </div>
                   <div class="col-sm-7">
                     <c:if test="${proposal.stats.likeCount ge 50}">
-                      <select id="managers-select" class="selectpicker" data-live-search="true"></select>
-                      <button type="button" class="btn btn-default mr-20" id="assign-manager-btn">지정하기</button>
+                      <button type="button" class="btn btn-default pull-right" id="assign-manager-btn">지정하기</button>
+                      <div class="select-manager-input-wrapper">
+                        <select id="select-manager-input" class="form-control"></select>
+                      </div>
                     </c:if>
                   </div>
                 </div>
@@ -150,28 +155,56 @@
 </div>
 <script>
   $(function () {
-    $('#managers-select').selectpicker().ajaxSelectPicker({
+    var $selectManagerInput = $('#select-manager-input');
+    $selectManagerInput.select2({
+      language: 'ko',
       ajax: {
         headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
         url: '/admin/ajax/users/managers',
         type: 'GET',
         dataType: 'json',
-        data: {
-          search: '{{{q}}}'
+        data: function (params) {
+          return {
+            search: params.term
+          };
         },
-        cache: false
-      },
-      preprocessData: function (data) {
-        return data.content.map(function (item) {
-          return $.extend(true, item, {
-            text: item.name,
-            value: item.id,
-            data: {
-              subtext: item.email
-            }
-          });
-        });
+        processResults: function (data) {
+          return {
+            results: data.content.map(function (item) {
+              return {
+                id: item.id,
+                text: item.name,
+                item: item
+              }
+            })
+          };
+        }
       }
+    });
+
+    // 담당자 지정
+    $('#assign-manager-btn').click(function () {
+      var selectedData = $selectManagerInput.select2('data');
+      if (selectedData.length === 0) {
+        alert('선택된 항목이 없습니다.');
+        return;
+      }
+
+      adminAjax({
+        csrf: '${_csrf.token}',
+        url: '/admin/ajax/issue/proposals/${proposal.id}/assignManager',
+        type: 'PATCH',
+        data: {
+          proposalId: ${proposal.id},
+          managerId: selectedData[0].id
+        },
+        success: function (data) {
+          $selectManagerInput.val(null).trigger('change');
+          $('#assigned-manager').text(data.manager.name);
+        },
+        error: function () {
+        }
+      });
     });
   });
 
@@ -191,32 +224,6 @@
           comment: comment
         },
         success: function () {
-        },
-        error: function () {
-        }
-      });
-    });
-
-    // 담당자 지정
-    var $managersSelect = $('#managers-select');
-    $('#assign-manager-btn').click(function () {
-      var managerId = $managersSelect.val();
-      if (!managerId) {
-        alert('담당자를 선택해 주세요.');
-        return;
-      }
-
-      adminAjax({
-        csrf: '${_csrf.token}',
-        url: '/admin/ajax/issue/proposals/${proposal.id}/assignManager',
-        type: 'PATCH',
-        data: {
-          proposalId: ${proposal.id},
-          managerId: managerId
-        },
-        success: function (data) {
-          $managersSelect.val([]).trigger('change.abs.preserveSelected').selectpicker('refresh');
-          $('#assigned-manager').text(data.manager.name);
         },
         error: function () {
         }

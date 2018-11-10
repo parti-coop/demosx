@@ -3,9 +3,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>토론 관리 수정 - Democracy</title>
+  <title>토론 관리 - 수정 - Democracy</title>
   <%@ include file="../shared/head.jsp" %>
 
+  <!-- form validation -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.8.1/parsley.min.js"></script>
   <script type="text/javascript" src="<c:url value="/js/parsley-ko.js"/>"></script>
 
@@ -30,15 +31,36 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/i18n/ko.js"></script>
 
   <style>
-    #thumbnail-uploaded {
-      position: relative;
-    }
-
     #thumbnail-remove {
       position: absolute;
       right: -25px;
+      top: 0;
+    }
+    .thumbnail-img-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-right: 30px;
     }
   </style>
+
+  <!-- tinymce editor -->
+  <script type="text/javascript" src="<c:url value="/tinymce/tinymce.min.js"/>"></script>
+  <script>
+    tinymce.init({
+      selector: '.tinymce-editor',
+      menubar: false,
+      language: 'ko_KR',
+      plugins: ['autolink', 'autosave', 'textcolor', 'image', 'media', 'link', 'paste', 'autoresize'],
+      toolbar: "undo redo | styleselect | forecolor bold italic | alignleft aligncenter alignright alignjustify | link media custom_image",
+      mobile: {
+        theme: 'mobile'
+      },
+      branding: false,
+      content_css: ['https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', '/css/admin.css', 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic'],
+      preview_styles: 'font-family font-size color',
+      body_class: 'container'
+    });
+  </script>
 </head>
 <body class="hold-transition skin-black-light fixed sidebar-mini admin">
 
@@ -47,7 +69,7 @@
 
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>토론 관리 상세 - 수정</h1>
+      <h1>토론 관리 - 수정</h1>
     </section>
 
     <section class="content">
@@ -62,7 +84,7 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">썸네일<span> *</span></label>
                   <div class="col-sm-4">
-                    <div id="thumbnail-upload" class="${updateDto.thumbnail ? '' : 'hidden'}">
+                    <div id="thumbnail-upload" class="${updateDto.thumbnail eq null ? '' : 'hidden'}">
                       <span class="btn btn-success btn-sm fileinput-button">
                           <i class="glyphicon glyphicon-plus"></i>
                           <span>이미지 선택</span>
@@ -71,9 +93,11 @@
                       <img src="<c:url value="/images/loading.gif"/>" height="20" id="thumbnail-progress"
                            class="hidden">
                     </div>
-                    <div id="thumbnail-uploaded" class="${updateDto.thumbnail ? 'hidden' : ''}">
-                      <img src="${updateDto.thumbnail}"><i id="thumbnail-remove"
-                                                           class="fa fa-times fa-2x cursor-pointer"></i>
+                    <div id="thumbnail-uploaded" class="${updateDto.thumbnail eq null ? 'hidden' : ''}">
+                      <div class="thumbnail-img-wrapper">
+                        <img src="${updateDto.thumbnail}">
+                        <i id="thumbnail-remove" class="fa fa-times fa-2x cursor-pointer"></i>
+                      </div>
                     </div>
                     <input type="text" class="hidden" name="thumbnail" id="thumbnail" value="${updateDto.thumbnail}"
                            data-parsley-required="true">
@@ -91,7 +115,7 @@
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">타입</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.opinionType.msg}</p></div>
+                  <div class="col-sm-10"><p class="form-control-static">${updateDto.opinionType.msg}</p></div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">기간<span> *</span></label>
@@ -99,10 +123,10 @@
                     <div class="input-group">
                       <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                       <input type="text" class="form-control pull-right" id="debate-dates" autocomplete="off"
-                             onkeydown="return false" value="${debate.startDate} - ${debate.endDate}"
+                             onkeydown="return false" value="${updateDto.period()}"
                              data-parsley-required="true" data-parsley-errors-container="#datesError">
-                      <input type="hidden" name="startDate" value="${debate.startDate}"/>
-                      <input type="hidden" name="endDate" value="${debate.endDate}"/>
+                      <input type="hidden" name="startDate" value="${updateDto.startDate}"/>
+                      <input type="hidden" name="endDate" value="${updateDto.endDate}"/>
                     </div>
                     <div id="datesError"></div>
                   </div>
@@ -116,9 +140,17 @@
                   </div>
                 </div>
                 <div class="form-group">
+                  <label class="col-sm-2 control-label">한줄설명<span> *</span></label>
+                  <div class="col-sm-10">
+                    <form:input path="excerpt" type="text" class="form-control input-sm" autocomplete="off"
+                                data-parsley-required="true" data-parsley-trim-value="true"
+                                data-parsley-maxlength="100"/>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label class="col-sm-2 control-label">내용</label>
                   <div class="col-sm-10">
-                    <form:textarea path="content" class="form-control"/>
+                    <form:textarea path="content" class="tinymce-editor"/>
                   </div>
                 </div>
                 <div class="form-group">
@@ -133,7 +165,7 @@
                       <img src="<c:url value="/images/loading.gif"/>" height="20" id="file-progress" class="hidden">
                     </div>
                     <div id="file-uploaded">
-                      <c:forEach var="file" items="${debate.files}" varStatus="status">
+                      <c:forEach var="file" items="${updateDto.files}" varStatus="status">
                         <p class="form-control-static">
                           <a href="${file.url}">${file.name}</a>
                           <i class="fa fa-times-circle cursor-pointer file-remove ml-10"></i>
@@ -151,7 +183,7 @@
                     <select id="select-proposal-input" class="form-control" style="width:50%"></select>
                     <button type="button" class="btn btn-default mr-20" id="select-proposal-btn">선택하기</button>
                     <div id="selected-proposal-list">
-                      <c:forEach var="issue" items="${debate.issues}" varStatus="status">
+                      <c:forEach var="issue" items="${updateDto.issues}" varStatus="status">
                         <p class="form-control-static">${issue.title}
                           <i class="fa fa-times-circle cursor-pointer remove-issue-icon ml-10"></i>
                           <input type="hidden" class="relation-input" name="relations[${status.index}]"
@@ -175,8 +207,8 @@
                 </div>
               </div>
               <div class="box-footer">
-                <a href="<c:url value="/admin/issue/debate.do"/>" class="btn btn-default">목록</a>
-                <button type="submit" class="btn btn-primary pull-right" id="update-btn">저장하기</button>
+                <a href="<c:url value="/admin/issue/debate.do"/>" class="btn btn-default btn-sm">목록</a>
+                <button type="submit" class="btn btn-primary btn-sm pull-right" id="update-btn">저장하기</button>
               </div>
             </form:form>
           </div>
@@ -237,7 +269,7 @@
       }
 
       var sameValueItem = $('input.relation-input[value=' + selectedData[0].id + ']');
-      if(sameValueItem.length !== 0) {
+      if (sameValueItem.length !== 0) {
         alert('이미 선택된 항목입니다.');
         return;
       }
@@ -282,11 +314,11 @@
       headers: {
         'X-CSRF-TOKEN': '${_csrf.token}'
       },
-      url: '/admin/ajax/files?type=SLIDER',
+      url: '/admin/ajax/files?type=THUMBNAIL',
       dataType: 'json',
       done: function (e, data) {
         $('#thumbnail-progress').addClass('hidden');
-        setThumbnail(data.result.filename);
+        setThumbnail(data.result.url);
       },
       progressall: function (e, data) {
         $('#thumbnail-progress').removeClass('hidden');
@@ -367,5 +399,15 @@
     });
   });
 </script>
+
+<!-- tinymce editor -->
+<style>
+  .mce-panel {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border-color: #d2d6de;
+  }
+</style>
 </body>
 </html>

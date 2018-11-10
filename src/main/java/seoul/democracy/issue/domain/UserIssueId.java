@@ -1,13 +1,13 @@
 package seoul.democracy.issue.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
-@Getter
+@Data
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")

@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>토론 관리 상세 - Democracy</title>
+  <title>토론 관리 - 상세 - Democracy</title>
   <%@ include file="../shared/head.jsp" %>
   <link rel="stylesheet" type="text/css" href="<c:url value="/css/dataTables.bootstrap.min.css"/>"/>
   <script type="text/javascript" src="<c:url value="/js/jquery.dataTables.min.js"/>"></script>
@@ -16,7 +16,7 @@
 
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>토론 관리 상세 <a href="<c:url value="/admin/issue/debate-edit.do?id=${debate.id}"/>"
+      <h1>토론 관리 - 상세 <a href="<c:url value="/admin/issue/debate-edit.do?id=${debate.id}"/>"
                       class="btn btn-primary btn-sm pull-right">수정하기</a></h1>
     </section>
 
@@ -42,6 +42,10 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">제목</label>
                   <div class="col-sm-10"><p class="form-control-static">${debate.title}</p></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">한줄설명</label>
+                  <div class="col-sm-10"><p class="form-control-static">${debate.excerpt}</p></div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">작성일</label>
@@ -92,7 +96,7 @@
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">내용</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.content}</p></div>
+                  <div class="col-sm-10"><div class="form-control-static">${debate.content}</div></div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">연관제안</label>

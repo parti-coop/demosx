@@ -45,3 +45,10 @@
 img {
     max-width: 100%;
 }
+
+.mce-panel {
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+    border-color: #d2d6de !important;
+}

@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
 import seoul.democracy.issue.domain.Issue;
+import seoul.democracy.issue.dto.IssueDto;
 import seoul.democracy.issue.dto.IssueFileDto;
 import seoul.democracy.opinion.domain.OpinionType;
 
@@ -30,14 +32,20 @@ public class DebateCreateDto {
     private OpinionType opinionType;
 
     @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
     @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
     @NotBlank
     @Size(max = 100)
     private String title;
+
+    @NotBlank
+    @Size(max = 100)
+    private String excerpt;
 
     private String content;
 
@@ -49,4 +57,10 @@ public class DebateCreateDto {
 
     private List<Long> relations;
 
+    private List<IssueDto> issues;
+
+    public String period() {
+        if(startDate == null || endDate == null) return "";
+        return startDate.toString() + " - " + endDate.toString();
+    }
 }

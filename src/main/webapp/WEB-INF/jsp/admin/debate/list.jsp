@@ -16,7 +16,7 @@
 
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>토론 관리 <a href="#" class="btn btn-primary btn-sm pull-right">토론 생성하기</a></h1>
+      <h1>토론 관리 <a href="<c:url value="/admin/issue/debate-new.do"/>" class="btn btn-primary btn-sm pull-right">토론 생성하기</a></h1>
     </section>
 
     <section class="content">

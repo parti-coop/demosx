@@ -101,6 +101,7 @@ CREATE TABLE `TB_ISSUE` (
 	`ISSUE_PROCESS`      VARCHAR(12)         NOT NULL COMMENT '이슈과정', -- 이슈과정
 	`OPINION_TYPE`       VARCHAR(12)         NOT NULL COMMENT '의견타입', -- 의견타입
 	`ISSUE_TITLE`        VARCHAR(300)        NOT NULL COMMENT '이슈제목', -- 이슈제목
+	`ISSUE_EXCERPT`      VARCHAR(300)        NULL     COMMENT '이슈요약', -- 이슈요약
 	`ISSUE_CONTENT`      LONGTEXT            NULL     COMMENT '이슈내용', -- 이슈내용
 	`IMG_URL`            VARCHAR(300)        NULL     COMMENT '이미지URL', -- 이미지URL
 	`DEBATE_STDATE`      DATE                NULL     COMMENT '토론시작일', -- 토론시작일

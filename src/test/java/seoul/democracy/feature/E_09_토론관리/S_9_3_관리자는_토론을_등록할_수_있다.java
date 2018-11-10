@@ -57,9 +57,9 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     public void setUp() throws Exception {
         createDto = DebateCreateDto.of("thumbnail.jpg", "복지", OpinionType.PROPOSAL,
             LocalDate.of(2019, 10, 10), LocalDate.of(2019, 12, 12),
-            "토론 + 제안의견", "제안의견인 토론입니다.", Issue.Status.OPEN,
+            "토론 + 제안의견", "토론한줄성명","제안의견인 토론입니다.", Issue.Status.OPEN,
             Arrays.asList(IssueFileDto.of("파일1", "file1"), IssueFileDto.of("파일2", "file2")),
-            Arrays.asList(1L, 11L));
+            Arrays.asList(1L, 11L), null);
     }
 
     /**
@@ -96,6 +96,7 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
         assertThat(debateDto.getEndDate(), is(createDto.getEndDate()));
 
         assertThat(debateDto.getTitle(), is(createDto.getTitle()));
+        assertThat(debateDto.getExcerpt(), is(createDto.getExcerpt()));
         assertThat(debateDto.getContent(), is(createDto.getContent()));
 
         assertThat(debateDto.getStatus(), is(createDto.getStatus()));

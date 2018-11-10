@@ -3,21 +3,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>토론 관리 상세 - Democracy</title>
+  <title>토론 관리 - 생성 - Democracy</title>
   <%@ include file="../shared/head.jsp" %>
-  <link rel="stylesheet" type="text/css" href="<c:url value="/css/dataTables.bootstrap.min.css"/>"/>
-  <script type="text/javascript" src="<c:url value="/js/jquery.dataTables.min.js"/>"></script>
-  <script type="text/javascript" src="<c:url value="/js/dataTables.bootstrap.min.js"/>"></script>
 
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.3/css/bootstrap-select.min.css">
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.4.4/css/ajax-bootstrap-select.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.3/js/bootstrap-select.min.js"></script>
-  <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.4.4/js/ajax-bootstrap-select.min.js"></script>
-  <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.4.4/js/locale/ajax-bootstrap-select.ko-KR.min.js"></script>
+  <!-- form validation -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.8.1/parsley.min.js"></script>
+  <script type="text/javascript" src="<c:url value="/js/parsley-ko.js"/>"></script>
+
+  <!-- date picker -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/locale/ko.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+
+  <!-- 파일 업로드 -->
+  <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.1/css/jquery.fileupload.min.css"/>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.1/js/vendor/jquery.ui.widget.min.js"></script>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.1/js/jquery.iframe-transport.min.js"></script>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.1/js/jquery.fileupload.min.js"></script>
+
+  <!-- select2 -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/i18n/ko.js"></script>
+
+  <style>
+    #thumbnail-remove {
+      position: absolute;
+      right: -25px;
+      top: 0;
+    }
+    .thumbnail-img-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-right: 30px;
+    }
+
+    #select-proposal-input {
+      width: 50%;
+    }
+  </style>
+
+  <!-- tinymce editor -->
+  <script type="text/javascript" src="<c:url value="/tinymce/tinymce.min.js"/>"></script>
+  <script>
+    tinymce.init({
+      selector: '.tinymce-editor',
+      menubar: false,
+      language: 'ko_KR',
+      plugins: ['autolink', 'autosave', 'textcolor', 'image', 'media', 'link', 'paste', 'autoresize'],
+      toolbar: "undo redo | styleselect | forecolor bold italic | alignleft aligncenter alignright alignjustify | link media custom_image",
+      mobile: {
+        theme: 'mobile'
+      },
+      branding: false,
+      content_css: ['https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', '/css/admin.css', 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic'],
+      preview_styles: 'font-family font-size color',
+      body_class: 'container'
+    });
+  </script>
 </head>
 <body class="hold-transition skin-black-light fixed sidebar-mini admin">
 
@@ -26,7 +73,7 @@
 
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>토론 관리 상세 - 수정</h1>
+      <h1>토론 관리 - 생성</h1>
     </section>
 
     <section class="content">
@@ -36,105 +83,148 @@
             <div class="box-header with-border">
               <h3 class="box-title">토론</h3>
             </div>
-            <form:form commandName="updateDto" class="form-horizontal">
+            <form:form commandName="createDto" class="form-horizontal">
               <div class="box-body">
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">썸네일</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.thumbnail}</p></div>
+                  <label class="col-sm-2 control-label">썸네일<span> *</span></label>
+                  <div class="col-sm-4">
+                    <div id="thumbnail-upload" class="${createDto.thumbnail eq null ? '' : 'hidden'}">
+                      <span class="btn btn-success btn-sm fileinput-button">
+                          <i class="glyphicon glyphicon-plus"></i>
+                          <span>이미지 선택</span>
+                          <input id="thumbnail-upload-input" type="file" name="file">
+                      </span>
+                      <img src="<c:url value="/images/loading.gif"/>" height="20" id="thumbnail-progress"
+                           class="hidden">
+                    </div>
+                    <div id="thumbnail-uploaded" class="${createDto.thumbnail eq null ? 'hidden' : ''}">
+                      <div class="thumbnail-img-wrapper">
+                        <img src="${createDto.thumbnail}">
+                        <i id="thumbnail-remove" class="fa fa-times fa-2x cursor-pointer"></i>
+                      </div>
+                    </div>
+                    <input type="text" class="hidden" name="thumbnail" id="thumbnail" value="${createDto.thumbnail}"
+                           data-parsley-required="true">
+                  </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">타입</label>
-                  <div class="col-sm-2">
-                    <form:select path="opinionType" class="form-control input-sm">
-                      <option value="">의견타입</option>
-                      <form:option value="PROPOSAL" label="제안타입"/>
-                      <form:option value="DEBATE" label="투표타입"/>
+                  <label class="col-sm-2 control-label">분류<span> *</span></label>
+                  <div class="col-sm-4">
+                    <form:select path="category" class="form-control input-sm"
+                                 data-parsley-required="true">
+                      <option value="">분류선택</option>
+                      <form:options items="${categories}" itemLabel="name" itemValue="name"/>
                     </form:select>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">분류</label>
-                  <div class="col-sm-2">
-                    <select class="form-control input-sm">
-                      <option value="">분류선택</option>
-                      <c:forEach var="category" items="${categories}">
-                        <option value="${category.name}" <c:if
-                            test="${proposal.category.name eq category.name}">selected</c:if>>${category.name}</option>
-                      </c:forEach>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">제목</label>
+                  <label class="col-sm-2 control-label">타입<span> *</span></label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control input-sm">
+                    <label class="radio-inline">
+                      <form:radiobutton path="opinionType" value="PROPOSAL"
+                                        data-parsley-required="true"
+                                        data-parsley-errors-container="#opinionTypeError"/>제안의견
+                    </label>
+                    <label class="radio-inline">
+                      <form:radiobutton path="opinionType" value="DEBATE"/>투표의견
+                    </label>
+                    <div id="opinionTypeError"></div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">작성일</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.createdDate}</p></div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">작성자</label>
+                  <label class="col-sm-2 control-label">기간<span> *</span></label>
                   <div class="col-sm-10">
-                    <p class="form-control-static">${debate.createdBy.name} / ${debate.createdBy.email}</p>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">조회수</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.stats.viewCount}</p></div>
-                </div>
-                <c:if test="${debate.opinionType.isDebate()}">
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">투표수</label>
-                    <div class="col-sm-10">
-                      <p class="form-control-static">
-                        찬성 : ${debate.stats.yesCount}표(${debate.stats.yesPercent()}%) /
-                        반대 : ${debate.stats.noCount}표(${debate.stats.noPercent()}%) /
-                        기타 : ${debate.stats.etcCount}표(${debate.stats.etcPercent()}%)
-                      </p>
+                    <div class="input-group">
+                      <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                      <input type="text" class="form-control pull-right" id="debate-dates" autocomplete="off"
+                             onkeydown="return false" value="${createDto.period()}"
+                             data-parsley-required="true" data-parsley-errors-container="#datesError">
+                      <input type="hidden" name="startDate" value="${createDto.startDate}"/>
+                      <input type="hidden" name="endDate" value="${createDto.endDate}"/>
                     </div>
-                  </div>
-                </c:if>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">댓글수</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.stats.opinionCount}</p></div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">기간</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.startDate} ~ ${debate.endDate}</p>
+                    <div id="datesError"></div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">공개여부</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.status.msg}</p></div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">첨부파일</label>
+                  <label class="col-sm-2 control-label">제목<span> *</span></label>
                   <div class="col-sm-10">
-                    <c:forEach var="file" items="${debate.files}">
-                      <p class="form-control-static">${file.name}</p>
-                    </c:forEach>
+                    <form:input path="title" type="text" class="form-control input-sm" autocomplete="off"
+                                data-parsley-required="true" data-parsley-trim-value="true"
+                                data-parsley-maxlength="100"/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">한줄설명<span> *</span></label>
+                  <div class="col-sm-10">
+                    <form:input path="excerpt" type="text" class="form-control input-sm" autocomplete="off"
+                                data-parsley-required="true" data-parsley-trim-value="true"
+                                data-parsley-maxlength="100"/>
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">내용</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.content}</p></div>
+                  <div class="col-sm-10">
+                    <form:textarea path="content" class="tinymce-editor"/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">첨부파일</label>
+                  <div class="col-sm-10">
+                    <div id="file-upload">
+                      <span class="btn btn-success btn-sm fileinput-button">
+                          <i class="glyphicon glyphicon-plus"></i>
+                          <span>파일 선택</span>
+                          <input id="file-upload-input" type="file" name="file">
+                      </span>
+                      <img src="<c:url value="/images/loading.gif"/>" height="20" id="file-progress" class="hidden">
+                    </div>
+                    <div id="file-uploaded">
+                      <c:forEach var="file" items="${createDto.files}" varStatus="status">
+                        <p class="form-control-static">
+                          <a href="${file.url}">${file.name}</a>
+                          <i class="fa fa-times-circle cursor-pointer file-remove ml-10"></i>
+                          <input type="hidden" class="file-name" name="files[${status.index}].name"
+                                 value="${file.name}">
+                          <input type="hidden" class="file-url" name="files[${status.index}].url" value="${file.url}">
+                        </p>
+                      </c:forEach>
+                    </div>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">연관제안</label>
                   <div class="col-sm-10">
-                    <c:forEach var="relation" items="${debate.relations}">
-                      <p class="form-control-static">${relation}</p>
-                    </c:forEach>
+                    <select id="select-proposal-input" class="form-control"></select>
+                    <button type="button" class="btn btn-default mr-20" id="select-proposal-btn">선택하기</button>
+                    <div id="selected-proposal-list">
+                      <c:forEach var="issue" items="${createDto.issues}" varStatus="status">
+                        <p class="form-control-static">${issue.title}
+                          <i class="fa fa-times-circle cursor-pointer remove-issue-icon ml-10"></i>
+                          <input type="hidden" class="relation-input" name="relations[${status.index}]"
+                                 value="${issue.id}">
+                        </p>
+                      </c:forEach>
+                    </div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">히스토리 작성</label>
+                  <label class="col-sm-2 control-label">공개여부<span> *</span></label>
                   <div class="col-sm-10">
-                    <a href="#" class="btn btn-default btn-sm">작성하러 가기</a>
+                    <label class="radio-inline">
+                      <form:radiobutton path="status" value="OPEN"
+                                        data-parsley-required="true"
+                                        data-parsley-errors-container="#statusError"/>공개
+                    </label>
+                    <label class="radio-inline">
+                      <form:radiobutton path="status" value="CLOSED"/>비공개
+                    </label>
+                    <div id="statusError"></div>
                   </div>
                 </div>
+              </div>
+              <div class="box-footer">
+                <a href="<c:url value="/admin/issue/debate.do"/>" class="btn btn-default btn-sm">목록</a>
+                <button type="submit" class="btn btn-primary btn-sm pull-right" id="update-btn">생성하기</button>
               </div>
             </form:form>
           </div>
@@ -144,5 +234,186 @@
   </div>
   <%@ include file="../shared/footer.jsp" %>
 </div>
+
+<script>
+  $(function () {
+    function rearrangeIssue() {
+      $('input.relation-input').each(function (i) {
+        $(this).attr('name', 'relations[' + i + ']');
+      });
+    }
+
+    function getSelectedIssue(title, id) {
+      return '<p class="form-control-static">' + title +
+        '<i class="fa fa-times-circle cursor-pointer remove-issue-icon ml-10"></i>' +
+        '<input type="hidden" class="relation-input" value="' + id + '"></p>';
+    }
+
+    var $selectIssueInput = $('#select-proposal-input');
+    $selectIssueInput.select2({
+      language: 'ko',
+      ajax: {
+        headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
+        url: '/admin/ajax/issue/proposals/select',
+        type: 'GET',
+        dataType: 'json',
+        data: function (params) {
+          return {
+            search: params.term
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: data.content.map(function (item) {
+              return {
+                id: item.id,
+                text: item.title,
+                item: item
+              }
+            })
+          };
+        }
+      }
+    });
+
+
+    $('#select-proposal-btn').click(function () {
+      var selectedData = $selectIssueInput.select2('data');
+      if (selectedData.length === 0) {
+        alert('선택된 항목이 없습니다.');
+        return;
+      }
+
+      var sameValueItem = $('input.relation-input[value=' + selectedData[0].id + ']');
+      if (sameValueItem.length !== 0) {
+        alert('이미 선택된 항목입니다.');
+        return;
+      }
+
+      $('#selected-proposal-list').append(getSelectedIssue(selectedData[0].text, selectedData[0].id));
+      rearrangeIssue();
+      $selectIssueInput.val(null).trigger('change');
+    });
+
+    $(document).on('click', '.remove-issue-icon', function () {
+      $(this).parent('p').remove();
+      rearrangeIssue();
+    });
+  });
+</script>
+<script>
+  $(function () {
+    var $thumbnailInput = $('input[name=thumbnail]');
+
+    function setThumbnail(thumbnail) {
+      var $thumbnailUploaded = $('#thumbnail-uploaded');
+      if (thumbnail) {
+        $('#thumbnail-upload').addClass('hidden');
+        $thumbnailUploaded.removeClass('hidden');
+        $('img', $thumbnailUploaded).attr('src', thumbnail);
+        $thumbnailInput.val(thumbnail);
+        $thumbnailInput.parsley().validate();
+      } else {
+        $('#thumbnail-upload').removeClass('hidden');
+        $thumbnailUploaded.addClass('hidden');
+        $('img', $thumbnailUploaded).attr('src', '');
+        $thumbnailInput.val('');
+        $thumbnailInput.parsley().validate();
+      }
+    }
+
+    $('#thumbnail-remove').click(function () {
+      setThumbnail('');
+    });
+
+    $('#thumbnail-upload-input').fileupload({
+      headers: {
+        'X-CSRF-TOKEN': '${_csrf.token}'
+      },
+      url: '/admin/ajax/files?type=THUMBNAIL',
+      dataType: 'json',
+      done: function (e, data) {
+        $('#thumbnail-progress').addClass('hidden');
+        setThumbnail(data.result.url);
+      },
+      progressall: function (e, data) {
+        $('#thumbnail-progress').removeClass('hidden');
+      },
+      fail: function (e, data) {
+        $('#thumbnail-progress').addClass('hidden');
+        alert(data.jqXHR.responseJSON.msg);
+      }
+    }).prop('disabled', !$.support.fileInput)
+      .parent().addClass($.support.fileInput ? undefined : 'disabled');
+  });
+</script>
+
+<script>
+  $(function () {
+    function getUploadedFile(filename, url) {
+      return '<p class="form-control-static">' +
+        '<a href="' + url + '" download="' + filename + '">' + filename + '</a><i class="fa fa-times-circle cursor-pointer file-remove ml-10"></i>' +
+        '<input type="hidden" class="file-name" value="' + filename + '">' +
+        '<input type="hidden" class="file-url" value="' + url + '">' +
+        '</p>';
+    }
+
+    function rearrangeFile() {
+      $('input.file-name').each(function (i) {
+        $(this).attr('name', 'files[' + i + '].name');
+      });
+      $('input.file-url').each(function (i) {
+        $(this).attr('name', 'files[' + i + '].url');
+      });
+    }
+
+    $('#file-upload-input').fileupload({
+      headers: {
+        'X-CSRF-TOKEN': '${_csrf.token}'
+      },
+      url: '/admin/ajax/files?type=ORIGINAL',
+      dataType: 'json',
+      done: function (e, data) {
+        $('#file-progress').addClass('hidden');
+        $('#file-uploaded').append(getUploadedFile(data.result.filename, data.result.url));
+        rearrangeFile();
+      },
+      progressall: function (e, data) {
+        $('#file-progress').removeClass('hidden');
+      },
+      fail: function (e, data) {
+        $('#file-progress').addClass('hidden');
+        alert(data.jqXHR.responseJSON.msg);
+      }
+    }).prop('disabled', !$.support.fileInput)
+      .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+    $(document).on('click', '.file-remove', function () {
+      $(this).parent('p').remove();
+      rearrangeFile();
+    });
+  });
+</script>
+
+<script>
+  $(function () {
+    $('#createDto').parsley(parsleyConfig);
+
+    moment.locale('ko');
+    var $debateDates = $('#debate-dates');
+    $debateDates.daterangepicker({
+      autoUpdateInput: false,
+      locale: { format: 'YYYY-MM-DD', cancelLabel: '취소', applyLabel: '확인' }
+    });
+    $debateDates.on('apply.daterangepicker', function (ev, picker) {
+      var startDate = picker.startDate.format('YYYY-MM-DD');
+      var endDate = picker.endDate.format('YYYY-MM-DD');
+      $('input[name=startDate]').val(startDate);
+      $('input[name=endDate]').val(endDate);
+      $debateDates.val(startDate + ' - ' + endDate);
+      $debateDates.parsley().validate();
+    });
+  });
+</script>
 </body>
 </html>

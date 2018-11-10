@@ -47,7 +47,7 @@ public class AdminProposalAjaxController {
                                      @RequestBody @Valid ProposalCategoryUpdateDto updateDto,
                                      InetAddress address) {
 
-        proposalService.updateCategory(updateDto, address.getHostName());
+        proposalService.updateCategory(updateDto, address.getHostAddress());
 
         return ResultInfo.of("카테고리를 업데이트 하였습니다.");
     }
@@ -55,7 +55,7 @@ public class AdminProposalAjaxController {
     @RequestMapping(value = "/{proposalId}/closed", method = RequestMethod.PATCH)
     public ResultInfo closedProposal(@PathVariable("proposalId") Long proposalId,
                                      InetAddress address) {
-        proposalService.closed(proposalId, address.getHostName());
+        proposalService.closed(proposalId, address.getHostAddress());
 
         return ResultInfo.of("비공개 상태입니다.");
     }
@@ -63,7 +63,7 @@ public class AdminProposalAjaxController {
     @RequestMapping(value = "/{proposalId}/open", method = RequestMethod.PATCH)
     public ResultInfo openProposal(@PathVariable("proposalId") Long proposalId,
                                    InetAddress address) {
-        proposalService.open(proposalId, address.getHostName());
+        proposalService.open(proposalId, address.getHostAddress());
 
         return ResultInfo.of("공개 상태입니다.");
     }

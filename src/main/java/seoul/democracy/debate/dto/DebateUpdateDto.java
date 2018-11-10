@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 import seoul.democracy.issue.domain.Issue;
+import seoul.democracy.issue.dto.IssueDto;
 import seoul.democracy.issue.dto.IssueFileDto;
+import seoul.democracy.opinion.domain.OpinionType;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -29,6 +31,8 @@ public class DebateUpdateDto {
     @NotBlank
     private String category;
 
+    private OpinionType opinionType;
+
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
@@ -41,6 +45,10 @@ public class DebateUpdateDto {
     @Size(max = 100)
     private String title;
 
+    @NotBlank
+    @Size(max = 100)
+    private String excerpt;
+
     private String content;
 
     @NotNull
@@ -51,10 +59,18 @@ public class DebateUpdateDto {
 
     private List<Long> relations;
 
+    private List<IssueDto> issues;
+
+    public String period() {
+        if (startDate == null || endDate == null) return "";
+        return startDate.toString() + " - " + endDate.toString();
+    }
+
     public static DebateUpdateDto of(DebateDto debateDto) {
         return of(debateDto.getId(), debateDto.getThumbnail(), debateDto.getCategory().getName(),
+            debateDto.getOpinionType(),
             debateDto.getStartDate(), debateDto.getEndDate(),
-            debateDto.getTitle(), debateDto.getContent(), debateDto.getStatus(),
-            debateDto.getFiles(), debateDto.getRelations());
+            debateDto.getTitle(), debateDto.getExcerpt(), debateDto.getContent(), debateDto.getStatus(),
+            debateDto.getFiles(), debateDto.getRelations(), debateDto.getIssues());
     }
 }

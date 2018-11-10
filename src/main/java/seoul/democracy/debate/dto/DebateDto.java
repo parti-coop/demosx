@@ -30,7 +30,7 @@ public class DebateDto {
         CategoryDto.projection.as("category"),
         IssueStatsDto.projection.as("stats"),
         debate.status, debate.process,
-        debate.thumbnail, debate.title, debate.content,
+        debate.thumbnail, debate.title, debate.excerpt, debate.content,
         debate.startDate, debate.endDate);
 
     public final static QBean<DebateDto> projectionForAdminList = Projections.fields(DebateDto.class,
@@ -61,6 +61,7 @@ public class DebateDto {
 
     private String thumbnail;
     private String title;
+    private String excerpt;
     private String content;
 
     private LocalDate startDate;

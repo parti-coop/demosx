@@ -24,8 +24,6 @@ public class UserPredicate {
     }
 
     public static Predicate containsNameOrEmailAndRole(String search, Role role) {
-        Predicate predicate = containsNameOrEmail(search);
-
-        return ExpressionUtils.and(user.role.eq(role), predicate);
+        return ExpressionUtils.and(user.role.eq(role), containsNameOrEmail(search));
     }
 }

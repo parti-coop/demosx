@@ -59,11 +59,11 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
-        updateDto = DebateUpdateDto.of(debateId, "thumbnail.jpg", "복지",
+        updateDto = DebateUpdateDto.of(debateId, "thumbnail.jpg", "복지", OpinionType.PROPOSAL,
             LocalDate.of(2019, 10, 10), LocalDate.of(2019, 12, 12),
-            "토론 + 제안의견", "제안의견인 토론입니다.", Issue.Status.OPEN,
+            "토론 + 제안의견", "토론 한줄 설명", "제안의견인 토론입니다.", Issue.Status.OPEN,
             Arrays.asList(IssueFileDto.of("파일1", "file1"), IssueFileDto.of("파일2", "file2")),
-            Arrays.asList(1L, 11L));
+            Arrays.asList(1L, 11L), null);
     }
 
     /**
@@ -89,6 +89,7 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
         assertThat(debateDto.getEndDate(), is(updateDto.getEndDate()));
 
         assertThat(debateDto.getTitle(), is(updateDto.getTitle()));
+        assertThat(debateDto.getExcerpt(), is(updateDto.getExcerpt()));
         assertThat(debateDto.getContent(), is(updateDto.getContent()));
 
         assertThat(debateDto.getStatus(), is(updateDto.getStatus()));

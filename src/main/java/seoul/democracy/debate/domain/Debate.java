@@ -40,6 +40,12 @@ public class Debate extends Issue {
     private String thumbnail;
 
     /**
+     * 이슈 요약
+     */
+    @Column(name = "ISSUE_EXCERPT")
+    private String excerpt;
+
+    /**
      * 토론 시작일
      */
     @Convert(converter = LocalDateAttributeConverter.class)
@@ -64,7 +70,7 @@ public class Debate extends Issue {
 
     private Debate(Category category, String thumbnail, OpinionType opinionType,
                    LocalDate startDate, LocalDate endDate,
-                   String title, String content, Status status,
+                   String title, String excerpt, String content, Status status,
                    List<IssueFile> files, List<IssueRelation> relations, String ip) {
         this.stats = IssueStats.create();
         this.status = status;
@@ -75,6 +81,7 @@ public class Debate extends Issue {
         this.endDate = endDate;
         this.thumbnail = thumbnail;
         this.title = title;
+        this.excerpt = excerpt;
         this.content = content;
         this.createdIp = this.modifiedIp = ip;
 
@@ -83,18 +90,24 @@ public class Debate extends Issue {
     }
 
     public static Debate create(DebateCreateDto createDto, Category category, String ip) {
+
+        // todo 정리 필요, update 부분과 같이
         List<IssueFile> files = new ArrayList<>();
-        for (int i = 0; i < createDto.getFiles().size(); i++) {
-            IssueFileDto fileDto = createDto.getFiles().get(i);
-            files.add(IssueFile.of(i, fileDto.getName(), fileDto.getUrl()));
+        if (createDto.getFiles() != null) {
+            for (int i = 0; i < createDto.getFiles().size(); i++) {
+                IssueFileDto fileDto = createDto.getFiles().get(i);
+                files.add(IssueFile.of(i, fileDto.getName(), fileDto.getUrl()));
+            }
         }
         List<IssueRelation> relations = new ArrayList<>();
-        for (int i = 0; i < createDto.getRelations().size(); i++) {
-            relations.add(IssueRelation.create(i, createDto.getRelations().get(i)));
+        if (createDto.getRelations() != null) {
+            for (int i = 0; i < createDto.getRelations().size(); i++) {
+                relations.add(IssueRelation.create(i, createDto.getRelations().get(i)));
+            }
         }
         return new Debate(category, createDto.getThumbnail(), createDto.getOpinionType(),
             createDto.getStartDate(), createDto.getEndDate(),
-            createDto.getTitle(), createDto.getContent(), createDto.getStatus(),
+            createDto.getTitle(), createDto.getExcerpt(), createDto.getContent(), createDto.getStatus(),
             files, relations, ip);
     }
 
@@ -105,11 +118,12 @@ public class Debate extends Issue {
         this.endDate = updateDto.getEndDate();
         this.thumbnail = updateDto.getThumbnail();
         this.title = updateDto.getTitle();
+        this.excerpt = updateDto.getExcerpt();
         this.content = updateDto.getContent();
         this.modifiedIp = ip;
 
         List<IssueFile> files = new ArrayList<>();
-        if(updateDto.getFiles() != null) {
+        if (updateDto.getFiles() != null) {
             for (int i = 0; i < updateDto.getFiles().size(); i++) {
                 IssueFileDto fileDto = updateDto.getFiles().get(i);
                 files.add(IssueFile.of(i, fileDto.getName(), fileDto.getUrl()));
@@ -118,7 +132,7 @@ public class Debate extends Issue {
         this.files = files;
 
         List<IssueRelation> relations = new ArrayList<>();
-        if(updateDto.getFiles() != null) {
+        if (updateDto.getFiles() != null) {
             for (int i = 0; i < updateDto.getRelations().size(); i++) {
                 relations.add(IssueRelation.create(i, updateDto.getRelations().get(i)));
             }

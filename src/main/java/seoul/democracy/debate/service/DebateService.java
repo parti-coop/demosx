@@ -17,14 +17,9 @@ import seoul.democracy.debate.dto.DebateDto;
 import seoul.democracy.debate.dto.DebateUpdateDto;
 import seoul.democracy.debate.repository.DebateRepository;
 import seoul.democracy.issue.domain.Category;
-import seoul.democracy.issue.dto.IssueDto;
 import seoul.democracy.issue.repository.CategoryRepository;
-import seoul.democracy.issue.repository.IssueRepository;
-
-import java.util.List;
 
 import static seoul.democracy.issue.predicate.CategoryPredicate.equalName;
-import static seoul.democracy.issue.predicate.IssuePredicate.equalIdIn;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,24 +27,16 @@ public class DebateService {
 
     private final DebateRepository debateRepository;
     private final CategoryRepository categoryRepository;
-    private final IssueRepository issueRepository;
 
     @Autowired
     public DebateService(DebateRepository debateRepository,
-                         CategoryRepository categoryRepository,
-                         IssueRepository issueRepository) {
+                         CategoryRepository categoryRepository) {
         this.debateRepository = debateRepository;
         this.categoryRepository = categoryRepository;
-        this.issueRepository = issueRepository;
     }
 
     public DebateDto getDebate(Predicate predicate, Expression<DebateDto> projection, boolean withFiles, boolean withRelations) {
-        DebateDto debateDto = debateRepository.findOne(predicate, projection, withFiles, withRelations);
-        if (withRelations && debateDto.getRelations().size() > 0) {
-            List<IssueDto> issues = issueRepository.findAll(equalIdIn(debateDto.getRelations()), IssueDto.projectionForBasic);
-            debateDto.setIssues(issues);
-        }
-        return debateDto;
+        return debateRepository.findOne(predicate, projection, withFiles, withRelations);
     }
 
     public Page<DebateDto> getDebates(Predicate predicate, Pageable pageable, Expression<DebateDto> projection, boolean withFiles, boolean withRelations) {

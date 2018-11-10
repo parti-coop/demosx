@@ -37,9 +37,9 @@ public class AdminUserAjaxController {
     }
 
     @RequestMapping(value = "/managers", method = RequestMethod.GET)
-    public Page<UserDto> getManagers(@RequestParam(value = "search") String search,
+    public Page<UserDto> getManagers(@RequestParam(value = "search", required = false) String search,
                                      @PageableDefault Pageable pageable) {
 
-        return userService.getUsers(containsNameOrEmailAndRole(search.trim(), Role.ROLE_MANAGER), pageable, projectionForBasic);
+        return userService.getUsers(containsNameOrEmailAndRole(search, Role.ROLE_MANAGER), pageable, projectionForBasic);
     }
 }
