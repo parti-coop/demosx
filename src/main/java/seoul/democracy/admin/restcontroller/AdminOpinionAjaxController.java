@@ -9,8 +9,6 @@ import seoul.democracy.common.dto.ResultInfo;
 import seoul.democracy.opinion.dto.OpinionDto;
 import seoul.democracy.opinion.service.OpinionService;
 
-import java.net.InetAddress;
-
 import static seoul.democracy.opinion.predicate.OpinionPredicate.equalIssueId;
 
 
@@ -33,19 +31,17 @@ public class AdminOpinionAjaxController {
     }
 
     @RequestMapping(value = "/{opinionId}/block", method = RequestMethod.PATCH)
-    public ResultInfo blockOpinion(@PathVariable("opinionId") Long opinionId,
-                                   InetAddress address) {
+    public ResultInfo blockOpinion(@PathVariable("opinionId") Long opinionId) {
 
-        opinionService.blockOpinion(opinionId, address.getHostAddress());
+        opinionService.blockOpinion(opinionId);
 
         return ResultInfo.of("비공개 상태입니다.");
     }
 
     @RequestMapping(value = "/{opinionId}/open", method = RequestMethod.PATCH)
-    public ResultInfo openOpinion(@PathVariable("opinionId") Long opinionId,
-                                   InetAddress address) {
+    public ResultInfo openOpinion(@PathVariable("opinionId") Long opinionId) {
 
-        opinionService.openOpinion(opinionId, address.getHostAddress());
+        opinionService.openOpinion(opinionId);
 
         return ResultInfo.of("공개 상태입니다.");
     }

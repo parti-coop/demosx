@@ -6,12 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.history.domain.IssueHistory;
 import seoul.democracy.history.dto.IssueHistoryDto;
@@ -42,6 +45,7 @@ public class S_9_6_관리자는_토론_히스토리를_수정할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private IssueHistoryService historyService;
@@ -54,6 +58,10 @@ public class S_9_6_관리자는_토론_히스토리를_수정할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
         updateDto = IssueHistoryUpdateDto.of(historyId, "히스토리를 수정합니다.");
     }
 
@@ -64,7 +72,7 @@ public class S_9_6_관리자는_토론_히스토리를_수정할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_1_관리자는_토론에_히스토리를_수정할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        IssueHistory history = historyService.update(updateDto, ip);
+        IssueHistory history = historyService.update(updateDto);
 
         IssueHistoryDto historyDto = historyService.getHistory(equalId(history.getId()), projection);
         assertThat(historyDto.getModifiedDate().format(dateTimeFormatter), is(now));
@@ -81,7 +89,7 @@ public class S_9_6_관리자는_토론_히스토리를_수정할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
     public void T_2_매니저는_히스토리를_수정할_수_없다() {
-        historyService.update(updateDto, ip);
+        historyService.update(updateDto);
     }
 
     /**
@@ -90,7 +98,7 @@ public class S_9_6_관리자는_토론_히스토리를_수정할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_사용자는_히스토리를_수정할_수_없다() {
-        historyService.update(updateDto, ip);
+        historyService.update(updateDto);
     }
 
     /**
@@ -100,7 +108,7 @@ public class S_9_6_관리자는_토론_히스토리를_수정할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_4_없는_히스토리는_수정할_수_없다() {
         updateDto.setHistoryId(notExistsId);
-        historyService.update(updateDto, ip);
+        historyService.update(updateDto);
     }
 
     /**
@@ -110,6 +118,6 @@ public class S_9_6_관리자는_토론_히스토리를_수정할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_5_삭제된_히스토리는_수정할_수_없다() {
         updateDto.setHistoryId(deletedHistoryId);
-        historyService.update(updateDto, ip);
+        historyService.update(updateDto);
     }
 }

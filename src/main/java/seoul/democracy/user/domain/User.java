@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import seoul.democracy.common.annotation.CreatedIp;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
+import seoul.democracy.common.listener.AuditingIpListener;
 import seoul.democracy.user.dto.UserCreateDto;
 import seoul.democracy.user.dto.UserUpdateDto;
 
@@ -18,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity(name = "TB_USER")
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class, AuditingIpListener.class})
 public class User implements Serializable {
 
     @Id
@@ -37,8 +39,9 @@ public class User implements Serializable {
     /**
      * 등록 아이피
      */
+    @CreatedIp
     @Column(name = "REG_IP", updatable = false)
-    private String ip;
+    private String createdIp;
 
     /**
      * 회원 권한
@@ -103,17 +106,16 @@ public class User implements Serializable {
     @Embedded
     private UserDepartment department;
 
-    private User(String email, String name, String password, String ip) {
+    private User(String email, String name, String password) {
         this.email = email;
         this.name = name;
         this.password = password;
-        this.ip = ip;
         this.role = Role.ROLE_USER;
         this.status = Status.ACTIVATED;
     }
 
-    public static User create(UserCreateDto createDto, String ip) {
-        return new User(createDto.getEmail().trim(), createDto.getName(), createDto.getPassword(), ip);
+    public static User create(UserCreateDto createDto) {
+        return new User(createDto.getEmail().trim(), createDto.getName(), createDto.getPassword());
     }
 
     public User update(UserUpdateDto updateDto) {

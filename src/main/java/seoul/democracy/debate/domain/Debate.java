@@ -62,7 +62,7 @@ public class Debate extends Issue {
     private Debate(IssueGroup group, Category category, String thumbnail, OpinionType opinionType,
                    LocalDate startDate, LocalDate endDate,
                    String title, String excerpt, String content, Status status,
-                   List<IssueFile> files, List<IssueRelation> relations, String ip) {
+                   List<IssueFile> files, List<IssueRelation> relations) {
         this.group = group;
         this.stats = IssueStats.create();
         this.status = status;
@@ -75,13 +75,12 @@ public class Debate extends Issue {
         this.title = title;
         this.excerpt = excerpt;
         this.content = content;
-        this.createdIp = this.modifiedIp = ip;
 
         this.files = files;
         this.relations = relations;
     }
 
-    public static Debate create(IssueGroup group, DebateCreateDto createDto, Category category, String ip) {
+    public static Debate create(IssueGroup group, DebateCreateDto createDto, Category category) {
 
         // todo 정리 필요, update 부분과 같이
         List<IssueFile> files = new ArrayList<>();
@@ -100,10 +99,10 @@ public class Debate extends Issue {
         return new Debate(group, category, createDto.getThumbnail(), createDto.getOpinionType(),
             createDto.getStartDate(), createDto.getEndDate(),
             createDto.getTitle(), createDto.getExcerpt(), createDto.getContent(), createDto.getStatus(),
-            files, relations, ip);
+            files, relations);
     }
 
-    public Debate update(DebateUpdateDto updateDto, Category category, String ip) {
+    public Debate update(DebateUpdateDto updateDto, Category category) {
         this.status = updateDto.getStatus();
         this.category = category;
         this.startDate = updateDto.getStartDate();
@@ -112,7 +111,6 @@ public class Debate extends Issue {
         this.title = updateDto.getTitle();
         this.excerpt = updateDto.getExcerpt();
         this.content = updateDto.getContent();
-        this.modifiedIp = ip;
 
         List<IssueFile> files = new ArrayList<>();
         if (updateDto.getFiles() != null) {
@@ -135,13 +133,13 @@ public class Debate extends Issue {
     }
 
     @Override
-    public Opinion createOpinion(OpinionCreateDto createDto, String ip) {
+    public Opinion createOpinion(OpinionCreateDto createDto) {
         if (!process.isProgress())
             throw new BadRequestException("process", "error.progress", "토론 진행상태가 아닙니다.");
 
         return opinionType == OpinionType.PROPOSAL ?
-                   ProposalOpinion.create(this, createDto.getContent(), ip) :
-                   DebateOpinion.create(this, createDto.getVote(), createDto.getContent(), ip);
+                   ProposalOpinion.create(this, createDto.getContent()) :
+                   DebateOpinion.create(this, createDto.getVote(), createDto.getContent());
     }
 
     @Override

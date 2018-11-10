@@ -6,12 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.debate.dto.DebateDto;
@@ -46,6 +49,7 @@ public class S_8_4_사용자는_토론의견을_수정할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private OpinionService opinionService;
@@ -62,6 +66,9 @@ public class S_8_4_사용자는_토론의견을_수정할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     /**
@@ -72,7 +79,7 @@ public class S_8_4_사용자는_토론의견을_수정할_수_있다 {
     public void T_1_사용자는_본인의견을_수정할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
         OpinionUpdateDto updateDto = OpinionUpdateDto.of(opinionIdInProgress, "토론 제안의견 수정합니다.");
-        Opinion opinion = opinionService.updateOpinion(updateDto, ip);
+        Opinion opinion = opinionService.updateOpinion(updateDto);
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
@@ -93,7 +100,7 @@ public class S_8_4_사용자는_토론의견을_수정할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_2_진행_중이_아닌_토론은_의견을_수정할_수_없다() {
         OpinionUpdateDto updateDto = OpinionUpdateDto.of(opinionIdInComplete, "토론 제안의견 수정합니다.");
-        opinionService.updateOpinion(updateDto, ip);
+        opinionService.updateOpinion(updateDto);
     }
 
     /**
@@ -103,7 +110,7 @@ public class S_8_4_사용자는_토론의견을_수정할_수_있다 {
     @WithUserDetails("user2@googl.co.kr")
     public void T_3_다른_사용자의_의견을_수정할_수_없다() {
         OpinionUpdateDto updateDto = OpinionUpdateDto.of(opinionIdInProgress, "토론 제안의견 수정합니다.");
-        opinionService.updateOpinion(updateDto, ip);
+        opinionService.updateOpinion(updateDto);
     }
 
     /**
@@ -113,7 +120,7 @@ public class S_8_4_사용자는_토론의견을_수정할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_4_없는_의견을_수정할_수_없다() {
         OpinionUpdateDto updateDto = OpinionUpdateDto.of(notExistsOpinionId, "없는 제안입니다.");
-        opinionService.updateOpinion(updateDto, ip);
+        opinionService.updateOpinion(updateDto);
     }
 
     /**
@@ -123,7 +130,7 @@ public class S_8_4_사용자는_토론의견을_수정할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_5_삭제된_의견을_수정할_수_없다() {
         OpinionUpdateDto updateDto = OpinionUpdateDto.of(deletedOpinionId, "삭제된 제안입니다.");
-        opinionService.updateOpinion(updateDto, ip);
+        opinionService.updateOpinion(updateDto);
     }
 
     /**
@@ -133,7 +140,7 @@ public class S_8_4_사용자는_토론의견을_수정할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_6_블럭된_의견을_수정할_수_없다() {
         OpinionUpdateDto updateDto = OpinionUpdateDto.of(blockedOpinionId, "블럭된 제안입니다.");
-        opinionService.updateOpinion(updateDto, ip);
+        opinionService.updateOpinion(updateDto);
     }
 
 }

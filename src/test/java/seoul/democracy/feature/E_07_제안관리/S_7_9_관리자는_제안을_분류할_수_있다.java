@@ -6,12 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.proposal.domain.Proposal;
@@ -38,6 +41,7 @@ import static org.junit.Assert.assertThat;
 public class S_7_9_관리자는_제안을_분류할_수_있다 {
 
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private ProposalService proposalService;
@@ -50,6 +54,10 @@ public class S_7_9_관리자는_제안을_분류할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
         updateDto = ProposalCategoryUpdateDto.of(proposalId, "환경");
     }
 
@@ -59,7 +67,7 @@ public class S_7_9_관리자는_제안을_분류할_수_있다 {
     @Test
     @WithUserDetails("admin1@googl.co.kr")
     public void T_1_관리자는_제안의_카테고리를_변경할_수_있다() {
-        Proposal proposal = proposalService.updateCategory(updateDto, ip);
+        Proposal proposal = proposalService.updateCategory(updateDto);
 
         ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(proposal.getId()), ProposalDto.projection);
         assertThat(proposalDto.getCategory().getName(), is(updateDto.getCategory()));
@@ -72,7 +80,7 @@ public class S_7_9_관리자는_제안을_분류할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_2_관리자는_비공개_카테고리로_변경할_수_없다() {
         updateDto.setCategory("비공개");
-        proposalService.updateCategory(updateDto, ip);
+        proposalService.updateCategory(updateDto);
     }
 
     /**
@@ -82,7 +90,7 @@ public class S_7_9_관리자는_제안을_분류할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_3_관리자는_없는_카테고리로_변경할_수_없다() {
         updateDto.setCategory("없는 카테고리");
-        proposalService.updateCategory(updateDto, ip);
+        proposalService.updateCategory(updateDto);
     }
 
     /**
@@ -91,7 +99,7 @@ public class S_7_9_관리자는_제안을_분류할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
     public void T_4_매니저는_카테고리를_변경할_수_없다() {
-        proposalService.updateCategory(updateDto, ip);
+        proposalService.updateCategory(updateDto);
     }
 
     /**
@@ -100,7 +108,7 @@ public class S_7_9_관리자는_제안을_분류할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_5_사용자는_카테고리를_변경할_수_없다() {
-        proposalService.updateCategory(updateDto, ip);
+        proposalService.updateCategory(updateDto);
     }
 
     /**
@@ -110,7 +118,7 @@ public class S_7_9_관리자는_제안을_분류할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_6_비공개된_제안의_카테고리를_변경할_수_있다() {
         updateDto.setProposalId(closedProposalId);
-        Proposal proposal = proposalService.updateCategory(updateDto, ip);
+        Proposal proposal = proposalService.updateCategory(updateDto);
 
         ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(proposal.getId()), ProposalDto.projection);
         assertThat(proposalDto.getStatus(), is(Issue.Status.CLOSED));
@@ -124,7 +132,7 @@ public class S_7_9_관리자는_제안을_분류할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_7_삭제된_제안의_카테고리를_변경할_수_있다() {
         updateDto.setProposalId(deletedProposalId);
-        Proposal proposal = proposalService.updateCategory(updateDto, ip);
+        Proposal proposal = proposalService.updateCategory(updateDto);
 
         ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(proposal.getId()), ProposalDto.projection);
         assertThat(proposalDto.getStatus(), is(Issue.Status.DELETE));

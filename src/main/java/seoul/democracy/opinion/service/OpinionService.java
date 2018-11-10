@@ -82,10 +82,10 @@ public class OpinionService {
      * 의견 등록
      */
     @Transactional
-    public Opinion createOpinion(OpinionCreateDto createDto, String ip) {
+    public Opinion createOpinion(OpinionCreateDto createDto) {
         Issue issue = getIssue(createDto.getIssueId());
 
-        Opinion opinion = issue.createOpinion(createDto, ip);
+        Opinion opinion = issue.createOpinion(createDto);
 
         increaseIssueStatsByOpinion(opinion, UserUtils.getUserId());
 
@@ -97,8 +97,8 @@ public class OpinionService {
      */
     @Transactional
     @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
-    public Opinion updateOpinion(OpinionUpdateDto updateDto, String ip) {
-        return getOpinion(updateDto.getOpinionId()).update(updateDto, ip);
+    public Opinion updateOpinion(OpinionUpdateDto updateDto) {
+        return getOpinion(updateDto.getOpinionId()).update(updateDto);
     }
 
     /**
@@ -106,9 +106,9 @@ public class OpinionService {
      */
     @Transactional
     @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
-    public Opinion deleteOpinion(Long opinionId, String ip) {
+    public Opinion deleteOpinion(Long opinionId) {
         Opinion opinion = getOpinion(opinionId);
-        opinion.delete(ip);
+        opinion.delete();
         opinionRepository.save(opinion);
 
         decreaseIssueStatsByOpinion(opinion);
@@ -121,9 +121,9 @@ public class OpinionService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Opinion blockOpinion(Long opinionId, String ip) {
+    public Opinion blockOpinion(Long opinionId) {
         Opinion opinion = getOpinion(opinionId);
-        opinion.block(ip);
+        opinion.block();
         opinionRepository.save(opinion);
 
         decreaseIssueStatsByOpinion(opinion);
@@ -136,12 +136,12 @@ public class OpinionService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Opinion openOpinion(Long opinionId, String ip) {
+    public Opinion openOpinion(Long opinionId) {
         Opinion opinion = getOpinion(opinionId);
 
         increaseIssueStatsByOpinion(opinion, opinion.getCreatedById());
 
-        return opinion.open(ip);
+        return opinion.open();
     }
 
     private void increaseIssueStatsByOpinion(Opinion opinion, Long userId) {
@@ -180,14 +180,14 @@ public class OpinionService {
      * 의견 공감
      */
     @Transactional
-    public OpinionLike selectOpinionLike(Long opinionId, String ip) {
+    public OpinionLike selectOpinionLike(Long opinionId) {
         User user = UserUtils.getLoginUser();
         if (opinionLikeRepository.exists(equalUserIdAndOpinionId(user.getId(), opinionId)))
             throw new AlreadyExistsException("이미 공감하였습니다.");
 
         Opinion opinion = getOpinion(opinionId);
 
-        OpinionLike like = opinion.createLike(user, ip);
+        OpinionLike like = opinion.createLike(user);
         opinionLikeRepository.save(like);
 
         opinionRepository.increaseLike(opinionId);

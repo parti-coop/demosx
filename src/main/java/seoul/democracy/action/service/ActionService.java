@@ -49,10 +49,10 @@ public class ActionService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Action create(ActionCreateDto createDto, String ip) {
+    public Action create(ActionCreateDto createDto) {
         Category category = getCategory(createDto.getCategory());
 
-        Action action = Action.create(createDto, category, ip);
+        Action action = Action.create(createDto, category);
 
         return actionRepository.save(action);
     }
@@ -62,13 +62,13 @@ public class ActionService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Action update(ActionUpdateDto updateDto, String ip) {
+    public Action update(ActionUpdateDto updateDto) {
         Action action = actionRepository.findOne(updateDto.getId());
         if(action == null) throw new NotFoundException("해당 실행을 찾을 수 없습니다.");
 
         Category category = action.getCategory().getName().equals(updateDto.getCategory()) ?
                                 action.getCategory() : getCategory(updateDto.getCategory());
 
-        return action.update(updateDto, category, ip);
+        return action.update(updateDto, category);
     }
 }

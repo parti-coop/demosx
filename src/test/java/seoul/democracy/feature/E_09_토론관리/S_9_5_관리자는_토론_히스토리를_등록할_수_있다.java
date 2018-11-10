@@ -6,12 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.history.domain.IssueHistory;
@@ -44,6 +47,7 @@ public class S_9_5_관리자는_토론_히스토리를_등록할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private IssueHistoryService historyService;
@@ -56,6 +60,10 @@ public class S_9_5_관리자는_토론_히스토리를_등록할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
         createDto = IssueHistoryCreateDto.of(debateId, "히스토리를 작성합니다.");
     }
 
@@ -66,7 +74,7 @@ public class S_9_5_관리자는_토론_히스토리를_등록할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_1_관리자는_토론에_히스토리를_등록할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        IssueHistory history = historyService.create(createDto, ip);
+        IssueHistory history = historyService.create(createDto);
         assertThat(history.getId(), is(notNullValue()));
 
         IssueHistoryDto historyDto = historyService.getHistory(equalId(history.getId()), projection);
@@ -88,7 +96,7 @@ public class S_9_5_관리자는_토론_히스토리를_등록할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
     public void T_2_매니저는_히스토리를_등록할_수_없다() {
-        historyService.create(createDto, ip);
+        historyService.create(createDto);
     }
 
     /**
@@ -97,7 +105,7 @@ public class S_9_5_관리자는_토론_히스토리를_등록할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_사용자는_히스토리를_등록할_수_없다() {
-        historyService.create(createDto, ip);
+        historyService.create(createDto);
     }
 
     /**
@@ -107,7 +115,7 @@ public class S_9_5_관리자는_토론_히스토리를_등록할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_4_관리자는_제안에_히스토리를_등록할_수_없다() {
         createDto.setIssueId(proposalId);
-        historyService.create(createDto, ip);
+        historyService.create(createDto);
     }
 
     /**
@@ -117,6 +125,6 @@ public class S_9_5_관리자는_토론_히스토리를_등록할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_5_없는_제안에_히스토리를_등록할_수_없다() {
         createDto.setIssueId(notExistsId);
-        historyService.create(createDto, ip);
+        historyService.create(createDto);
     }
 }

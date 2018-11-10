@@ -6,12 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.debate.dto.DebateDto;
 import seoul.democracy.debate.predicate.DebatePredicate;
@@ -44,6 +47,7 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private OpinionService opinionService;
@@ -67,6 +71,9 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     /**
@@ -76,7 +83,7 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_1_사용자는_본인의_제안의견을_삭제할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        Opinion opinion = opinionService.deleteOpinion(proposalOpinionId, ip);
+        Opinion opinion = opinionService.deleteOpinion(proposalOpinionId);
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
@@ -97,7 +104,7 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_있다 {
     @Test
     @WithUserDetails("user2@googl.co.kr")
     public void T_2_사용자는_본인의_여러_제안의견_중_하나를_삭제할_수_있다() {
-        Opinion opinion = opinionService.deleteOpinion(proposalOpinionIdWithMulti, ip);
+        Opinion opinion = opinionService.deleteOpinion(proposalOpinionIdWithMulti);
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedBy().getEmail(), is("user2@googl.co.kr"));
@@ -116,7 +123,7 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_있다 {
     @Test
     @WithUserDetails("user2@googl.co.kr")
     public void T_3_사용자는_본인의_찬성_토론의견을_삭제할_수_있다() {
-        Opinion opinion = opinionService.deleteOpinion(debateOpinionIdWithYes, ip);
+        Opinion opinion = opinionService.deleteOpinion(debateOpinionIdWithYes);
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedBy().getEmail(), is("user2@googl.co.kr"));
@@ -137,7 +144,7 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_있다 {
     @Test
     @WithUserDetails("user3@googl.co.kr")
     public void T_4_사용자는_본인의_반대_토론의견을_삭제할_수_있다() {
-        Opinion opinion = opinionService.deleteOpinion(debateOpinionIdWithNo, ip);
+        Opinion opinion = opinionService.deleteOpinion(debateOpinionIdWithNo);
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedBy().getEmail(), is("user3@googl.co.kr"));
@@ -156,7 +163,7 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_있다 {
     @Test
     @WithUserDetails("user4@googl.co.kr")
     public void T_5_사용자는_본인의_기타_토론의견을_삭제할_수_있다() {
-        Opinion opinion = opinionService.deleteOpinion(debateOpinionIdWithEtc, ip);
+        Opinion opinion = opinionService.deleteOpinion(debateOpinionIdWithEtc);
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedBy().getEmail(), is("user4@googl.co.kr"));
@@ -175,7 +182,7 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_6_다른_사용자의_의견을_삭제할_수_없다() {
-        opinionService.deleteOpinion(debateOpinionIdWithYes, ip);
+        opinionService.deleteOpinion(debateOpinionIdWithYes);
     }
 
     /**
@@ -184,7 +191,7 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_있다 {
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_7_없는_의견을_삭제할_수_없다() {
-        opinionService.deleteOpinion(notExistsOpinionId, ip);
+        opinionService.deleteOpinion(notExistsOpinionId);
     }
 
     /**
@@ -193,7 +200,7 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_있다 {
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_8_삭제된_의견을_삭제할_수_없다() {
-        opinionService.deleteOpinion(deletedProposalOpinionId, ip);
+        opinionService.deleteOpinion(deletedProposalOpinionId);
     }
 
     /**
@@ -202,7 +209,7 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_있다 {
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_9_블럭된_의견을_삭제할_수_없다() {
-        opinionService.deleteOpinion(blockedProposalOpinionId, ip);
+        opinionService.deleteOpinion(blockedProposalOpinionId);
     }
 
 }

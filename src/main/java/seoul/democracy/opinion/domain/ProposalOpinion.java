@@ -17,12 +17,12 @@ import javax.persistence.Entity;
 public class ProposalOpinion extends Opinion {
 
 
-    private ProposalOpinion(Issue issue, String content, String ip) {
-        super(issue, content, ip);
+    private ProposalOpinion(Issue issue, String content) {
+        super(issue, content);
         this.vote = Vote.ETC;
     }
 
-    public static ProposalOpinion create(Issue issue, String content, String ip) {
-        return new ProposalOpinion(issue, content, ip);
+    public static ProposalOpinion create(Issue issue, String content) {
+        return new ProposalOpinion(issue, content);
     }
 }

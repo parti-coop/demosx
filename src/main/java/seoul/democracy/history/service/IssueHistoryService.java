@@ -45,12 +45,12 @@ public class IssueHistoryService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public IssueHistory create(IssueHistoryCreateDto createDto, String ip) {
+    public IssueHistory create(IssueHistoryCreateDto createDto) {
         Issue issue = issueRepository.findOne(createDto.getIssueId());
         if (issue == null)
             throw new NotFoundException("해당 글을 찾을 수 없습니다.");
 
-        IssueHistory history = issue.createHistory(createDto.getContent(), ip);
+        IssueHistory history = issue.createHistory(createDto.getContent());
 
         return historyRepository.save(history);
     }
@@ -60,8 +60,8 @@ public class IssueHistoryService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public IssueHistory update(IssueHistoryUpdateDto updateDto, String ip) {
-        return getHistory(updateDto.getHistoryId()).update(updateDto.getContent(), ip);
+    public IssueHistory update(IssueHistoryUpdateDto updateDto) {
+        return getHistory(updateDto.getHistoryId()).update(updateDto.getContent());
     }
 
     /**
@@ -69,7 +69,7 @@ public class IssueHistoryService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public IssueHistory delete(Long historyId, String ip) {
-        return getHistory(historyId).delete(ip);
+    public IssueHistory delete(Long historyId) {
+        return getHistory(historyId).delete();
     }
 }

@@ -34,20 +34,19 @@ public class Action extends Issue {
     private String thumbnail;
 
     public Action(Category category, String thumbnail, String title, String content, Status status,
-                  List<IssueFile> files, List<IssueRelation> relations, String ip) {
+                  List<IssueFile> files, List<IssueRelation> relations) {
         this.stats = IssueStats.create();
         this.status = status;
         this.category = category;
         this.thumbnail = thumbnail;
         this.title = title;
         this.content = content;
-        this.createdIp = this.modifiedIp = ip;
 
         this.files = files;
         this.relations = relations;
     }
 
-    public static Action create(ActionCreateDto createDto, Category category, String ip) {
+    public static Action create(ActionCreateDto createDto, Category category) {
         // todo 정리 필요, update 부분과 같이
         List<IssueFile> files = new ArrayList<>();
         if (createDto.getFiles() != null) {
@@ -64,16 +63,15 @@ public class Action extends Issue {
         }
 
         return new Action(category, createDto.getThumbnail(), createDto.getTitle(), createDto.getContent(),
-            createDto.getStatus(), files, relations, ip);
+            createDto.getStatus(), files, relations);
     }
 
-    public Action update(ActionUpdateDto updateDto, Category category, String ip) {
+    public Action update(ActionUpdateDto updateDto, Category category) {
         this.category = category;
         this.thumbnail = updateDto.getThumbnail();
         this.title = updateDto.getTitle();
         this.content = updateDto.getContent();
         this.status = updateDto.getStatus();
-        this.modifiedIp = ip;
 
         List<IssueFile> files = new ArrayList<>();
         if (updateDto.getFiles() != null) {
@@ -96,7 +94,7 @@ public class Action extends Issue {
     }
 
     @Override
-    public Opinion createOpinion(OpinionCreateDto createDto, String ip) {
+    public Opinion createOpinion(OpinionCreateDto createDto) {
         throw new UnsupportedOperationException("실행은 의견을 지원하지 않습니다.");
     }
 

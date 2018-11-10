@@ -6,12 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.proposal.domain.Proposal;
@@ -42,6 +45,7 @@ public class S_6_3_사용자는_제안을_삭제할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private ProposalService proposalService;
@@ -49,6 +53,9 @@ public class S_6_3_사용자는_제안을_삭제할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     /**
@@ -58,7 +65,7 @@ public class S_6_3_사용자는_제안을_삭제할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_1_사용자는_제안을_삭제할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        Proposal proposal = proposalService.delete(1L, ip);
+        Proposal proposal = proposalService.delete(1L);
 
         ProposalDto proposalDto = proposalService.getProposal(equalId(proposal.getId()), projection);
         assertThat(proposalDto.getModifiedDate().format(dateTimeFormatter), is(now));
@@ -74,7 +81,7 @@ public class S_6_3_사용자는_제안을_삭제할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user2@googl.co.kr")
     public void T_2_다른_사람의_제안을_삭제할_수_없다() {
-        proposalService.delete(1L, ip);
+        proposalService.delete(1L);
     }
 
     /**
@@ -84,7 +91,7 @@ public class S_6_3_사용자는_제안을_삭제할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_존재하지_않는_제안을_삭제할_수_없다() {
         Long notExistsId = 999L;
-        proposalService.delete(notExistsId, ip);
+        proposalService.delete(notExistsId);
     }
 
     /**
@@ -93,7 +100,7 @@ public class S_6_3_사용자는_제안을_삭제할_수_있다 {
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_4_삭제된_제안을_삭제할_수_없다() {
-        proposalService.delete(2L, ip);
+        proposalService.delete(2L);
     }
 
     /**
@@ -102,6 +109,6 @@ public class S_6_3_사용자는_제안을_삭제할_수_있다 {
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_5_블럭된_제안을_삭제할_수_없다() {
-        proposalService.delete(3L, ip);
+        proposalService.delete(3L);
     }
 }

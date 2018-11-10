@@ -7,8 +7,11 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import seoul.democracy.common.annotation.CreatedIp;
+import seoul.democracy.common.annotation.ModifiedIp;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.common.exception.NotFoundException;
+import seoul.democracy.common.listener.AuditingIpListener;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.user.domain.User;
 
@@ -18,7 +21,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity(name = "TB_ISSUE_HISTORY")
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class, AuditingIpListener.class})
 public class IssueHistory {
 
     @Id
@@ -67,12 +70,14 @@ public class IssueHistory {
     /**
      * 등록 아이피
      */
+    @CreatedIp
     @Column(name = "REG_IP", updatable = false)
     private String createdIp;
 
     /**
      * 수정 아이피
      */
+    @ModifiedIp
     @Column(name = "CHG_IP")
     private String modifiedIp;
 
@@ -90,32 +95,29 @@ public class IssueHistory {
     @Column(name = "HISTORY_CONTENT")
     private String content;
 
-    private IssueHistory(Issue issue, String content, String ip) {
+    private IssueHistory(Issue issue, String content) {
         this.status = Status.OPEN;
         this.issue = issue;
         this.content = content;
-        this.createdIp = this.modifiedIp = ip;
     }
 
-    public static IssueHistory create(Issue issue, String content, String ip) {
-        return new IssueHistory(issue, content, ip);
+    public static IssueHistory create(Issue issue, String content) {
+        return new IssueHistory(issue, content);
     }
 
-    public IssueHistory update(String content, String ip) {
+    public IssueHistory update(String content) {
         if (this.status.isDelete())
             throw new NotFoundException("해당 히스토리를 찾을 수 없습니다.");
 
         this.content = content;
-        this.modifiedIp = ip;
         return this;
     }
 
-    public IssueHistory delete(String ip) {
+    public IssueHistory delete() {
         if (this.status.isDelete())
             throw new NotFoundException("해당 히스토리를 찾을 수 없습니다.");
 
         this.status = Status.DELETE;
-        this.modifiedIp = ip;
         return this;
     }
 

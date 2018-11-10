@@ -6,11 +6,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.opinion.domain.OpinionType;
 import seoul.democracy.proposal.domain.Proposal;
@@ -43,6 +46,7 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.1";
+    private MockHttpServletRequest request;
 
     @Autowired
     private ProposalService proposalService;
@@ -50,6 +54,9 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     /**
@@ -60,7 +67,7 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
     public void T_1_사용자는_제목_내용으로_제안을_등록할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
         ProposalCreateDto createDto = ProposalCreateDto.of("제안합니다.", "제안내용입니다.");
-        Proposal proposal = proposalService.create(createDto, ip);
+        Proposal proposal = proposalService.create(createDto);
         assertThat(proposal.getId(), is(notNullValue()));
 
         ProposalDto proposalDto = proposalService.getProposal(equalId(proposal.getId()), projection);

@@ -54,12 +54,12 @@ public class UserService {
     }
 
     @Transactional
-    public User create(UserCreateDto createDto, String ip) {
+    public User create(UserCreateDto createDto) {
 
         if (existsEmail(createDto.getEmail()))
             throw new AlreadyExistsException("이미 사용중인 이메일입니다.");
 
-        User user = User.create(createDto, ip);
+        User user = User.create(createDto);
 
         return userRepository.save(user);
     }

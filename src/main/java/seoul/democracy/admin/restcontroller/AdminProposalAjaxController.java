@@ -12,7 +12,6 @@ import seoul.democracy.proposal.predicate.ProposalPredicate;
 import seoul.democracy.proposal.service.ProposalService;
 
 import javax.validation.Valid;
-import java.net.InetAddress;
 
 import static seoul.democracy.proposal.dto.ProposalDto.*;
 import static seoul.democracy.proposal.predicate.ProposalPredicate.containsTitleOrCreatedByNameAndEqualCategory;
@@ -44,26 +43,23 @@ public class AdminProposalAjaxController {
 
     @RequestMapping(value = "/{proposalId}/category", method = RequestMethod.PATCH)
     public ResultInfo updateCategory(@PathVariable("proposalId") Long proposalId,
-                                     @RequestBody @Valid ProposalCategoryUpdateDto updateDto,
-                                     InetAddress address) {
+                                     @RequestBody @Valid ProposalCategoryUpdateDto updateDto) {
 
-        proposalService.updateCategory(updateDto, address.getHostAddress());
+        proposalService.updateCategory(updateDto);
 
         return ResultInfo.of("카테고리를 업데이트 하였습니다.");
     }
 
     @RequestMapping(value = "/{proposalId}/closed", method = RequestMethod.PATCH)
-    public ResultInfo closedProposal(@PathVariable("proposalId") Long proposalId,
-                                     InetAddress address) {
-        proposalService.closed(proposalId, address.getHostAddress());
+    public ResultInfo closedProposal(@PathVariable("proposalId") Long proposalId) {
+        proposalService.closed(proposalId);
 
         return ResultInfo.of("비공개 상태입니다.");
     }
 
     @RequestMapping(value = "/{proposalId}/open", method = RequestMethod.PATCH)
-    public ResultInfo openProposal(@PathVariable("proposalId") Long proposalId,
-                                   InetAddress address) {
-        proposalService.open(proposalId, address.getHostAddress());
+    public ResultInfo openProposal(@PathVariable("proposalId") Long proposalId) {
+        proposalService.open(proposalId);
 
         return ResultInfo.of("공개 상태입니다.");
     }

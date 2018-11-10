@@ -71,8 +71,8 @@ public class ProposalService {
      * 제안 등록
      */
     @Transactional
-    public Proposal create(ProposalCreateDto createDto, String ip) {
-        Proposal proposal = Proposal.create(createDto, ip);
+    public Proposal create(ProposalCreateDto createDto) {
+        Proposal proposal = Proposal.create(createDto);
         return proposalRepository.save(proposal);
     }
 
@@ -81,9 +81,9 @@ public class ProposalService {
      */
     @Transactional
     @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
-    public Proposal update(ProposalUpdateDto updateDto, String ip) {
+    public Proposal update(ProposalUpdateDto updateDto) {
         Proposal proposal = getProposal(updateDto.getId());
-        return proposal.update(updateDto, ip);
+        return proposal.update(updateDto);
     }
 
     /**
@@ -91,9 +91,9 @@ public class ProposalService {
      */
     @Transactional
     @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
-    public Proposal delete(Long proposalId, String ip) {
+    public Proposal delete(Long proposalId) {
         Proposal proposal = getProposal(proposalId);
-        return proposal.delete(ip);
+        return proposal.delete();
     }
 
     /**
@@ -101,9 +101,9 @@ public class ProposalService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Proposal closed(Long proposalId, String ip) {
+    public Proposal closed(Long proposalId) {
         Proposal proposal = getProposal(proposalId);
-        return proposal.block(ip);
+        return proposal.block();
     }
 
     /**
@@ -111,9 +111,9 @@ public class ProposalService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Proposal open(Long proposalId, String ip) {
+    public Proposal open(Long proposalId) {
         Proposal proposal = getProposal(proposalId);
-        return proposal.open(ip);
+        return proposal.open();
     }
 
     /**
@@ -121,7 +121,7 @@ public class ProposalService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Proposal updateCategory(ProposalCategoryUpdateDto updateDto, String ip) {
+    public Proposal updateCategory(ProposalCategoryUpdateDto updateDto) {
         Proposal proposal = getProposal(updateDto.getProposalId());
 
         if (proposal.getCategory() != null && updateDto.getCategory().equals(proposal.getCategory().getName()))
@@ -131,21 +131,21 @@ public class ProposalService {
         if (category == null || !category.getEnabled())
             throw new BadRequestException("category", "error.category", "카테고리를 확인해 주세요.");
 
-        return proposal.updateCategory(category, ip);
+        return proposal.updateCategory(category);
     }
 
     /**
      * 공감
      */
     @Transactional
-    public IssueLike selectLike(Long issueId, String ip) {
+    public IssueLike selectLike(Long issueId) {
         User user = UserUtils.getLoginUser();
         if (likeRepository.exists(IssueLikePredicate.equalUserIdAndIssueId(user.getId(), issueId)))
             throw new AlreadyExistsException("이미 공감하였습니다.");
 
         Proposal proposal = getProposal(issueId);
 
-        IssueLike like = proposal.createLike(user, ip);
+        IssueLike like = proposal.createLike(user);
         likeRepository.save(like);
 
         statsRepository.selectLikeProposal(proposal.getStatsId());

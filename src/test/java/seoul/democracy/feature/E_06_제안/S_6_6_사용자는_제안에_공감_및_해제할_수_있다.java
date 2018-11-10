@@ -6,11 +6,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.domain.IssueLike;
@@ -18,8 +21,6 @@ import seoul.democracy.issue.predicate.IssueLikePredicate;
 import seoul.democracy.issue.repository.IssueLikeRepository;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.service.ProposalService;
-
-import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -40,8 +41,8 @@ import static seoul.democracy.proposal.predicate.ProposalPredicate.equalId;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
 
-    private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private ProposalService proposalService;
@@ -52,6 +53,9 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     /**
@@ -61,7 +65,7 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
     @WithUserDetails("user2@googl.co.kr")
     public void T_1_사용자는_제안에_공감할_수_있다() {
         Long proposalId = 1L;
-        IssueLike like = proposalService.selectLike(proposalId, ip);
+        IssueLike like = proposalService.selectLike(proposalId);
 
         long count = likeRepository.count(IssueLikePredicate.equalUserId(like.getId().getUserId()));
         assertThat(count, is(1L));
@@ -93,7 +97,7 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_이미_공감한_제안에_다시_공감할_수_없다() {
         Long proposalId = 1L;
-        proposalService.selectLike(proposalId, ip);
+        proposalService.selectLike(proposalId);
     }
 
     /**
@@ -113,7 +117,7 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
     @WithUserDetails("user2@googl.co.kr")
     public void T_5_삭제된_제안에_공감할_수_없다() {
         Long deleteProposalId = 2L;
-        proposalService.selectLike(deleteProposalId, ip);
+        proposalService.selectLike(deleteProposalId);
     }
 
     /**
@@ -123,7 +127,7 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
     @WithUserDetails("user2@googl.co.kr")
     public void T_6_블럭된_제안에_공감할_수_없다() {
         Long blockProposalId = 3L;
-        proposalService.selectLike(blockProposalId, ip);
+        proposalService.selectLike(blockProposalId);
     }
 
     /**

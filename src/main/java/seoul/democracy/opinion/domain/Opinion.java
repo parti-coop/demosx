@@ -7,9 +7,12 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import seoul.democracy.common.annotation.CreatedIp;
+import seoul.democracy.common.annotation.ModifiedIp;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
+import seoul.democracy.common.listener.AuditingIpListener;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.opinion.dto.OpinionUpdateDto;
 import seoul.democracy.user.domain.User;
@@ -23,7 +26,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity(name = "TB_OPINION")
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class, AuditingIpListener.class})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "OPINION_DTYPE", columnDefinition = "char(1)")
 public abstract class Opinion {
@@ -70,14 +73,16 @@ public abstract class Opinion {
     /**
      * 등록 아이피
      */
+    @CreatedIp
     @Column(name = "REG_IP", updatable = false)
     private String createdIp;
 
     /**
      * 수정 아이피
      */
+    @ModifiedIp
     @Column(name = "CHG_IP")
-    protected String modifiedIp;
+    private String modifiedIp;
 
     /**
      * 이슈
@@ -112,54 +117,49 @@ public abstract class Opinion {
     @Column(name = "OPINION_CONTENT")
     protected String content;
 
-    Opinion(Issue issue, String content, String ip) {
+    Opinion(Issue issue, String content) {
         this.issue = issue;
         this.content = content;
-        this.createdIp = this.modifiedIp = ip;
 
         this.status = Status.OPEN;
     }
 
-    public Opinion update(OpinionUpdateDto updateDto, String ip) {
+    public Opinion update(OpinionUpdateDto updateDto) {
         if (!issue.isUpdatableOpinion())
             throw new BadRequestException("process", "error.process", "해당 의견은 수정할 수 없습니다.");
 
         if (!status.isOpen()) throw new NotFoundException("해당 의견을 찾을 수 없습니다.");
 
         this.content = updateDto.getContent();
-        this.modifiedIp = ip;
         return this;
     }
 
-    public Opinion delete(String ip) {
+    public Opinion delete() {
         if (!status.isOpen()) throw new NotFoundException("해당 의견을 찾을 수 없습니다.");
 
         this.status = Status.DELETE;
-        this.modifiedIp = ip;
         return this;
     }
 
-    public Opinion block(String ip) {
+    public Opinion block() {
         if (!status.isOpen()) throw new NotFoundException("해당 의견을 찾을 수 없습니다.");
 
         this.status = Status.BLOCK;
-        this.modifiedIp = ip;
         return this;
     }
 
-    public Opinion open(String ip) {
+    public Opinion open() {
         if (status.isOpen()) throw new BadRequestException("status", "error.status", "이미 공개된 의견입니다.");
         if (status.isDelete()) throw new NotFoundException("해당 의견을 찾을 수 없습니다.");
 
         this.status = Status.OPEN;
-        this.modifiedIp = ip;
         return this;
     }
 
-    public OpinionLike createLike(User user, String ip) {
+    public OpinionLike createLike(User user) {
         if (!status.isOpen()) throw new NotFoundException("해당 의견을 찾을 수 없습니다.");
 
-        return OpinionLike.create(user, this, ip);
+        return OpinionLike.create(user, this);
     }
 
     public enum Status {

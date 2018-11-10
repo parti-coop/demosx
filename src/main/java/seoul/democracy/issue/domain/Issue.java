@@ -8,8 +8,11 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import seoul.democracy.common.annotation.CreatedIp;
+import seoul.democracy.common.annotation.ModifiedIp;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.common.exception.BadRequestException;
+import seoul.democracy.common.listener.AuditingIpListener;
 import seoul.democracy.history.domain.IssueHistory;
 import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.domain.OpinionType;
@@ -28,7 +31,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity(name = "TB_ISSUE")
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class, AuditingIpListener.class})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "ISSUE_DTYPE", columnDefinition = "char(1)")
 public abstract class Issue {
@@ -82,14 +85,16 @@ public abstract class Issue {
     /**
      * 등록 아이피
      */
+    @CreatedIp
     @Column(name = "REG_IP", updatable = false)
-    protected String createdIp;
+    private String createdIp;
 
     /**
      * 수정 아이피
      */
+    @ModifiedIp
     @Column(name = "CHG_IP")
-    protected String modifiedIp;
+    private String modifiedIp;
 
     /**
      * 이슈 그룹
@@ -157,14 +162,14 @@ public abstract class Issue {
     })
     protected List<IssueRelation> relations = new ArrayList<>();
 
-    public IssueHistory createHistory(String content, String ip) {
+    public IssueHistory createHistory(String content) {
         if (this instanceof Proposal)
             throw new BadRequestException("issueId", "error.issueId", "제안은 히스토리를 등록할 수 없습니다.");
 
-        return IssueHistory.create(this, content, ip);
+        return IssueHistory.create(this, content);
     }
 
-    public abstract Opinion createOpinion(OpinionCreateDto createDto, String ip);
+    public abstract Opinion createOpinion(OpinionCreateDto createDto);
 
     public abstract boolean isUpdatableOpinion();
 

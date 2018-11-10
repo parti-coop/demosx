@@ -2,7 +2,9 @@ package seoul.democracy.issue.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import seoul.democracy.common.annotation.CreatedIp;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
+import seoul.democracy.common.listener.AuditingIpListener;
 import seoul.democracy.user.domain.User;
 
 import javax.persistence.*;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity(name = "TB_ISSUE_LIKE")
+@EntityListeners(AuditingIpListener.class)
 public class IssueLike {
 
     @Id
@@ -44,15 +47,15 @@ public class IssueLike {
     /**
      * 등록 아이피
      */
+    @CreatedIp
     @Column(name = "REG_IP", updatable = false)
-    protected String createdIp;
+    private String createdIp;
 
-    private IssueLike(Long userId, Long issueId, String ip) {
+    private IssueLike(Long userId, Long issueId) {
         this.id = UserIssueId.of(userId, issueId);
-        this.createdIp = ip;
     }
 
-    public static IssueLike create(User user, Issue issue, String ip) {
-        return new IssueLike(user.getId(), issue.getId(), ip);
+    public static IssueLike create(User user, Issue issue) {
+        return new IssueLike(user.getId(), issue.getId());
     }
 }

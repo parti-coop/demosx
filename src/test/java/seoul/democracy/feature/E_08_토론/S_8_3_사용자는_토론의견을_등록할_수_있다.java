@@ -6,11 +6,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
@@ -47,6 +50,7 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private OpinionService opinionService;
@@ -65,6 +69,9 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     /**
@@ -75,7 +82,7 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
     public void T_1_1_사용자는_진행_중인_토론에_제안의견을_등록할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
         OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithProposal, "토론의 제안의견 입니다.");
-        Opinion opinion = opinionService.createOpinion(createDto, ip);
+        Opinion opinion = opinionService.createOpinion(createDto);
         assertThat(opinion.getId(), is(notNullValue()));
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
@@ -105,7 +112,7 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_2_사용자는_진행_중이_아닌_토론에_제안의견을_등록할_수_없다() {
         OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInOpenWithProposal, "토론의 제안의견 입니다.");
-        opinionService.createOpinion(createDto, ip);
+        opinionService.createOpinion(createDto);
     }
 
     /**
@@ -115,7 +122,7 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_사용자는_여러번_제안의견을_등록할_수_있다() {
         OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithProposal, "토론의 제안의견을 다시 등록합니다.");
-        Opinion opinion = opinionService.createOpinion(createDto, ip);
+        Opinion opinion = opinionService.createOpinion(createDto);
         assertThat(opinion.getId(), is(notNullValue()));
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
@@ -132,7 +139,7 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_4_사용자는_진행_중_토론_찬성의견을_등록할_수_있다() {
         OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.YES, "토론의 제안의견 입니다.");
-        Opinion opinion = opinionService.createOpinion(createDto, ip);
+        Opinion opinion = opinionService.createOpinion(createDto);
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getLikeCount(), is(0L));
@@ -155,7 +162,7 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_5_사용자는_진행_중_토론_반대의견을_등록할_수_있다() {
         OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.NO, "토론의 제안의견 입니다.");
-        Opinion opinion = opinionService.createOpinion(createDto, ip);
+        Opinion opinion = opinionService.createOpinion(createDto);
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getVote(), is(createDto.getVote()));
@@ -175,7 +182,7 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_6_사용자는_진행_중_토론_기타의견을_등록할_수_있다() {
         OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.ETC, "토론의 제안의견 입니다.");
-        Opinion opinion = opinionService.createOpinion(createDto, ip);
+        Opinion opinion = opinionService.createOpinion(createDto);
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getVote(), is(createDto.getVote()));
@@ -195,7 +202,7 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_7_사용자는_진행_중이_아닐때_토론의견을_등록할_수_없다() {
         OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInOpenWithDebate, Opinion.Vote.YES, "토론의 제안의견 입니다.");
-        opinionService.createOpinion(createDto, ip);
+        opinionService.createOpinion(createDto);
     }
 
     /**
@@ -205,7 +212,7 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
     @WithUserDetails("user2@googl.co.kr")
     public void T_8_사용자는_토론의견은_한번만_등록_가능하다() {
         OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.YES, "토론의 제안의견 입니다.");
-        opinionService.createOpinion(createDto, ip);
+        opinionService.createOpinion(createDto);
     }
 
     /**
@@ -215,7 +222,7 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_9_비공개_토론에_의견을_등록할_수_없다() {
         OpinionCreateDto createDto = OpinionCreateDto.of(closedDebateId, Opinion.Vote.YES, "토론의 제안의견 입니다.");
-        opinionService.createOpinion(createDto, ip);
+        opinionService.createOpinion(createDto);
     }
 
 }

@@ -78,7 +78,6 @@
                 <property name="oneIndexedParameters" value="true"/>
                 <property name="maxPageSize" value="100"/>
             </bean>
-            <bean class="seoul.democracy.common.resolver.InetAddressHandlerMethodArgumentResolver"/>
         </mvc:argument-resolvers>
         <!--<mvc:message-converters>
             &lt;!&ndash; Use the HibernateAware mapper instead of the default &ndash;&gt;

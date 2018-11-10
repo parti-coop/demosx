@@ -6,12 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.action.domain.Action;
 import seoul.democracy.action.dto.ActionDto;
 import seoul.democracy.action.dto.ActionUpdateDto;
@@ -44,6 +47,7 @@ public class S_11_2_관리자는_실행을_수정할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private ActionService actionService;
@@ -54,6 +58,10 @@ public class S_11_2_관리자는_실행을_수정할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
         updateDto = ActionUpdateDto.of(201L, "/images/test-thumbnail.jpg", "경제",
             "실행 등록합니다.", "실행 내용입니다.", Issue.Status.CLOSED,
             Arrays.asList(IssueFileDto.of("파일1", "file1"), IssueFileDto.of("파일2", "file2")),
@@ -68,7 +76,7 @@ public class S_11_2_관리자는_실행을_수정할_수_있다 {
     public void T_1_관리자는_실행을_수정할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
 
-        Action action = actionService.update(updateDto, ip);
+        Action action = actionService.update(updateDto);
         assertThat(action.getId(), is(notNullValue()));
 
         ActionDto actionDto = actionService.getAction(equalId(action.getId()), projection);
@@ -97,7 +105,7 @@ public class S_11_2_관리자는_실행을_수정할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
     public void T_2_매니저는_실행을_수정할_수_없다() {
-        actionService.update(updateDto, ip);
+        actionService.update(updateDto);
     }
 
     /**
@@ -106,7 +114,7 @@ public class S_11_2_관리자는_실행을_수정할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_사용자는_실행을_수정할_수_없다() {
-        actionService.update(updateDto, ip);
+        actionService.update(updateDto);
     }
 
     /**
@@ -116,6 +124,6 @@ public class S_11_2_관리자는_실행을_수정할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_4_없는_실행을_등록할_수_없다() {
         updateDto.setId(notExistsId);
-        actionService.update(updateDto, ip);
+        actionService.update(updateDto);
     }
 }

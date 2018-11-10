@@ -6,12 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.ProposalDto;
@@ -42,6 +45,7 @@ public class S_6_2_사용자는_제안을_수정할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private ProposalService proposalService;
@@ -49,6 +53,9 @@ public class S_6_2_사용자는_제안을_수정할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     /**
@@ -59,7 +66,7 @@ public class S_6_2_사용자는_제안을_수정할_수_있다 {
     public void T_1_사용자는_제목_내용을_수정할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
         ProposalUpdateDto updateDto = ProposalUpdateDto.of(1L, "제안 수정합니다.", "제안 수정내용입니다.");
-        Proposal proposal = proposalService.update(updateDto, ip);
+        Proposal proposal = proposalService.update(updateDto);
 
         ProposalDto proposalDto = proposalService.getProposal(equalId(proposal.getId()), projection);
         assertThat(proposalDto.getModifiedDate().format(dateTimeFormatter), is(now));
@@ -77,7 +84,7 @@ public class S_6_2_사용자는_제안을_수정할_수_있다 {
     @WithUserDetails("user2@googl.co.kr")
     public void T_2_다른_사람의_제안을_수정할_수_없다() {
         ProposalUpdateDto updateDto = ProposalUpdateDto.of(1L, "다른 사람이 제안을 수정합니다.", "제안 수정내용입니다.");
-        proposalService.update(updateDto, ip);
+        proposalService.update(updateDto);
     }
 
     /**
@@ -87,7 +94,7 @@ public class S_6_2_사용자는_제안을_수정할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_존재하지_않는_제안을_수정할_수_없다() {
         ProposalUpdateDto updateDto = ProposalUpdateDto.of(999L, "없는 제안을 수정합니다.", "제안 수정내용입니다.");
-        proposalService.update(updateDto, ip);
+        proposalService.update(updateDto);
     }
 
     /**
@@ -97,7 +104,7 @@ public class S_6_2_사용자는_제안을_수정할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_4_삭제된_제안을_수정할_수_없다() {
         ProposalUpdateDto updateDto = ProposalUpdateDto.of(2L, "삭제된 제안을 수정합니다.", "제안 수정내용입니다.");
-        proposalService.update(updateDto, ip);
+        proposalService.update(updateDto);
     }
 
     /**
@@ -107,6 +114,6 @@ public class S_6_2_사용자는_제안을_수정할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_5_블럭된_제안을_수정할_수_없다() {
         ProposalUpdateDto updateDto = ProposalUpdateDto.of(3L, "블럭된 제안을 수정합니다.", "제안 수정내용입니다.");
-        proposalService.update(updateDto, ip);
+        proposalService.update(updateDto);
     }
 }

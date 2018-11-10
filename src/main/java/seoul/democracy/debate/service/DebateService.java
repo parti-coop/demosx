@@ -57,10 +57,10 @@ public class DebateService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Debate create(IssueGroup group, DebateCreateDto createDto, String ip) {
+    public Debate create(IssueGroup group, DebateCreateDto createDto) {
         Category category = getCategory(createDto.getCategory());
 
-        Debate debate = Debate.create(group, createDto, category, ip);
+        Debate debate = Debate.create(group, createDto, category);
 
         return debateRepository.save(debate);
     }
@@ -70,7 +70,7 @@ public class DebateService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Debate update(DebateUpdateDto updateDto, String ip) {
+    public Debate update(DebateUpdateDto updateDto) {
         Debate debate = debateRepository.findOne(updateDto.getId());
         if (debate == null)
             throw new NotFoundException("해당 토론을 찾을 수 없습니다.");
@@ -78,6 +78,6 @@ public class DebateService {
         Category category = debate.getCategory().getName().equals(updateDto.getCategory()) ?
                                 debate.getCategory() : getCategory(updateDto.getCategory());
 
-        return debate.update(updateDto, category, ip);
+        return debate.update(updateDto, category);
     }
 }

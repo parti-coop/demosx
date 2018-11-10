@@ -6,12 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.debate.domain.Debate;
 import seoul.democracy.debate.dto.DebateDto;
@@ -48,6 +51,7 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private DebateService debateService;
@@ -59,6 +63,10 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
         updateDto = DebateUpdateDto.of(debateId, "thumbnail.jpg", "복지", OpinionType.PROPOSAL,
             LocalDate.of(2019, 10, 10), LocalDate.of(2019, 12, 12),
             "토론 + 제안의견", "토론 한줄 설명", "제안의견인 토론입니다.", Issue.Status.OPEN,
@@ -74,7 +82,7 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
     public void T_1_관리자는_토론을_수정할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
 
-        Debate debate = debateService.update(updateDto, ip);
+        Debate debate = debateService.update(updateDto);
 
         DebateDto debateDto = debateService.getDebate(equalId(debate.getId()), projection, true, true);
         assertThat(debateDto.getModifiedDate().format(dateTimeFormatter), is(now));
@@ -105,7 +113,7 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_2_없는_토론을_수정할_수_없다() {
         updateDto.setId(notExistsId);
-        debateService.update(updateDto, ip);
+        debateService.update(updateDto);
     }
 
     /**
@@ -114,7 +122,7 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
     public void T_3_매니저는_토론을_수정할_수_없다() {
-        debateService.update(updateDto, ip);
+        debateService.update(updateDto);
     }
 
     /**
@@ -123,6 +131,6 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_4_사용자는_토론을_수정할_수_없다() {
-        debateService.update(updateDto, ip);
+        debateService.update(updateDto);
     }
 }

@@ -22,7 +22,6 @@ import seoul.democracy.issue.service.CategoryService;
 import seoul.democracy.issue.service.IssueService;
 
 import javax.validation.Valid;
-import java.net.InetAddress;
 import java.util.List;
 
 import static seoul.democracy.debate.dto.DebateDto.projection;
@@ -61,7 +60,8 @@ public class AdminDebateController {
     }
 
     private String createDebate(IssueGroup group, String groupPrefix,
-                                DebateCreateDto createDto, BindingResult result, InetAddress address) {
+                                DebateCreateDto createDto,
+                                BindingResult result) {
         if (result.hasErrors()) {
             if (!CollectionUtils.isEmpty(createDto.getRelations())) {
                 List<IssueDto> issues = issueService.getIssues(equalIdIn(createDto.getRelations()), projectionForBasic);
@@ -70,7 +70,7 @@ public class AdminDebateController {
             return "/admin/debate/create";
         }
 
-        Debate debate = debateService.create(group, createDto, address.getHostAddress());
+        Debate debate = debateService.create(group, createDto);
 
         return "redirect:/admin/issue/" + groupPrefix + "debate-detail.do?id=" + debate.getId();
     }
@@ -88,7 +88,9 @@ public class AdminDebateController {
         return "/admin/debate/update";
     }
 
-    private String updateDebate(String groupPrefix, DebateUpdateDto updateDto, BindingResult result, InetAddress address) {
+    private String updateDebate(String groupPrefix,
+                                DebateUpdateDto updateDto,
+                                BindingResult result) {
         if (result.hasErrors()) {
             if (!CollectionUtils.isEmpty(updateDto.getRelations())) {
                 List<IssueDto> issues = issueService.getIssues(equalIdIn(updateDto.getRelations()), projectionForBasic);
@@ -97,7 +99,7 @@ public class AdminDebateController {
             return "/admin/debate/update";
         }
 
-        Debate debate = debateService.update(updateDto, address.getHostAddress());
+        Debate debate = debateService.update(updateDto);
 
         return "redirect:/admin/issue/" + groupPrefix + "debate-detail.do?id=" + debate.getId();
     }
@@ -141,10 +143,9 @@ public class AdminDebateController {
     @RequestMapping(value = "/debate-new.do", method = RequestMethod.POST)
     public String debateNew(@ModelAttribute("createDto") @Valid DebateCreateDto createDto,
                             BindingResult result,
-                            InetAddress address,
                             Model model) {
         userGroupAttribute(model);
-        return createDebate(IssueGroup.USER, "", createDto, result, address);
+        return createDebate(IssueGroup.USER, "", createDto, result);
     }
 
     @RequestMapping(value = "/debate-edit.do", method = RequestMethod.GET)
@@ -158,10 +159,9 @@ public class AdminDebateController {
     public String debateEdit(@RequestParam("id") Long id,
                              @ModelAttribute("updateDto") @Valid DebateUpdateDto updateDto,
                              BindingResult result,
-                             Model model,
-                             InetAddress address) {
+                             Model model) {
         userGroupAttribute(model);
-        return updateDebate("", updateDto, result, address);
+        return updateDebate("", updateDto, result);
     }
 
     /**
@@ -199,10 +199,9 @@ public class AdminDebateController {
     @RequestMapping(value = "/org-debate-new.do", method = RequestMethod.POST)
     public String orgDebateNew(@ModelAttribute("createDto") @Valid DebateCreateDto createDto,
                                BindingResult result,
-                               InetAddress address,
                                Model model) {
         orgGroupAttribute(model);
-        return createDebate(IssueGroup.ORG, "org-", createDto, result, address);
+        return createDebate(IssueGroup.ORG, "org-", createDto, result);
     }
 
     @RequestMapping(value = "/org-debate-edit.do", method = RequestMethod.GET)
@@ -216,9 +215,8 @@ public class AdminDebateController {
     public String orgDebateEdit(@RequestParam("id") Long id,
                                 @ModelAttribute("updateDto") @Valid DebateUpdateDto updateDto,
                                 BindingResult result,
-                                Model model,
-                                InetAddress address) {
+                                Model model) {
         orgGroupAttribute(model);
-        return updateDebate("org-", updateDto, result, address);
+        return updateDebate("org-", updateDto, result);
     }
 }

@@ -69,56 +69,50 @@ public class Proposal extends Issue {
     @Column(name = "MANAGER_COMMENT")
     private String managerComment;
 
-    public Proposal(String title, String content, String ip) {
+    public Proposal(String title, String content) {
         this.stats = IssueStats.create();
         this.status = Status.OPEN;
         this.process = Process.INIT;
         this.title = title;
         this.content = content;
-        this.createdIp = this.modifiedIp = ip;
 
     }
 
-    public static Proposal create(ProposalCreateDto createDto, String ip) {
-        return new Proposal(createDto.getTitle(), createDto.getContent(), ip);
+    public static Proposal create(ProposalCreateDto createDto) {
+        return new Proposal(createDto.getTitle(), createDto.getContent());
     }
 
-    public Proposal update(ProposalUpdateDto updateDto, String ip) {
+    public Proposal update(ProposalUpdateDto updateDto) {
         if (!status.isOpen()) throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
 
-        this.modifiedIp = ip;
         this.title = updateDto.getTitle();
         this.content = updateDto.getContent();
         return this;
     }
 
-    public Proposal delete(String ip) {
+    public Proposal delete() {
         if (!status.isOpen()) throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
 
-        this.modifiedIp = ip;
         this.status = Status.DELETE;
         return this;
     }
 
-    public Proposal block(String ip) {
+    public Proposal block() {
         if (!status.isOpen()) throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
 
         this.status = Status.CLOSED;
-        this.modifiedIp = ip;
         return this;
     }
 
-    public Proposal open(String ip) {
+    public Proposal open() {
         if (status.isDelete()) throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
 
         this.status = Status.OPEN;
-        this.modifiedIp = ip;
         return this;
     }
 
-    public Proposal updateCategory(Category category, String ip) {
+    public Proposal updateCategory(Category category) {
         this.category = category;
-        this.modifiedIp = ip;
         return this;
     }
 
@@ -153,8 +147,8 @@ public class Proposal extends Issue {
     }
 
     @Override
-    public ProposalOpinion createOpinion(OpinionCreateDto createDto, String ip) {
-        return ProposalOpinion.create(this, createDto.getContent(), ip);
+    public ProposalOpinion createOpinion(OpinionCreateDto createDto) {
+        return ProposalOpinion.create(this, createDto.getContent());
     }
 
     @Override
@@ -162,10 +156,10 @@ public class Proposal extends Issue {
         return status.isOpen();
     }
 
-    public IssueLike createLike(User user, String ip) {
+    public IssueLike createLike(User user) {
         if (!status.isOpen()) throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
 
-        return IssueLike.create(user, this, ip);
+        return IssueLike.create(user, this);
     }
 
     @Getter

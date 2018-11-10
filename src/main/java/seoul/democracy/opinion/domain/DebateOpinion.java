@@ -16,12 +16,12 @@ import javax.persistence.Entity;
 @DiscriminatorValue("D")
 public class DebateOpinion extends Opinion {
 
-    private DebateOpinion(Issue issue, Vote vote, String content, String ip) {
-        super(issue, content, ip);
+    private DebateOpinion(Issue issue, Vote vote, String content) {
+        super(issue, content);
         this.vote = vote;
     }
 
-    public static DebateOpinion create(Issue issue, Vote vote, String content, String ip) {
-        return new DebateOpinion(issue, vote, content, ip);
+    public static DebateOpinion create(Issue issue, Vote vote, String content) {
+        return new DebateOpinion(issue, vote, content);
     }
 }

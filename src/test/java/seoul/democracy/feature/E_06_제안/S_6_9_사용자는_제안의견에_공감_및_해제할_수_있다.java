@@ -6,11 +6,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.opinion.domain.OpinionLike;
@@ -39,6 +42,7 @@ import static seoul.democracy.opinion.predicate.OpinionPredicate.equalId;
 public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 {
 
     private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
 
     @Autowired
     private OpinionService opinionService;
@@ -52,6 +56,9 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     /**
@@ -61,7 +68,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @WithUserDetails("user2@googl.co.kr")
     public void T_1_사용자는_제안의견에_공감할_수_있다() {
 
-        OpinionLike like = opinionService.selectOpinionLike(opinionId, ip);
+        OpinionLike like = opinionService.selectOpinionLike(opinionId);
 
         long count = likeRepository.count(equalUserId(like.getId().getUserId()));
         assertThat(count, is(1L));
@@ -91,7 +98,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = AlreadyExistsException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_이미_공감한_제안의견에_다시_공감할_수_없다() {
-        opinionService.selectOpinionLike(opinionId, ip);
+        opinionService.selectOpinionLike(opinionId);
     }
 
     /**
@@ -109,7 +116,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user2@googl.co.kr")
     public void T_5_삭제된_제안의견에_공감할_수_없다() {
-        opinionService.selectOpinionLike(deletedOpinionId, ip);
+        opinionService.selectOpinionLike(deletedOpinionId);
     }
 
     /**
@@ -118,7 +125,7 @@ public class S_6_9_사용자는_제안의견에_공감_및_해제할_수_있다 
     @Test(expected = NotFoundException.class)
     @WithUserDetails("user2@googl.co.kr")
     public void T_6_블럭된_제안의견에_공감할_수_없다() {
-        opinionService.selectOpinionLike(blockedOpinionId, ip);
+        opinionService.selectOpinionLike(blockedOpinionId);
     }
 
     /**

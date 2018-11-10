@@ -6,10 +6,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.user.domain.Role;
 import seoul.democracy.user.domain.User;
@@ -37,11 +40,17 @@ import static seoul.democracy.user.predicate.UserPredicate.equalId;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class S_1_1_사용자는_이메일_이름으로_가입할_수_있다 {
 
+    private final static String ip = "127.0.0.2";
+    private MockHttpServletRequest request;
+
     @Autowired
     private UserService userService;
 
     @Before
     public void setUp() throws Exception {
+        request = new MockHttpServletRequest();
+        request.setRemoteAddr(ip);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     /**
@@ -50,7 +59,7 @@ public class S_1_1_사용자는_이메일_이름으로_가입할_수_있다 {
     @Test
     public void T_1_사용자는_이메일_이름으로_가입할_수_있다() {
         UserCreateDto createDto = UserCreateDto.of("user999@test.com", "유저999", "12345");
-        User user = userService.create(createDto, "127.0.0.1");
+        User user = userService.create(createDto);
         assertThat(user.getId(), is(notNullValue()));
 
         UserDto userDto = userService.getUser(equalId(user.getId()), projection);
@@ -67,6 +76,6 @@ public class S_1_1_사용자는_이메일_이름으로_가입할_수_있다 {
     @Test(expected = AlreadyExistsException.class)
     public void T_2_이미_가입된_이메일로_가입할_수_없다() {
         UserCreateDto createDto = UserCreateDto.of("user1@googl.co.kr", "유저999", "12345");
-        userService.create(createDto, "127.0.0.1");
+        userService.create(createDto);
     }
 }
