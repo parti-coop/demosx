@@ -18,6 +18,7 @@ import seoul.democracy.debate.dto.DebateCreateDto;
 import seoul.democracy.debate.dto.DebateDto;
 import seoul.democracy.debate.service.DebateService;
 import seoul.democracy.issue.domain.Issue;
+import seoul.democracy.issue.domain.IssueGroup;
 import seoul.democracy.issue.dto.IssueFileDto;
 import seoul.democracy.opinion.domain.OpinionType;
 
@@ -70,7 +71,7 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     public void T_1_관리자는_제안의견으로_토론을_등록할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
 
-        Debate debate = debateService.create(createDto, ip);
+        Debate debate = debateService.create(IssueGroup.USER, createDto, ip);
         assertThat(debate.getId(), is(notNullValue()));
 
         DebateDto debateDto = debateService.getDebate(equalId(debate.getId()), projection, true, true);
@@ -99,6 +100,7 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
         assertThat(debateDto.getExcerpt(), is(createDto.getExcerpt()));
         assertThat(debateDto.getContent(), is(createDto.getContent()));
 
+        assertThat(debateDto.getGroup(), is(IssueGroup.USER));
         assertThat(debateDto.getStatus(), is(createDto.getStatus()));
 
         assertThat(debateDto.getFiles(), contains(createDto.getFiles().toArray(new IssueFileDto[0])));
@@ -112,7 +114,7 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_2_관리자는_토론의견으로_토론을_등록할_수_있다() {
         createDto.setOpinionType(OpinionType.DEBATE);
-        Debate debate = debateService.create(createDto, ip);
+        Debate debate = debateService.create(IssueGroup.ORG, createDto, ip);
 
         DebateDto debateDto = debateService.getDebate(equalId(debate.getId()), projection, true, true);
         assertThat(debateDto.getOpinionType(), is(createDto.getOpinionType()));
@@ -125,7 +127,7 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     @WithUserDetails("admin1@googl.co.kr")
     public void T_3_존재하지_않는_카테고리로_토론을_등록할_수_없다() {
         createDto.setCategory("없는 카테고리");
-        debateService.create(createDto, ip);
+        debateService.create(IssueGroup.ORG, createDto, ip);
     }
 
     /**
@@ -134,7 +136,7 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
     public void T_4_매니저는_토론을_등록할_수_없다() {
-        debateService.create(createDto, ip);
+        debateService.create(IssueGroup.ORG, createDto, ip);
     }
 
     /**
@@ -143,6 +145,6 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_5_사용자는_토론을_등록할_수_없다() {
-        debateService.create(createDto, ip);
+        debateService.create(IssueGroup.ORG, createDto, ip);
     }
 }

@@ -17,6 +17,7 @@ import seoul.democracy.debate.dto.DebateDto;
 import seoul.democracy.debate.dto.DebateUpdateDto;
 import seoul.democracy.debate.repository.DebateRepository;
 import seoul.democracy.issue.domain.Category;
+import seoul.democracy.issue.domain.IssueGroup;
 import seoul.democracy.issue.repository.CategoryRepository;
 
 import static seoul.democracy.issue.predicate.CategoryPredicate.equalName;
@@ -56,10 +57,10 @@ public class DebateService {
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public Debate create(DebateCreateDto createDto, String ip) {
+    public Debate create(IssueGroup group, DebateCreateDto createDto, String ip) {
         Category category = getCategory(createDto.getCategory());
 
-        Debate debate = Debate.create(createDto, category, ip);
+        Debate debate = Debate.create(group, createDto, category, ip);
 
         return debateRepository.save(debate);
     }

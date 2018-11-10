@@ -1,5 +1,6 @@
 package seoul.democracy.admin.controller;
 
+import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import seoul.democracy.debate.dto.DebateCreateDto;
 import seoul.democracy.debate.dto.DebateDto;
 import seoul.democracy.debate.dto.DebateUpdateDto;
 import seoul.democracy.debate.service.DebateService;
+import seoul.democracy.issue.domain.IssueGroup;
 import seoul.democracy.issue.dto.CategoryDto;
 import seoul.democracy.issue.dto.IssueDto;
 import seoul.democracy.issue.service.CategoryService;
@@ -24,7 +26,7 @@ import java.net.InetAddress;
 import java.util.List;
 
 import static seoul.democracy.debate.dto.DebateDto.projection;
-import static seoul.democracy.debate.predicate.DebatePredicate.equalId;
+import static seoul.democracy.debate.predicate.DebatePredicate.equalIdAndGroup;
 import static seoul.democracy.issue.dto.CategoryDto.projectionForFilter;
 import static seoul.democracy.issue.dto.IssueDto.projectionForBasic;
 import static seoul.democracy.issue.predicate.CategoryPredicate.enabled;
@@ -47,27 +49,8 @@ public class AdminDebateController {
         this.issueService = issueService;
     }
 
-    @ModelAttribute("categories")
-    public List<CategoryDto> getCategories() {
-        return categoryService.getCategories(enabled(), projectionForFilter);
-    }
-
-    /**
-     * 관리자 > 시민제안 > 토론관리
-     */
-    @RequestMapping(value = "/debate.do", method = RequestMethod.GET)
-    public String debateList() {
-        return "/admin/debate/list";
-    }
-
-    /**
-     * 관리자 > 시민제안 > 토론관리 > 상세
-     */
-    @RequestMapping(value = "/debate-detail.do", method = RequestMethod.GET)
-    public String debateDetail(@RequestParam("id") Long id,
-                               Model model) {
-
-        DebateDto debateDto = debateService.getDebate(equalId(id), projection, true, true);
+    private String getDebateDetail(Predicate predicate, Model model) {
+        DebateDto debateDto = debateService.getDebate(predicate, projection, true, true);
         if (!CollectionUtils.isEmpty(debateDto.getRelations())) {
             List<IssueDto> issues = issueService.getIssues(equalIdIn(debateDto.getRelations()), projectionForBasic);
             debateDto.setIssues(issues);
@@ -77,15 +60,8 @@ public class AdminDebateController {
         return "/admin/debate/detail";
     }
 
-    @RequestMapping(value = "/debate-new.do", method = RequestMethod.GET)
-    public String debateNew(@ModelAttribute("createDto") DebateCreateDto createDto) {
-        return "/admin/debate/create";
-    }
-
-    @RequestMapping(value = "/debate-new.do", method = RequestMethod.POST)
-    public String debateNew(@ModelAttribute("createDto") @Valid DebateCreateDto createDto,
-                            BindingResult result,
-                            InetAddress address) {
+    private String createDebate(IssueGroup group, String groupPrefix,
+                                DebateCreateDto createDto, BindingResult result, InetAddress address) {
         if (result.hasErrors()) {
             if (!CollectionUtils.isEmpty(createDto.getRelations())) {
                 List<IssueDto> issues = issueService.getIssues(equalIdIn(createDto.getRelations()), projectionForBasic);
@@ -94,16 +70,13 @@ public class AdminDebateController {
             return "/admin/debate/create";
         }
 
-        Debate debate = debateService.create(createDto, address.getHostAddress());
+        Debate debate = debateService.create(group, createDto, address.getHostAddress());
 
-        return "redirect:/admin/issue/debate-detail.do?id=" + debate.getId();
+        return "redirect:/admin/issue/" + groupPrefix + "debate-detail.do?id=" + debate.getId();
     }
 
-    @RequestMapping(value = "/debate-edit.do", method = RequestMethod.GET)
-    public String debateEdit(@RequestParam("id") Long id,
-                             Model model) {
-
-        DebateDto debateDto = debateService.getDebate(equalId(id), projection, true, true);
+    private String getUpdateDebate(Predicate predicate, Model model) {
+        DebateDto debateDto = debateService.getDebate(predicate, projection, true, true);
         if (!CollectionUtils.isEmpty(debateDto.getRelations())) {
             List<IssueDto> issues = issueService.getIssues(equalIdIn(debateDto.getRelations()), projectionForBasic);
             debateDto.setIssues(issues);
@@ -115,12 +88,7 @@ public class AdminDebateController {
         return "/admin/debate/update";
     }
 
-    @RequestMapping(value = "/debate-edit.do", method = RequestMethod.POST)
-    public String debateEdit(@RequestParam("id") Long id,
-                             @ModelAttribute("updateDto") @Valid DebateUpdateDto updateDto,
-                             BindingResult result,
-                             Model model,
-                             InetAddress address) {
+    private String updateDebate(String groupPrefix, DebateUpdateDto updateDto, BindingResult result, InetAddress address) {
         if (result.hasErrors()) {
             if (!CollectionUtils.isEmpty(updateDto.getRelations())) {
                 List<IssueDto> issues = issueService.getIssues(equalIdIn(updateDto.getRelations()), projectionForBasic);
@@ -131,6 +99,126 @@ public class AdminDebateController {
 
         Debate debate = debateService.update(updateDto, address.getHostAddress());
 
-        return "redirect:/admin/issue/debate-detail.do?id=" + debate.getId();
+        return "redirect:/admin/issue/" + groupPrefix + "debate-detail.do?id=" + debate.getId();
+    }
+
+    @ModelAttribute("categories")
+    public List<CategoryDto> getCategories() {
+        return categoryService.getCategories(enabled(), projectionForFilter);
+    }
+
+    /**
+     * 관리자 > 시민제안 > 토론관리
+     */
+    private void userGroupAttribute(Model model) {
+        model.addAttribute("issueGroup", IssueGroup.USER);
+        model.addAttribute("groupText", "토론");
+    }
+
+    @RequestMapping(value = "/debate.do", method = RequestMethod.GET)
+    public String debateList(Model model) {
+        userGroupAttribute(model);
+        return "/admin/debate/list";
+    }
+
+    /**
+     * 관리자 > 시민제안 > 토론관리 > 상세
+     */
+    @RequestMapping(value = "/debate-detail.do", method = RequestMethod.GET)
+    public String debateDetail(@RequestParam("id") Long id,
+                               Model model) {
+        userGroupAttribute(model);
+        return getDebateDetail(equalIdAndGroup(id, IssueGroup.USER), model);
+    }
+
+    @RequestMapping(value = "/debate-new.do", method = RequestMethod.GET)
+    public String debateNew(@ModelAttribute("createDto") DebateCreateDto createDto,
+                            Model model) {
+        userGroupAttribute(model);
+        return "/admin/debate/create";
+    }
+
+    @RequestMapping(value = "/debate-new.do", method = RequestMethod.POST)
+    public String debateNew(@ModelAttribute("createDto") @Valid DebateCreateDto createDto,
+                            BindingResult result,
+                            InetAddress address,
+                            Model model) {
+        userGroupAttribute(model);
+        return createDebate(IssueGroup.USER, "", createDto, result, address);
+    }
+
+    @RequestMapping(value = "/debate-edit.do", method = RequestMethod.GET)
+    public String debateEdit(@RequestParam("id") Long id,
+                             Model model) {
+        userGroupAttribute(model);
+        return getUpdateDebate(equalIdAndGroup(id, IssueGroup.USER), model);
+    }
+
+    @RequestMapping(value = "/debate-edit.do", method = RequestMethod.POST)
+    public String debateEdit(@RequestParam("id") Long id,
+                             @ModelAttribute("updateDto") @Valid DebateUpdateDto updateDto,
+                             BindingResult result,
+                             Model model,
+                             InetAddress address) {
+        userGroupAttribute(model);
+        return updateDebate("", updateDto, result, address);
+    }
+
+    /**
+     * 관리자 > 기관제안 > 기관제안관리
+     */
+    private void orgGroupAttribute(Model model) {
+        model.addAttribute("issueGroup", IssueGroup.ORG);
+        model.addAttribute("groupText", "기관제안");
+        model.addAttribute("groupPrefix", "org-");
+    }
+
+    @RequestMapping(value = "/org-debate.do", method = RequestMethod.GET)
+    public String orgDebateList(Model model) {
+        orgGroupAttribute(model);
+        return "/admin/debate/list";
+    }
+
+    /**
+     * 관리자 > 기관제안 > 기관제안관리 > 상세
+     */
+    @RequestMapping(value = "/org-debate-detail.do", method = RequestMethod.GET)
+    public String orgDebateDetail(@RequestParam("id") Long id,
+                                  Model model) {
+        orgGroupAttribute(model);
+        return getDebateDetail(equalIdAndGroup(id, IssueGroup.ORG), model);
+    }
+
+    @RequestMapping(value = "/org-debate-new.do", method = RequestMethod.GET)
+    public String orgDebateNew(@ModelAttribute("createDto") DebateCreateDto createDto,
+                               Model model) {
+        orgGroupAttribute(model);
+        return "/admin/debate/create";
+    }
+
+    @RequestMapping(value = "/org-debate-new.do", method = RequestMethod.POST)
+    public String orgDebateNew(@ModelAttribute("createDto") @Valid DebateCreateDto createDto,
+                               BindingResult result,
+                               InetAddress address,
+                               Model model) {
+        orgGroupAttribute(model);
+        return createDebate(IssueGroup.ORG, "org-", createDto, result, address);
+    }
+
+    @RequestMapping(value = "/org-debate-edit.do", method = RequestMethod.GET)
+    public String orgDebateEdit(@RequestParam("id") Long id,
+                                Model model) {
+        orgGroupAttribute(model);
+        return getUpdateDebate(equalIdAndGroup(id, IssueGroup.ORG), model);
+    }
+
+    @RequestMapping(value = "/org-debate-edit.do", method = RequestMethod.POST)
+    public String orgDebateEdit(@RequestParam("id") Long id,
+                                @ModelAttribute("updateDto") @Valid DebateUpdateDto updateDto,
+                                BindingResult result,
+                                Model model,
+                                InetAddress address) {
+        orgGroupAttribute(model);
+        return updateDebate("org-", updateDto, result, address);
     }
 }

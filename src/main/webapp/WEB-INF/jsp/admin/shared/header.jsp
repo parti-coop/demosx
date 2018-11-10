@@ -50,21 +50,62 @@
   <section class="sidebar">
     <ul class="sidebar-menu" data-widget="tree">
       <li class="header">시민제안</li>
-      <li><a href="<c:url value="/admin/issue/proposal.do"/>"><i class="fa fa-picture-o"></i> <span>제안관리</span></a></li>
-      <li><a href="<c:url value="/admin/issue/debate.do"/>"><i class="fa fa-picture-o"></i> <span>토론관리</span></a></li>
-      <li><a href="<c:url value="/admin/issue/action.do"/>"><i class="fa fa-picture-o"></i> <span>실행관리</span></a></li>
+      <li>
+        <a href="<c:url value="/admin/issue/proposal.do"/>">
+          <i class="fa fa-picture-o"></i>
+          <span>제안관리</span>
+        </a>
+      </li>
+      <li>
+        <a href="<c:url value="/admin/issue/debate.do"/>">
+          <i class="fa fa-picture-o"></i>
+          <span>토론관리</span>
+        </a>
+      </li>
+      <li>
+        <a href="<c:url value="/admin/issue/action.do"/>">
+          <i class="fa fa-picture-o"></i>
+          <span>실행관리</span>
+        </a>
+      </li>
 
-      <li class="header">온라인 공론장</li>
-      <li><a href="<c:url value="/admin/issue/proposal.do"/>"><i class="fa fa-picture-o"></i> <span>온라인 공론장</span></a></li>
+      <li class="header">기관제안</li>
+      <li>
+        <a href="<c:url value="/admin/issue/org-debate.do"/>">
+          <i class="fa fa-picture-o"></i>
+          <span>기관제안관리</span>
+        </a>
+      </li>
 
-      <li class="header">User</li>
-      <li><a href="<c:url value="/admin/users/list.do"/>"><i class="fa fa-user"></i> <span>회원 관리</span></a></li>
+      <li class="header">회원</li>
+      <li>
+        <a href="<c:url value="/admin/users/list.do"/>">
+          <i class="fa fa-user"></i>
+          <span>회원 관리</span>
+        </a>
+      </li>
+      <li>
+        <a href="<c:url value="/admin/users/list.do"/>">
+          <i class="fa fa-user"></i>
+          <span>부서 관리</span>
+        </a>
+      </li>
 
       <li class="header">카테고리</li>
-      <li><a href="<c:url value="/admin/category/list.do"/>"><i class="fa fa-calendar-check-o"></i> <span>카테고리</span></a></li>
+      <li>
+        <a href="<c:url value="/admin/category/list.do"/>">
+          <i class="fa fa-calendar-check-o"></i>
+          <span>카테고리 관리</span>
+        </a>
+      </li>
 
       <li class="header">Stats</li>
-      <li><a href="https://adminlte.io/docs"><i class="fa fa-bar-chart"></i> <span>통계</span></a></li>
+      <li>
+        <a href="https://adminlte.io/docs">
+          <i class="fa fa-bar-chart"></i>
+          <span>통계</span>
+        </a>
+      </li>
     </ul>
   </section>
 </aside>

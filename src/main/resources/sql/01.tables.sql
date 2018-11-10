@@ -97,6 +97,7 @@ CREATE TABLE `TB_ISSUE` (
 	`CHG_IP`             VARCHAR(15)         NOT NULL COMMENT '수정아이피', -- 수정아이피
 	`CATE_ID`            BIGINT(20) UNSIGNED NULL     COMMENT '분류ID', -- 분류ID
 	`STATS_ID`           BIGINT(20) UNSIGNED NOT NULL COMMENT '통계ID', -- 통계ID
+	`ISSUE_GROUP`        VARCHAR(12)         NOT NULL COMMENT '이슈그룹', -- 이슈그룹
 	`ISSUE_STATUS`       VARCHAR(12)         NOT NULL COMMENT '이슈상태', -- 이슈상태
 	`ISSUE_PROCESS`      VARCHAR(12)         NOT NULL COMMENT '이슈과정', -- 이슈과정
 	`OPINION_TYPE`       VARCHAR(12)         NOT NULL COMMENT '의견타입', -- 의견타입

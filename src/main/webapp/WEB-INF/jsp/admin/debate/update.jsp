@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>토론 관리 - 수정 - Democracy</title>
+  <title>${groupText} 관리 - 수정 - Democracy</title>
   <%@ include file="../shared/head.jsp" %>
 
   <!-- form validation -->
@@ -69,7 +69,7 @@
 
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>토론 관리 - 수정</h1>
+      <h1>${groupText} 관리 - 수정</h1>
     </section>
 
     <section class="content">
@@ -77,7 +77,7 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header with-border">
-              <h3 class="box-title">토론</h3>
+              <h3 class="box-title">${groupText}</h3>
             </div>
             <form:form commandName="updateDto" class="form-horizontal">
               <div class="box-body">
@@ -207,7 +207,7 @@
                 </div>
               </div>
               <div class="box-footer">
-                <a href="<c:url value="/admin/issue/debate.do"/>" class="btn btn-default btn-sm">목록</a>
+                <a href="<c:url value="/admin/issue/${groupPrefix}debate.do"/>" class="btn btn-default btn-sm">목록</a>
                 <button type="submit" class="btn btn-primary btn-sm pull-right" id="update-btn">저장하기</button>
               </div>
             </form:form>
@@ -399,15 +399,5 @@
     });
   });
 </script>
-
-<!-- tinymce editor -->
-<style>
-  .mce-panel {
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    border-color: #d2d6de;
-  }
-</style>
 </body>
 </html>

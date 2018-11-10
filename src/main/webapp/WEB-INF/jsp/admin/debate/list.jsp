@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>토론 관리 - Democracy</title>
+  <title>${groupText} 관리 - Democracy</title>
   <%@ include file="../shared/head.jsp" %>
   <link rel="stylesheet" type="text/css" href="<c:url value="/css/dataTables.bootstrap.min.css"/>"/>
   <script type="text/javascript" src="<c:url value="/js/jquery.dataTables.min.js"/>"></script>
@@ -16,7 +16,11 @@
 
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>토론 관리 <a href="<c:url value="/admin/issue/debate-new.do"/>" class="btn btn-primary btn-sm pull-right">토론 생성하기</a></h1>
+      <h1>${groupText} 관리
+        <a href="<c:url value="/admin/issue/${groupPrefix}debate-new.do"/>"
+           class="btn btn-primary btn-sm pull-right">${groupText} 생성하기
+        </a>
+      </h1>
     </section>
 
     <section class="content">
@@ -68,6 +72,7 @@
         console.log(data);
         data['page'] = data.start / data.length + 1;
         data['size'] = data.length;
+        data['group'] = '${issueGroup}';
         data['sort'] = [sortColumn[data['order'][0].column] + ',' + data['order'][0].dir];
         data['search'] = data['search'].value;
         var category = $category.val();
@@ -130,14 +135,14 @@
           },
           {
             data: function (item) {
-              return '<a href="/admin/issue/debate-detail.do?id=' + item.id + '">' + item.title + '</a>';
+              return '<a href="/admin/issue/${groupPrefix}debate-detail.do?id=' + item.id + '">' + item.title + '</a>';
             }, orderable: false
           },
           { data: 'createdBy.name', orderable: false },
           { data: 'stats.viewCount', orderable: false },
           {
             data: function (item) {
-              if(item.opinionType === 'PROPOSAL') return '-';
+              if (item.opinionType === 'PROPOSAL') return '-';
               return item.stats.yesCount + '/' + item.stats.noCount + '/' + item.stats.etcCount;
             }, orderable: false
           },

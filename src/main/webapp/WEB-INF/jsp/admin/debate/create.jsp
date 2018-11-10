@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>토론 관리 - 생성 - Democracy</title>
+  <title>${groupText} 관리 - 생성 - Democracy</title>
   <%@ include file="../shared/head.jsp" %>
 
   <!-- form validation -->
@@ -73,7 +73,7 @@
 
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>토론 관리 - 생성</h1>
+      <h1>${groupText} 관리 - 생성</h1>
     </section>
 
     <section class="content">
@@ -81,7 +81,7 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header with-border">
-              <h3 class="box-title">토론</h3>
+              <h3 class="box-title">${groupText}</h3>
             </div>
             <form:form commandName="createDto" class="form-horizontal">
               <div class="box-body">

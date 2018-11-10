@@ -91,11 +91,11 @@ public abstract class Issue {
     protected String modifiedIp;
 
     /**
-     * 의견 타입
+     * 이슈 그룹
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "OPINION_TYPE", updatable = false)
-    protected OpinionType opinionType;
+    @Column(name = "ISSUE_GROUP", updatable = false)
+    protected IssueGroup group = IssueGroup.USER;
 
     /**
      * 이슈 상태
@@ -103,6 +103,13 @@ public abstract class Issue {
     @Enumerated(EnumType.STRING)
     @Column(name = "ISSUE_STATUS")
     protected Status status;
+
+    /**
+     * 의견 타입
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "OPINION_TYPE", updatable = false)
+    protected OpinionType opinionType;
 
     /**
      * 범주

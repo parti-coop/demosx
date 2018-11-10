@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>토론 관리 - 상세 - Democracy</title>
+  <title>${groupText} 관리 - 상세 - Democracy</title>
   <%@ include file="../shared/head.jsp" %>
   <link rel="stylesheet" type="text/css" href="<c:url value="/css/dataTables.bootstrap.min.css"/>"/>
   <script type="text/javascript" src="<c:url value="/js/jquery.dataTables.min.js"/>"></script>
@@ -16,7 +16,7 @@
 
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>토론 관리 - 상세 <a href="<c:url value="/admin/issue/debate-edit.do?id=${debate.id}"/>"
+      <h1>${groupText} 관리 - 상세 <a href="<c:url value="/admin/issue/${groupPrefix}debate-edit.do?id=${debate.id}"/>"
                       class="btn btn-primary btn-sm pull-right">수정하기</a></h1>
     </section>
 
@@ -25,7 +25,7 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header with-border">
-              <h3 class="box-title">토론</h3>
+              <h3 class="box-title">${groupText}</h3>
             </div>
             <form class="form-horizontal">
               <div class="box-body">

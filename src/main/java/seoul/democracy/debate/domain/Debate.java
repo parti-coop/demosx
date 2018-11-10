@@ -68,10 +68,11 @@ public class Debate extends Issue {
     })
     private List<IssueRelation> relations = new ArrayList<>();
 
-    private Debate(Category category, String thumbnail, OpinionType opinionType,
+    private Debate(IssueGroup group, Category category, String thumbnail, OpinionType opinionType,
                    LocalDate startDate, LocalDate endDate,
                    String title, String excerpt, String content, Status status,
                    List<IssueFile> files, List<IssueRelation> relations, String ip) {
+        this.group = group;
         this.stats = IssueStats.create();
         this.status = status;
         this.process = Process.INIT;
@@ -89,7 +90,7 @@ public class Debate extends Issue {
         this.relations = relations;
     }
 
-    public static Debate create(DebateCreateDto createDto, Category category, String ip) {
+    public static Debate create(IssueGroup group, DebateCreateDto createDto, Category category, String ip) {
 
         // todo 정리 필요, update 부분과 같이
         List<IssueFile> files = new ArrayList<>();
@@ -105,7 +106,7 @@ public class Debate extends Issue {
                 relations.add(IssueRelation.create(i, createDto.getRelations().get(i)));
             }
         }
-        return new Debate(category, createDto.getThumbnail(), createDto.getOpinionType(),
+        return new Debate(group, category, createDto.getThumbnail(), createDto.getOpinionType(),
             createDto.getStartDate(), createDto.getEndDate(),
             createDto.getTitle(), createDto.getExcerpt(), createDto.getContent(), createDto.getStatus(),
             files, relations, ip);

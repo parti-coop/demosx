@@ -6,6 +6,7 @@ import com.mysema.query.types.QBean;
 import lombok.Data;
 import seoul.democracy.debate.domain.Debate;
 import seoul.democracy.issue.domain.Issue;
+import seoul.democracy.issue.domain.IssueGroup;
 import seoul.democracy.issue.dto.CategoryDto;
 import seoul.democracy.issue.dto.IssueDto;
 import seoul.democracy.issue.dto.IssueFileDto;
@@ -29,7 +30,7 @@ public class DebateDto {
         debate.createdIp, debate.modifiedIp, debate.opinionType,
         CategoryDto.projection.as("category"),
         IssueStatsDto.projection.as("stats"),
-        debate.status, debate.process,
+        debate.group, debate.status, debate.process,
         debate.thumbnail, debate.title, debate.excerpt, debate.content,
         debate.startDate, debate.endDate);
 
@@ -56,6 +57,7 @@ public class DebateDto {
     private IssueStatsDto stats;
     private List<IssueFileDto> files;
 
+    private IssueGroup group;
     private Issue.Status status;
     private Debate.Process process;
 
