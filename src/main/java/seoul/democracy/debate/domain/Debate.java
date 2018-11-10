@@ -59,15 +59,6 @@ public class Debate extends Issue {
     @Column(name = "DEBATE_EDDATE")
     private LocalDate endDate;
 
-    /**
-     * 연관 제안
-     */
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "TB_ISSUE_RELATION", joinColumns = {
-        @JoinColumn(name = "ISSUE_ID", referencedColumnName = "ISSUE_ID")
-    })
-    private List<IssueRelation> relations = new ArrayList<>();
-
     private Debate(IssueGroup group, Category category, String thumbnail, OpinionType opinionType,
                    LocalDate startDate, LocalDate endDate,
                    String title, String excerpt, String content, Status status,

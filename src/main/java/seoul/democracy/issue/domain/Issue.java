@@ -19,6 +19,7 @@ import seoul.democracy.user.domain.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -109,7 +110,20 @@ public abstract class Issue {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "OPINION_TYPE", updatable = false)
-    protected OpinionType opinionType;
+    protected OpinionType opinionType = OpinionType.PROPOSAL;
+
+    /**
+     * 이슈 제목
+     */
+    @Column(name = "ISSUE_TITLE")
+    protected String title;
+
+    /**
+     * 이슈 내용
+     */
+    @Lob
+    @Column(name = "ISSUE_CONTENT")
+    protected String content;
 
     /**
      * 범주
@@ -135,17 +149,13 @@ public abstract class Issue {
     protected List<IssueFile> files;
 
     /**
-     * 이슈 제목
+     * 연관 제안
      */
-    @Column(name = "ISSUE_TITLE")
-    protected String title;
-
-    /**
-     * 이슈 내용
-     */
-    @Lob
-    @Column(name = "ISSUE_CONTENT")
-    protected String content;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "TB_ISSUE_RELATION", joinColumns = {
+        @JoinColumn(name = "ISSUE_ID", referencedColumnName = "ISSUE_ID")
+    })
+    protected List<IssueRelation> relations = new ArrayList<>();
 
     public IssueHistory createHistory(String content, String ip) {
         if (this instanceof Proposal)

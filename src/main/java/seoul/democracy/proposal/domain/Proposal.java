@@ -10,7 +10,6 @@ import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.domain.IssueLike;
 import seoul.democracy.issue.domain.IssueStats;
-import seoul.democracy.opinion.domain.OpinionType;
 import seoul.democracy.opinion.domain.ProposalOpinion;
 import seoul.democracy.opinion.dto.OpinionCreateDto;
 import seoul.democracy.proposal.dto.ProposalCreateDto;
@@ -74,7 +73,6 @@ public class Proposal extends Issue {
         this.stats = IssueStats.create();
         this.status = Status.OPEN;
         this.process = Process.INIT;
-        this.opinionType = OpinionType.PROPOSAL;
         this.title = title;
         this.content = content;
         this.createdIp = this.modifiedIp = ip;
