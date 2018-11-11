@@ -58,9 +58,7 @@ public class DebateService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public Debate create(IssueGroup group, DebateCreateDto createDto) {
-        Category category = getCategory(createDto.getCategory());
-
-        Debate debate = Debate.create(group, createDto, category);
+        Debate debate = Debate.create(group, createDto, getCategory(createDto.getCategory()));
 
         return debateRepository.save(debate);
     }
@@ -75,9 +73,6 @@ public class DebateService {
         if (debate == null)
             throw new NotFoundException("해당 토론을 찾을 수 없습니다.");
 
-        Category category = debate.getCategory().getName().equals(updateDto.getCategory()) ?
-                                debate.getCategory() : getCategory(updateDto.getCategory());
-
-        return debate.update(updateDto, category);
+        return debate.update(updateDto, getCategory(updateDto.getCategory()));
     }
 }

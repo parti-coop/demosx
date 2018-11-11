@@ -36,7 +36,7 @@ public class ProposalDto {
         proposal.title, proposal.content);
 
     /**
-     * 관리자 제안 리스트에서 사용됨
+     * 관리자 제안 리스트에서 사용
      */
     public final static QBean<ProposalDto> projectionForAdminList = Projections.fields(ProposalDto.class,
         proposal.id, proposal.createdDate,
@@ -48,7 +48,7 @@ public class ProposalDto {
         proposal.title);
 
     /**
-     * 관리자 제안 상세에서 사용됨
+     * 관리자 제안 상세에서 사용
      */
     public final static QBean<ProposalDto> projectionForAdminDetail = Projections.fields(ProposalDto.class,
         proposal.id, proposal.createdDate,
@@ -62,7 +62,7 @@ public class ProposalDto {
         proposal.title, proposal.content);
 
     /**
-     * 담당자 할당 후 사용됨
+     * 담당자 할당 후 사용
      */
     public final static QBean<ProposalDto> projectionForAssignManager = Projections.fields(ProposalDto.class,
         proposal.id, UserDto.projectionForBasic.as("manager"));

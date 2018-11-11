@@ -3,6 +3,8 @@ package seoul.democracy.action.service;
 import com.mysema.query.types.Expression;
 import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +34,12 @@ public class ActionService {
         this.categoryRepository = categoryRepository;
     }
 
-    public ActionDto getAction(Predicate predicate, Expression<ActionDto> projection) {
-        return actionRepository.findOne(predicate, projection, true, true);
+    public Page<ActionDto> getActions(Predicate predicate, Pageable pageable, Expression<ActionDto> projection, boolean withFiles, boolean withRelations) {
+        return actionRepository.findAll(predicate, pageable, projection, withFiles, withRelations);
+    }
+
+    public ActionDto getAction(Predicate predicate, Expression<ActionDto> projection, boolean withFiles, boolean withRelations) {
+        return actionRepository.findOne(predicate, projection, withFiles, withRelations);
     }
 
     private Category getCategory(String categoryName) {
@@ -50,9 +56,7 @@ public class ActionService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public Action create(ActionCreateDto createDto) {
-        Category category = getCategory(createDto.getCategory());
-
-        Action action = Action.create(createDto, category);
+        Action action = Action.create(createDto, getCategory(createDto.getCategory()));
 
         return actionRepository.save(action);
     }
@@ -64,11 +68,9 @@ public class ActionService {
     @PreAuthorize("hasRole('ADMIN')")
     public Action update(ActionUpdateDto updateDto) {
         Action action = actionRepository.findOne(updateDto.getId());
-        if(action == null) throw new NotFoundException("해당 실행을 찾을 수 없습니다.");
+        if (action == null) throw new NotFoundException("해당 실행을 찾을 수 없습니다.");
 
-        Category category = action.getCategory().getName().equals(updateDto.getCategory()) ?
-                                action.getCategory() : getCategory(updateDto.getCategory());
-
-        return action.update(updateDto, category);
+        return action.update(updateDto, getCategory(updateDto.getCategory()));
     }
+
 }

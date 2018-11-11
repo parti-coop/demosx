@@ -29,6 +29,25 @@ public class ActionDto {
         IssueStatsDto.projection.as("stats"),
         action.status, action.thumbnail, action.title, action.content);
 
+    /**
+     * 관리자 실행 리스트에서 사용
+     */
+    public final static QBean<ActionDto> projectionForAdminList = Projections.fields(ActionDto.class,
+        action.id, action.createdDate,
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        CategoryDto.projection.as("category"),
+        IssueStatsDto.projection.as("stats"),
+        action.status, action.title);
+
+    /**
+     * 관리자 실행 상세에서 사용
+     */
+    public final static QBean<ActionDto> projectionForAdminDetail = Projections.fields(ActionDto.class,
+        action.id, action.createdDate,
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        CategoryDto.projection.as("category"),
+        IssueStatsDto.projection.as("stats"),
+        action.status, action.thumbnail, action.title, action.content);
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -39,6 +39,10 @@ public class ActionRepositoryImpl extends QueryDslRepositorySupport implements A
             query.innerJoin(action.modifiedBy, modifiedBy);
             query.innerJoin(action.category, category);
             query.innerJoin(action.stats, issueStats);
+        } else if (projection == ActionDto.projectionForAdminList) {
+            query.innerJoin(action.createdBy, createdBy);
+            query.innerJoin(action.category, category);
+            query.innerJoin(action.stats, issueStats);
         }
 
         return query;

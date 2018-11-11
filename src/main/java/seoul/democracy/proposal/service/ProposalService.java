@@ -124,9 +124,6 @@ public class ProposalService {
     public Proposal updateCategory(ProposalCategoryUpdateDto updateDto) {
         Proposal proposal = getProposal(updateDto.getProposalId());
 
-        if (proposal.getCategory() != null && updateDto.getCategory().equals(proposal.getCategory().getName()))
-            return proposal;
-
         Category category = categoryRepository.findOne(equalName(updateDto.getCategory()));
         if (category == null || !category.getEnabled())
             throw new BadRequestException("category", "error.category", "카테고리를 확인해 주세요.");

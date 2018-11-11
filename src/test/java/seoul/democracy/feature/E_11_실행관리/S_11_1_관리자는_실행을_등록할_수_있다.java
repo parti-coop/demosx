@@ -76,7 +76,7 @@ public class S_11_1_관리자는_실행을_등록할_수_있다 {
         Action action = actionService.create(createDto);
         assertThat(action.getId(), is(notNullValue()));
 
-        ActionDto actionDto = actionService.getAction(equalId(action.getId()), projection);
+        ActionDto actionDto = actionService.getAction(equalId(action.getId()), projection, true, true);
         assertThat(actionDto.getCreatedDate().format(dateTimeFormatter), is(now));
         assertThat(actionDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(actionDto.getCreatedBy().getEmail(), is("admin1@googl.co.kr"));

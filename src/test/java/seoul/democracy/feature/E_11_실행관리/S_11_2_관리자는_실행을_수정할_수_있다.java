@@ -79,7 +79,7 @@ public class S_11_2_관리자는_실행을_수정할_수_있다 {
         Action action = actionService.update(updateDto);
         assertThat(action.getId(), is(notNullValue()));
 
-        ActionDto actionDto = actionService.getAction(equalId(action.getId()), projection);
+        ActionDto actionDto = actionService.getAction(equalId(action.getId()), projection, true, true);
         assertThat(actionDto.getModifiedDate().format(dateTimeFormatter), is(now));
         assertThat(actionDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
         assertThat(actionDto.getModifiedIp(), is(ip));
