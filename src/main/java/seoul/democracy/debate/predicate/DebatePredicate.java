@@ -3,6 +3,7 @@ package seoul.democracy.debate.predicate;
 import com.mysema.query.types.ExpressionUtils;
 import com.mysema.query.types.Predicate;
 import org.springframework.util.StringUtils;
+import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.domain.IssueGroup;
 
 import static seoul.democracy.debate.domain.QDebate.debate;
@@ -27,5 +28,13 @@ public class DebatePredicate {
             predicate = ExpressionUtils.and(predicate, debate.category.name.eq(category));
 
         return ExpressionUtils.and(predicate, debate.group.eq(group));
+    }
+
+    public static Predicate getPredicateForRelationSelect(String search) {
+        Predicate predicate = ExpressionUtils.and(debate.group.eq(IssueGroup.USER), debate.status.eq(Issue.Status.OPEN));
+
+        if (StringUtils.isEmpty(search)) return predicate;
+
+        return ExpressionUtils.and(predicate, debate.title.contains(search));
     }
 }

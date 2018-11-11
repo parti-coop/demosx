@@ -17,7 +17,7 @@
   <div class="content-wrapper">
     <section class="content-header">
       <h1>${groupText} 관리 - 상세 <a href="<c:url value="/admin/issue/${groupPrefix}debate-edit.do?id=${debate.id}"/>"
-                      class="btn btn-primary btn-sm pull-right">수정하기</a></h1>
+                                  class="btn btn-primary btn-sm pull-right">수정하기</a></h1>
     </section>
 
     <section class="content">
@@ -49,7 +49,7 @@
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">작성일</label>
-                  <div class="col-sm-10"><p class="form-control-static">${debate.createdDate}</p></div>
+                  <div class="col-sm-10"><p class="form-control-static">${debate.createdDate.toLocalDate()}</p></div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">작성자</label>
@@ -96,12 +96,15 @@
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">내용</label>
-                  <div class="col-sm-10"><div class="form-control-static">${debate.content}</div></div>
+                  <div class="col-sm-10">
+                    <div class="form-control-static">${debate.content}</div>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">연관제안</label>
                   <div class="col-sm-10">
-                    <c:forEach var="issue" items="${debate.issues}" varStatus="status">
+                    <c:forEach var="relation" items="${debate.relations}">
+                      <c:set var="issue" value="${debate.issueMap[relation]}"/>
                       <p class="form-control-static">${issue.title}</p>
                     </c:forEach>
                   </div>

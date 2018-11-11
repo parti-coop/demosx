@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -42,6 +43,11 @@ public class ActionUpdateDto {
 
     private List<Long> relations;
 
-    private List<IssueDto> issues;
+    private Map<Long, IssueDto> issueMap;
 
+    public static ActionUpdateDto of(ActionDto actionDto) {
+        return of(actionDto.getId(), actionDto.getThumbnail(), actionDto.getCategory().getName(),
+            actionDto.getTitle(), actionDto.getContent(), actionDto.getStatus(),
+            actionDto.getFiles(), actionDto.getRelations(), actionDto.getIssueMap());
+    }
 }

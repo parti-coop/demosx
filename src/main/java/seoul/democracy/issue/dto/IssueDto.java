@@ -16,7 +16,7 @@ import static seoul.democracy.issue.domain.QIssue.issue;
 @Data
 public class IssueDto {
 
-    public final static QBean<IssueDto> projectionForBasic = Projections.fields(IssueDto.class,
+    public final static QBean<IssueDto> projectionForRelation = Projections.fields(IssueDto.class,
         issue.id, issue.type, issue.title);
 
     private Long id;

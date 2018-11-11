@@ -19,7 +19,7 @@ public class IssueHistoryDto {
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
         UserDto.projectionForBasicByModifiedBy.as("modifiedBy"),
         issueHistory.createdIp, issueHistory.modifiedIp,
-        IssueDto.projectionForBasic.as("issue"),
+        IssueDto.projectionForRelation.as("issue"),
         issueHistory.status, issueHistory.content);
 
     private Long id;

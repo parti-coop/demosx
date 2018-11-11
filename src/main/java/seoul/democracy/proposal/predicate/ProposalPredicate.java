@@ -13,7 +13,7 @@ public class ProposalPredicate {
         return proposal.id.eq(id);
     }
 
-    public static Predicate containsTitleOrCreatedByNameAndEqualCategory(String search, String category) {
+    public static Predicate getPredicateForAdminList(String search, String category) {
         Predicate predicate = null;
 
         if (StringUtils.hasText(search))
@@ -25,12 +25,11 @@ public class ProposalPredicate {
         return predicate;
     }
 
-    public static Predicate equalIdAndStatus(Long id, Issue.Status status) {
-        return ExpressionUtils.and(proposal.id.eq(id), proposal.status.eq(status));
-    }
+    public static Predicate getPredicateForRelationSelect(String search) {
+        Predicate predicate = proposal.status.eq(Issue.Status.OPEN);
 
-    public static Predicate containsTitle(String search) {
-        if(StringUtils.isEmpty(search)) return null;
-        return proposal.title.contains(search);
+        if (StringUtils.isEmpty(search)) return predicate;
+
+        return ExpressionUtils.and(predicate, proposal.title.contains(search));
     }
 }

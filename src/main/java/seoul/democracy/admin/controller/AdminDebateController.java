@@ -23,11 +23,14 @@ import seoul.democracy.issue.service.IssueService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static java.util.function.Function.identity;
 import static seoul.democracy.debate.dto.DebateDto.projection;
+import static seoul.democracy.debate.dto.DebateDto.projectionForAdminDetail;
 import static seoul.democracy.debate.predicate.DebatePredicate.equalIdAndGroup;
 import static seoul.democracy.issue.dto.CategoryDto.projectionForFilter;
-import static seoul.democracy.issue.dto.IssueDto.projectionForBasic;
+import static seoul.democracy.issue.dto.IssueDto.projectionForRelation;
 import static seoul.democracy.issue.predicate.CategoryPredicate.enabled;
 import static seoul.democracy.issue.predicate.IssuePredicate.equalIdIn;
 
@@ -49,10 +52,10 @@ public class AdminDebateController {
     }
 
     private String getDebateDetail(Predicate predicate, Model model) {
-        DebateDto debateDto = debateService.getDebate(predicate, projection, true, true);
+        DebateDto debateDto = debateService.getDebate(predicate, projectionForAdminDetail, true, true);
         if (!CollectionUtils.isEmpty(debateDto.getRelations())) {
-            List<IssueDto> issues = issueService.getIssues(equalIdIn(debateDto.getRelations()), projectionForBasic);
-            debateDto.setIssues(issues);
+            List<IssueDto> issues = issueService.getIssues(equalIdIn(debateDto.getRelations()), projectionForRelation);
+            debateDto.setIssueMap(issues.stream().collect(Collectors.toMap(IssueDto::getId, identity())));
         }
         model.addAttribute("debate", debateDto);
 
@@ -64,8 +67,8 @@ public class AdminDebateController {
                                 BindingResult result) {
         if (result.hasErrors()) {
             if (!CollectionUtils.isEmpty(createDto.getRelations())) {
-                List<IssueDto> issues = issueService.getIssues(equalIdIn(createDto.getRelations()), projectionForBasic);
-                createDto.setIssues(issues);
+                List<IssueDto> issues = issueService.getIssues(equalIdIn(createDto.getRelations()), projectionForRelation);
+                createDto.setIssueMap(issues.stream().collect(Collectors.toMap(IssueDto::getId, identity())));
             }
             return "/admin/debate/create";
         }
@@ -78,8 +81,8 @@ public class AdminDebateController {
     private String getUpdateDebate(Predicate predicate, Model model) {
         DebateDto debateDto = debateService.getDebate(predicate, projection, true, true);
         if (!CollectionUtils.isEmpty(debateDto.getRelations())) {
-            List<IssueDto> issues = issueService.getIssues(equalIdIn(debateDto.getRelations()), projectionForBasic);
-            debateDto.setIssues(issues);
+            List<IssueDto> issues = issueService.getIssues(equalIdIn(debateDto.getRelations()), projectionForRelation);
+            debateDto.setIssueMap(issues.stream().collect(Collectors.toMap(IssueDto::getId, identity())));
         }
 
         DebateUpdateDto updateDto = DebateUpdateDto.of(debateDto);
@@ -93,8 +96,8 @@ public class AdminDebateController {
                                 BindingResult result) {
         if (result.hasErrors()) {
             if (!CollectionUtils.isEmpty(updateDto.getRelations())) {
-                List<IssueDto> issues = issueService.getIssues(equalIdIn(updateDto.getRelations()), projectionForBasic);
-                updateDto.setIssues(issues);
+                List<IssueDto> issues = issueService.getIssues(equalIdIn(updateDto.getRelations()), projectionForRelation);
+                updateDto.setIssueMap(issues.stream().collect(Collectors.toMap(IssueDto::getId, identity())));
             }
             return "/admin/debate/update";
         }

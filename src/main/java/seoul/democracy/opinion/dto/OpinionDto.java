@@ -20,7 +20,7 @@ public class OpinionDto {
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
         UserDto.projectionForBasicByModifiedBy.as("modifiedBy"),
         opinion.createdIp, opinion.modifiedIp,
-        IssueDto.projectionForBasic.as("issue"),
+        IssueDto.projectionForRelation.as("issue"),
         opinion.likeCount, opinion.content, opinion.status, opinion.vote);
 
     protected Long id;

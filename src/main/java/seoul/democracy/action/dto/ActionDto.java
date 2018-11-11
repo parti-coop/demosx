@@ -13,6 +13,7 @@ import seoul.democracy.user.dto.UserDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static seoul.democracy.action.domain.QAction.action;
 
@@ -70,5 +71,5 @@ public class ActionDto {
     private List<IssueFileDto> files;
 
     private List<Long> relations;
-    private List<IssueDto> issues;
+    private Map<Long, IssueDto> issueMap;
 }

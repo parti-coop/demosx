@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>${groupText} 관리 - 생성 - Democracy</title>
+  <title>실행 관리 - 생성 - Democracy</title>
   <%@ include file="../shared/head.jsp" %>
 
   <!-- form validation -->
@@ -39,6 +39,7 @@
       right: -25px;
       top: 0;
     }
+
     .thumbnail-img-wrapper {
       position: relative;
       display: inline-block;
@@ -47,12 +48,14 @@
   </style>
 
   <!-- tinymce editor -->
-  <script type="text/javascript" src="<c:url value="/tinymce/tinymce.min.js"/>"></script>
+  <%--<script type="text/javascript" src="<c:url value="/tinymce/tinymce.min.js"/>"></script>--%>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.8.5/tinymce.min.js"></script>
   <script>
     tinymce.init({
       selector: '.tinymce-editor',
       menubar: false,
       language: 'ko_KR',
+      language_url: '<c:url value="/tinymce/langs/ko_KR.js"/>',
       plugins: ['autolink', 'autosave', 'textcolor', 'image', 'media', 'link', 'paste', 'autoresize'],
       toolbar: "undo redo | styleselect | forecolor bold italic | alignleft aligncenter alignright alignjustify | link media custom_image",
       mobile: {
@@ -72,7 +75,7 @@
 
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>${groupText} 관리 - 생성</h1>
+      <h1>실행 관리 - 생성</h1>
     </section>
 
     <section class="content">
@@ -80,7 +83,7 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header with-border">
-              <h3 class="box-title">${groupText}</h3>
+              <h3 class="box-title">실행</h3>
             </div>
             <form:form commandName="createDto" class="form-horizontal">
               <div class="box-body">
@@ -117,34 +120,6 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">타입<span> *</span></label>
-                  <div class="col-sm-10">
-                    <label class="radio-inline">
-                      <form:radiobutton path="opinionType" value="PROPOSAL"
-                                        data-parsley-required="true"
-                                        data-parsley-errors-container="#opinionTypeError"/>제안의견
-                    </label>
-                    <label class="radio-inline">
-                      <form:radiobutton path="opinionType" value="DEBATE"/>투표의견
-                    </label>
-                    <div id="opinionTypeError"></div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">기간<span> *</span></label>
-                  <div class="col-sm-10">
-                    <div class="input-group input-group-sm">
-                      <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                      <input type="text" class="form-control pull-right" id="debate-dates" autocomplete="off"
-                             onkeydown="return false" value="${createDto.period()}"
-                             data-parsley-required="true" data-parsley-errors-container="#datesError">
-                      <input type="hidden" name="startDate" value="${createDto.startDate}"/>
-                      <input type="hidden" name="endDate" value="${createDto.endDate}"/>
-                    </div>
-                    <div id="datesError"></div>
-                  </div>
-                </div>
-                <div class="form-group">
                   <label class="col-sm-2 control-label">제목<span> *</span></label>
                   <div class="col-sm-10">
                     <form:input path="title" type="text" class="form-control input-sm" autocomplete="off"
@@ -153,17 +128,10 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">한줄설명<span> *</span></label>
-                  <div class="col-sm-10">
-                    <form:input path="excerpt" type="text" class="form-control input-sm" autocomplete="off"
-                                data-parsley-required="true" data-parsley-trim-value="true"
-                                data-parsley-maxlength="100"/>
-                  </div>
-                </div>
-                <div class="form-group">
                   <label class="col-sm-2 control-label">내용</label>
                   <div class="col-sm-10">
-                    <form:textarea path="content" class="tinymce-editor hidden"/>
+                    <form:textarea path="content" class="tinymce-editor"
+                                   style="visibility:hidden; width:100%; height:400px;"/>
                   </div>
                 </div>
                 <div class="form-group">
@@ -200,9 +168,31 @@
                       </span>
                     </div>
                     <div id="selected-proposal-list">
-                      <c:forEach var="relation" items="${createDto.relations}">
-                        <c:set var="issue" value="${createDto.issueMap[relation]}"/>
+                      <c:forEach var="relation" items="${updateDto.relations}">
+                        <c:set var="issue" value="${updateDto.issueMap[relation]}"/>
                         <c:if test="${issue.type eq 'P'}">
+                          <p class="form-control-static">${issue.title}
+                            <i class="fa fa-times-circle cursor-pointer remove-issue-icon ml-10"></i>
+                            <input type="hidden" class="relation-input" value="${issue.id}">
+                          </p>
+                        </c:if>
+                      </c:forEach>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">토론제안</label>
+                  <div class="col-sm-6">
+                    <div class="input-group input-group-sm">
+                      <select id="select-debate-input" class="form-control"></select>
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" id="select-debate-btn">추가하기</button>
+                      </span>
+                    </div>
+                    <div id="selected-debate-list">
+                      <c:forEach var="relation" items="${updateDto.relations}">
+                        <c:set var="issue" value="${updateDto.issueMap[relation]}"/>
+                        <c:if test="${issue.type eq 'D'}">
                           <p class="form-control-static">${issue.title}
                             <i class="fa fa-times-circle cursor-pointer remove-issue-icon ml-10"></i>
                             <input type="hidden" class="relation-input" value="${issue.id}">
@@ -228,7 +218,7 @@
                 </div>
               </div>
               <div class="box-footer">
-                <a href="<c:url value="/admin/issue/${groupPrefix}debate.do"/>" class="btn btn-default btn-sm">목록</a>
+                <a href="<c:url value="/admin/issue/action.do"/>" class="btn btn-default btn-sm">목록</a>
                 <button type="submit" class="btn btn-primary btn-sm pull-right" id="update-btn">생성하기</button>
               </div>
             </form:form>
@@ -254,59 +244,62 @@
         '<input type="hidden" class="relation-input" value="' + id + '"></p>';
     }
 
-    var $selectIssueInput = $('#select-proposal-input');
-    $selectIssueInput.select2({
-      language: 'ko',
-      theme: "bootstrap",
-      ajax: {
-        headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
-        url: '/admin/ajax/issue/proposals/select',
-        type: 'GET',
-        dataType: 'json',
-        data: function (params) {
-          return {
-            search: params.term
-          };
-        },
-        processResults: function (data) {
-          return {
-            results: data.content.map(function (item) {
-              return {
-                id: item.id,
-                text: item.title,
-                item: item
-              }
-            })
-          };
+    function initIssueSelect2(issueType) {
+      var $selectIssueInput = $('#select-' + issueType + '-input');
+      $selectIssueInput.select2({
+        language: 'ko',
+        theme: "bootstrap",
+        ajax: {
+          headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
+          url: '/admin/ajax/issue/' + issueType + 's/select',
+          type: 'GET',
+          dataType: 'json',
+          data: function (params) {
+            return {
+              search: params.term
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data.content.map(function (item) {
+                return {
+                  id: item.id,
+                  text: item.title,
+                  item: item
+                }
+              })
+            };
+          }
         }
-      }
-    });
+      });
 
+      $('#select-' + issueType + '-btn').click(function () {
+        var selectedData = $selectIssueInput.select2('data');
+        if (selectedData.length === 0) {
+          alert('선택된 항목이 없습니다.');
+          return;
+        }
 
-    $('#select-proposal-btn').click(function () {
-      var selectedData = $selectIssueInput.select2('data');
-      if (selectedData.length === 0) {
-        alert('선택된 항목이 없습니다.');
-        return;
-      }
+        var sameValueItem = $('input.relation-input[value=' + selectedData[0].id + ']');
+        if (sameValueItem.length !== 0) {
+          alert('이미 선택된 항목입니다.');
+          return;
+        }
 
-      var sameValueItem = $('input.relation-input[value=' + selectedData[0].id + ']');
-      if (sameValueItem.length !== 0) {
-        alert('이미 선택된 항목입니다.');
-        return;
-      }
+        $('#selected-' + issueType + '-list').append(getSelectedIssue(selectedData[0].text, selectedData[0].id));
+        rearrangeIssue();
+        $selectIssueInput.val(null).trigger('change');
+      });
+    }
 
-      $('#selected-proposal-list').append(getSelectedIssue(selectedData[0].text, selectedData[0].id));
-      rearrangeIssue();
-      $selectIssueInput.val(null).trigger('change');
-    });
+    initIssueSelect2('proposal');
+    initIssueSelect2('debate');
+    rearrangeIssue();
 
     $(document).on('click', '.remove-issue-icon', function () {
       $(this).parent('p').remove();
       rearrangeIssue();
     });
-
-    rearrangeIssue();
   });
 </script>
 <script>

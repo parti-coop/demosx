@@ -10,17 +10,11 @@
   <script type="text/javascript" src="<c:url value="/js/dataTables.bootstrap.min.js"/>"></script>
 
   <!-- select2 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/i18n/ko.js"></script>
-
-  <style>
-    #assign-manager-btn {
-      width: 80px;
-    }
-    .select-manager-input-wrapper {
-      margin-right: 80px;
-    }
-  </style>
 </head>
 <body class="hold-transition skin-black-light fixed sidebar-mini admin">
 
@@ -59,7 +53,7 @@
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">작성일</label>
-                  <div class="col-sm-10"><p class="form-control-static">${proposal.createdDate}</p></div>
+                  <div class="col-sm-10"><p class="form-control-static">${proposal.createdDate.toLocalDate()}</p></div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">작성자</label>
@@ -114,11 +108,13 @@
                   <div class="col-sm-3">
                     <p class="form-control-static" id="assigned-manager">${proposal.manager.name}</p>
                   </div>
-                  <div class="col-sm-7">
+                  <div class="col-sm-4">
                     <c:if test="${proposal.stats.likeCount ge 50}">
-                      <button type="button" class="btn btn-default pull-right" id="assign-manager-btn">지정하기</button>
-                      <div class="select-manager-input-wrapper">
+                      <div class="input-group input-group-sm">
                         <select id="select-manager-input" class="form-control"></select>
+                        <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" id="assign-manager-btn">지정하기</button>
+                      </span>
                       </div>
                     </c:if>
                   </div>
@@ -158,6 +154,7 @@
     var $selectManagerInput = $('#select-manager-input');
     $selectManagerInput.select2({
       language: 'ko',
+      theme: "bootstrap",
       ajax: {
         headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
         url: '/admin/ajax/users/managers',

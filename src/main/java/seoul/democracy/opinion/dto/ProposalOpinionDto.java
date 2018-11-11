@@ -14,7 +14,7 @@ public class ProposalOpinionDto extends OpinionDto {
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
         UserDto.projectionForBasicByModifiedBy.as("modifiedBy"),
         proposalOpinion.createdIp, proposalOpinion.modifiedIp,
-        IssueDto.projectionForBasic.as("issue"),
+        IssueDto.projectionForRelation.as("issue"),
         proposalOpinion.likeCount, proposalOpinion.content, proposalOpinion.status, proposalOpinion.vote);
 
 }

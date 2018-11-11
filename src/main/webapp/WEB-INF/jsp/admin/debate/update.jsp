@@ -27,6 +27,9 @@
           src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.1/js/jquery.fileupload.min.js"></script>
 
   <!-- select2 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/i18n/ko.js"></script>
 
@@ -36,6 +39,7 @@
       right: -25px;
       top: 0;
     }
+
     .thumbnail-img-wrapper {
       position: relative;
       display: inline-block;
@@ -120,7 +124,7 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">기간<span> *</span></label>
                   <div class="col-sm-10">
-                    <div class="input-group">
+                    <div class="input-group input-group-sm">
                       <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                       <input type="text" class="form-control pull-right" id="debate-dates" autocomplete="off"
                              onkeydown="return false" value="${updateDto.period()}"
@@ -150,7 +154,7 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">내용</label>
                   <div class="col-sm-10">
-                    <form:textarea path="content" class="tinymce-editor"/>
+                    <form:textarea path="content" class="tinymce-editor hidden"/>
                   </div>
                 </div>
                 <div class="form-group">
@@ -179,15 +183,19 @@
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">연관제안</label>
-                  <div class="col-sm-10">
-                    <select id="select-proposal-input" class="form-control" style="width:50%"></select>
-                    <button type="button" class="btn btn-default mr-20" id="select-proposal-btn">선택하기</button>
+                  <div class="col-sm-6">
+                    <div class="input-group input-group-sm">
+                      <select id="select-proposal-input" class="form-control"></select>
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" id="select-proposal-btn">추가하기</button>
+                      </span>
+                    </div>
                     <div id="selected-proposal-list">
-                      <c:forEach var="issue" items="${updateDto.issues}" varStatus="status">
+                      <c:forEach var="relation" items="${updateDto.relations}">
+                        <c:set var="issue" value="${updateDto.issueMap[relation]}"/>
                         <p class="form-control-static">${issue.title}
                           <i class="fa fa-times-circle cursor-pointer remove-issue-icon ml-10"></i>
-                          <input type="hidden" class="relation-input" name="relations[${status.index}]"
-                                 value="${issue.id}">
+                          <input type="hidden" class="relation-input" value="${issue.id}">
                         </p>
                       </c:forEach>
                     </div>
@@ -236,6 +244,7 @@
     var $selectIssueInput = $('#select-proposal-input');
     $selectIssueInput.select2({
       language: 'ko',
+      theme: "bootstrap",
       ajax: {
         headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
         url: '/admin/ajax/issue/proposals/select',
@@ -283,6 +292,8 @@
       $(this).parent('p').remove();
       rearrangeIssue();
     });
+
+    rearrangeIssue();
   });
 </script>
 <script>

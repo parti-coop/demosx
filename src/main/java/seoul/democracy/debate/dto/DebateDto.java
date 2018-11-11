@@ -17,6 +17,7 @@ import seoul.democracy.user.dto.UserDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static seoul.democracy.debate.domain.QDebate.debate;
 
@@ -34,6 +35,9 @@ public class DebateDto {
         debate.thumbnail, debate.title, debate.excerpt, debate.content,
         debate.startDate, debate.endDate);
 
+    /**
+     * 관리자 토론 리스트에서 사용
+     */
     public final static QBean<DebateDto> projectionForAdminList = Projections.fields(DebateDto.class,
         debate.id, debate.createdDate,
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
@@ -41,6 +45,26 @@ public class DebateDto {
         CategoryDto.projection.as("category"),
         IssueStatsDto.projection.as("stats"),
         debate.status, debate.process, debate.title);
+
+    /**
+     * 관리자 토론 상세에서 사용
+     */
+    public final static QBean<DebateDto> projectionForAdminDetail = Projections.fields(DebateDto.class,
+        debate.id, debate.createdDate,
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        debate.opinionType,
+        CategoryDto.projection.as("category"),
+        IssueStatsDto.projection.as("stats"),
+        debate.group, debate.status, debate.process,
+        debate.thumbnail, debate.title, debate.excerpt, debate.content,
+        debate.startDate, debate.endDate);
+
+    /**
+     * 토론 선택용으로 사용
+     */
+    public final static QBean<DebateDto> projectionForAdminSelect = Projections.fields(DebateDto.class,
+        debate.id, debate.title);
+
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -70,5 +94,5 @@ public class DebateDto {
     private LocalDate endDate;
 
     private List<Long> relations;
-    private List<IssueDto> issues;
+    private Map<Long, IssueDto> issueMap;
 }

@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -39,6 +40,6 @@ public class ActionCreateDto {
 
     private List<Long> relations;
 
-    private List<IssueDto> issues;
+    private Map<Long, IssueDto> issueMap;
 
 }

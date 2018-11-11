@@ -13,7 +13,9 @@ import seoul.democracy.debate.service.DebateService;
 import seoul.democracy.issue.domain.IssueGroup;
 
 import static seoul.democracy.debate.dto.DebateDto.projectionForAdminList;
+import static seoul.democracy.debate.dto.DebateDto.projectionForAdminSelect;
 import static seoul.democracy.debate.predicate.DebatePredicate.getPredicateForAdminList;
+import static seoul.democracy.debate.predicate.DebatePredicate.getPredicateForRelationSelect;
 
 @RestController
 @RequestMapping("/admin/ajax/issue/debates")
@@ -35,4 +37,13 @@ public class AdminDebateAjaxController {
             projectionForAdminList, false, false);
     }
 
+    /**
+     * 연관토론에서 리스트 가져오기에 사용
+     */
+    @RequestMapping(value = "/select", method = RequestMethod.GET)
+    public Page<DebateDto> getProposalsForSelect(@RequestParam(value = "search", required = false) String search,
+                                                 @PageableDefault Pageable pageable) {
+        return debateService.getDebates(getPredicateForRelationSelect(search), pageable,
+            projectionForAdminSelect, false, false);
+    }
 }

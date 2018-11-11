@@ -83,7 +83,7 @@ public class Action extends Issue {
         this.files = files;
 
         List<IssueRelation> relations = new ArrayList<>();
-        if (updateDto.getFiles() != null) {
+        if (updateDto.getRelations() != null) {
             for (int i = 0; i < updateDto.getRelations().size(); i++) {
                 relations.add(IssueRelation.create(i, updateDto.getRelations().get(i)));
             }

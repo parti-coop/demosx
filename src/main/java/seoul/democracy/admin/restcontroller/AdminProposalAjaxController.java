@@ -8,14 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import seoul.democracy.common.dto.ResultInfo;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.*;
-import seoul.democracy.proposal.predicate.ProposalPredicate;
 import seoul.democracy.proposal.service.ProposalService;
 
 import javax.validation.Valid;
 
 import static seoul.democracy.proposal.dto.ProposalDto.*;
-import static seoul.democracy.proposal.predicate.ProposalPredicate.containsTitleOrCreatedByNameAndEqualCategory;
-import static seoul.democracy.proposal.predicate.ProposalPredicate.equalId;
+import static seoul.democracy.proposal.predicate.ProposalPredicate.*;
 
 @RestController
 @RequestMapping("/admin/ajax/issue/proposals")
@@ -32,13 +30,16 @@ public class AdminProposalAjaxController {
     public Page<ProposalDto> getProposals(@RequestParam(value = "search") String search,
                                           @RequestParam(value = "category", required = false) String category,
                                           @PageableDefault Pageable pageable) {
-        return proposalService.getProposals(containsTitleOrCreatedByNameAndEqualCategory(search, category), pageable, projectionForAdminList);
+        return proposalService.getProposals(getPredicateForAdminList(search, category), pageable, projectionForAdminList);
     }
 
+    /**
+     * 연관제안에서 리스트 가져오기에 사용
+     */
     @RequestMapping(value = "/select", method = RequestMethod.GET)
     public Page<ProposalDto> getProposalsForSelect(@RequestParam(value = "search", required = false) String search,
                                                    @PageableDefault Pageable pageable) {
-        return proposalService.getProposals(ProposalPredicate.containsTitle(search), pageable, projectionForAdminSelect);
+        return proposalService.getProposals(getPredicateForRelationSelect(search), pageable, projectionForAdminSelect);
     }
 
     @RequestMapping(value = "/{proposalId}/category", method = RequestMethod.PATCH)

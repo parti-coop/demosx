@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -59,7 +60,7 @@ public class DebateUpdateDto {
 
     private List<Long> relations;
 
-    private List<IssueDto> issues;
+    private Map<Long, IssueDto> issueMap;
 
     public String period() {
         if (startDate == null || endDate == null) return "";
@@ -71,6 +72,6 @@ public class DebateUpdateDto {
             debateDto.getOpinionType(),
             debateDto.getStartDate(), debateDto.getEndDate(),
             debateDto.getTitle(), debateDto.getExcerpt(), debateDto.getContent(), debateDto.getStatus(),
-            debateDto.getFiles(), debateDto.getRelations(), debateDto.getIssues());
+            debateDto.getFiles(), debateDto.getRelations(), debateDto.getIssueMap());
     }
 }
