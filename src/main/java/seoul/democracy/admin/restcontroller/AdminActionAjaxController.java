@@ -26,7 +26,7 @@ public class AdminActionAjaxController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public Page<ActionDto> getActions(@RequestParam(value = "search") String search,
+    public Page<ActionDto> getActions(@RequestParam("search") String search,
                                       @RequestParam(value = "category", required = false) String category,
                                       @PageableDefault Pageable pageable) {
         return actionService.getActions(getPredicateForAdminList(search, category), pageable,

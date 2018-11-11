@@ -46,7 +46,6 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.1";
-    private MockHttpServletRequest request;
 
     @Autowired
     private ProposalService proposalService;
@@ -54,7 +53,7 @@ public class S_6_1_사용자는_제안을_등록할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
-        request = new MockHttpServletRequest();
+        MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr(ip);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }

@@ -91,6 +91,14 @@
         </a>
       </li>
 
+      <li class="header">게시판</li>
+      <li>
+        <a href="<c:url value="/admin/post/notice.do"/>">
+          <i class="fa fa-calendar-check-o"></i>
+          <span>공지사항 관리</span>
+        </a>
+      </li>
+
       <li class="header">카테고리</li>
       <li>
         <a href="<c:url value="/admin/category/list.do"/>">
