@@ -5,7 +5,15 @@ public enum Role {
     ROLE_MANAGER,
     ROLE_ADMIN;
 
+    public boolean isUser() {
+        return this == ROLE_USER;
+    }
+
     public boolean isManager() {
         return this == ROLE_MANAGER;
+    }
+
+    public boolean isAdmin() {
+        return this == ROLE_ADMIN;
     }
 }

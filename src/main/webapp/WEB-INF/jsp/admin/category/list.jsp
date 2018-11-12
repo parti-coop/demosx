@@ -69,7 +69,8 @@
           <div class="form-group">
             <label title="name" class="col-sm-2 control-label">카테고리명<span> *</span></label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" name="name" data-parsley-required="true">
+              <input type="text" class="form-control" name="name" autocomplete="off"
+                     data-parsley-required="true" data-parsley-maxlength="30" data-parsley-trim-value="true">
             </div>
           </div>
           <div class="form-group">
@@ -84,8 +85,7 @@
             <div class="col-sm-10">
               <label class="radio-inline">
                 <input type="radio" name="enabled" value="true"
-                       data-parsley-required="true"
-                       data-parsley-errors-container="#enabledError"> 공개
+                       data-parsley-required="true" data-parsley-errors-container="#enabledError"> 공개
               </label>
               <label class="radio-inline">
                 <input type="radio" name="enabled" value="false"> 비공개
@@ -119,7 +119,6 @@
     });
 
     $(document).on('click', '.update-btn', function () {
-      $('input[name=id]').val('');
       $formCategory[0].reset();
       $formCategory.parsley().reset();
 
@@ -127,7 +126,7 @@
       $('input[name=id]').val(data.id);
       $('input[name=name]').val(data.name);
       $('input[name=sequence]').val(data.sequence);
-      $('input:radio[name=enabled][value=' + data.enabled.toString() +']').prop('checked', true);
+      $('input:radio[name=enabled][value=' + data.enabled.toString() + ']').prop('checked', true);
 
       $modalCategory.modal('show');
       event.preventDefault();

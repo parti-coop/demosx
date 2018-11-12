@@ -6,8 +6,13 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import seoul.democracy.common.annotation.CreatedIp;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
+import seoul.democracy.common.exception.AlreadyExistsException;
+import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.common.listener.AuditingIpListener;
+import seoul.democracy.issue.domain.Category;
 import seoul.democracy.user.dto.UserCreateDto;
+import seoul.democracy.user.dto.UserManagerCreateDto;
+import seoul.democracy.user.dto.UserManagerUpdateDto;
 import seoul.democracy.user.dto.UserUpdateDto;
 
 import javax.persistence.*;
@@ -126,6 +131,31 @@ public class User implements Serializable {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public User createManager(UserManagerCreateDto createDto, Category category) {
+        if (this.role.isAdmin()) throw new NotFoundException("해당 사용자가 없습니다.");
+        if (this.role.isManager()) throw new AlreadyExistsException("이미 담당자로 지정되어 있습니다.");
+
+        this.department = UserDepartment.create(category, createDto.getDepartment1(), createDto.getDepartment2(), createDto.getDepartment3());
+        this.role = Role.ROLE_MANAGER;
+
+        return this;
+    }
+
+    public User updateManager(UserManagerUpdateDto updateDto, Category category) {
+        if (this.role.isAdmin() || this.role.isUser()) throw new NotFoundException("해당 사용자가 없습니다.");
+
+        this.department.update(updateDto, category);
+        return this;
+    }
+
+    public User deleteManager() {
+        if (this.role.isAdmin() || this.role.isUser()) throw new NotFoundException("해당 사용자가 없습니다.");
+
+        this.department = null;
+        this.role = Role.ROLE_USER;
+        return this;
     }
 
     public enum Status {

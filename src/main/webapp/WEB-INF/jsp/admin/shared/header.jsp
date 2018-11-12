@@ -53,19 +53,19 @@
       <li>
         <a href="<c:url value="/admin/issue/proposal.do"/>">
           <i class="fa fa-picture-o"></i>
-          <span>제안관리</span>
+          <span>제안 관리</span>
         </a>
       </li>
       <li>
         <a href="<c:url value="/admin/issue/debate.do"/>">
           <i class="fa fa-picture-o"></i>
-          <span>토론관리</span>
+          <span>토론 관리</span>
         </a>
       </li>
       <li>
         <a href="<c:url value="/admin/issue/action.do"/>">
           <i class="fa fa-picture-o"></i>
-          <span>실행관리</span>
+          <span>실행 관리</span>
         </a>
       </li>
 
@@ -73,7 +73,7 @@
       <li>
         <a href="<c:url value="/admin/issue/org-debate.do"/>">
           <i class="fa fa-picture-o"></i>
-          <span>기관제안관리</span>
+          <span>기관제안 관리</span>
         </a>
       </li>
 
@@ -85,9 +85,9 @@
         </a>
       </li>
       <li>
-        <a href="<c:url value="/admin/users/list.do"/>">
+        <a href="<c:url value="/admin/users/manager.do"/>">
           <i class="fa fa-user"></i>
-          <span>부서 관리</span>
+          <span>담당자 관리</span>
         </a>
       </li>
 

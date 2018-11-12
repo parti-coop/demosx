@@ -1,10 +1,23 @@
 package seoul.democracy.user.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import seoul.democracy.issue.domain.Category;
+import seoul.democracy.user.dto.UserManagerUpdateDto;
+
+import javax.persistence.*;
 
 @Embeddable
+@NoArgsConstructor
+@AllArgsConstructor(staticName = "create")
 public class UserDepartment {
+
+    /**
+     * 카테고리
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CATE_ID")
+    private Category category;
 
     /**
      * 부서명1
@@ -24,4 +37,10 @@ public class UserDepartment {
     @Column(name = "DEPART3")
     private String department3;
 
+    public void update(UserManagerUpdateDto updateDto, Category category) {
+        this.category = category;
+        this.department1 = updateDto.getDepartment1();
+        this.department2 = updateDto.getDepartment2();
+        this.department3 = updateDto.getDepartment3();
+    }
 }

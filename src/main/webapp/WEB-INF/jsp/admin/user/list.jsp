@@ -48,9 +48,6 @@
   $(function () {
     var sortColumn = ['createdDate'];
     var table = $('#list')
-      .on('draw.dt', function () {
-        $('[data-toggle="tooltip"]').tooltip({ placement: 'left', html: true });
-      })
       .on('preXhr.dt', function (e, settings, data) {
         console.log(data);
         data['page'] = data.start / data.length + 1;

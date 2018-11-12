@@ -10,14 +10,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.AlreadyExistsException;
-import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
-import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.domain.IssueLike;
 import seoul.democracy.issue.predicate.IssueLikePredicate;
-import seoul.democracy.issue.repository.CategoryRepository;
 import seoul.democracy.issue.repository.IssueLikeRepository;
 import seoul.democracy.issue.repository.IssueStatsRepository;
+import seoul.democracy.issue.service.CategoryService;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.*;
 import seoul.democracy.proposal.repository.ProposalRepository;
@@ -25,7 +23,6 @@ import seoul.democracy.user.domain.User;
 import seoul.democracy.user.service.UserService;
 import seoul.democracy.user.utils.UserUtils;
 
-import static seoul.democracy.issue.predicate.CategoryPredicate.equalName;
 import static seoul.democracy.issue.predicate.IssueLikePredicate.equalUserIdAndIssueId;
 
 @Service
@@ -33,22 +30,23 @@ import static seoul.democracy.issue.predicate.IssueLikePredicate.equalUserIdAndI
 public class ProposalService {
 
     private final ProposalRepository proposalRepository;
-    private final CategoryRepository categoryRepository;
     private final IssueLikeRepository likeRepository;
     private final IssueStatsRepository statsRepository;
 
+    final private CategoryService categoryService;
     private final UserService userService;
+
 
     @Autowired
     public ProposalService(ProposalRepository proposalRepository,
-                           CategoryRepository categoryRepository,
                            IssueLikeRepository likeRepository,
                            IssueStatsRepository statsRepository,
+                           CategoryService categoryService,
                            UserService userService) {
         this.proposalRepository = proposalRepository;
-        this.categoryRepository = categoryRepository;
         this.likeRepository = likeRepository;
         this.statsRepository = statsRepository;
+        this.categoryService = categoryService;
         this.userService = userService;
     }
 
@@ -124,11 +122,7 @@ public class ProposalService {
     public Proposal updateCategory(ProposalCategoryUpdateDto updateDto) {
         Proposal proposal = getProposal(updateDto.getProposalId());
 
-        Category category = categoryRepository.findOne(equalName(updateDto.getCategory()));
-        if (category == null || !category.getEnabled())
-            throw new BadRequestException("category", "error.category", "카테고리를 확인해 주세요.");
-
-        return proposal.updateCategory(category);
+        return proposal.updateCategory(categoryService.getCategory(updateDto.getCategory()));
     }
 
     /**

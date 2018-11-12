@@ -5,15 +5,15 @@ import com.mysema.query.types.QBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.NotFoundException;
+import seoul.democracy.issue.service.CategoryService;
 import seoul.democracy.user.domain.User;
-import seoul.democracy.user.dto.UserCreateDto;
-import seoul.democracy.user.dto.UserDto;
-import seoul.democracy.user.dto.UserUpdateDto;
+import seoul.democracy.user.dto.*;
 import seoul.democracy.user.repository.UserRepository;
 import seoul.democracy.user.utils.UserUtils;
 
@@ -25,12 +25,15 @@ public class UserService {
 
     final private UserRepository userRepository;
     final private PasswordEncoder passwordEncoder;
+    final private CategoryService categoryService;
 
     @Autowired
     public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       CategoryService categoryService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.categoryService = categoryService;
     }
 
     public UserDto getUser(Predicate predicate, QBean<UserDto> projection) {
@@ -75,4 +78,27 @@ public class UserService {
         return userRepository.exists(equalEmail(email.trim()));
     }
 
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public User createManager(UserManagerCreateDto createDto) {
+        User user = getUser(createDto.getUserId());
+
+        return user.createManager(createDto, categoryService.getCategory(createDto.getCategory()));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public User updateManager(UserManagerUpdateDto updateDto) {
+        User user = getUser(updateDto.getUserId());
+
+        return user.updateManager(updateDto, categoryService.getCategory(updateDto.getCategory()));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public User deleteManager(Long userId) {
+        User user = getUser(userId);
+
+        return user.deleteManager();
+    }
 }

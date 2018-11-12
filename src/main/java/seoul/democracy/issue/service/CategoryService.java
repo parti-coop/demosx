@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.AlreadyExistsException;
+import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.dto.CategoryCreateDto;
@@ -37,6 +38,14 @@ public class CategoryService {
 
     public List<CategoryDto> getCategories(Predicate predicate, Expression<CategoryDto> projection) {
         return categoryRepository.findAll(predicate, projection);
+    }
+
+    public Category getCategory(String categoryName) {
+        Category category = categoryRepository.findOne(equalName(categoryName));
+        if (category == null || !category.getEnabled())
+            throw new BadRequestException("category", "error.category", "카테고리를 확인해 주세요.");
+
+        return category;
     }
 
     @Transactional

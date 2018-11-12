@@ -5,6 +5,8 @@
 <head>
   <title>제안 관리 상세 - Democracy</title>
   <%@ include file="../shared/head.jsp" %>
+
+  <!-- datatables -->
   <link rel="stylesheet" type="text/css" href="<c:url value="/css/dataTables.bootstrap.min.css"/>"/>
   <script type="text/javascript" src="<c:url value="/js/jquery.dataTables.min.js"/>"></script>
   <script type="text/javascript" src="<c:url value="/js/dataTables.bootstrap.min.js"/>"></script>
@@ -113,8 +115,8 @@
                       <div class="input-group input-group-sm">
                         <select id="select-manager-input" class="form-control"></select>
                         <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" id="assign-manager-btn">지정하기</button>
-                      </span>
+                          <button type="button" class="btn btn-default" id="assign-manager-btn">지정하기</button>
+                        </span>
                       </div>
                     </c:if>
                   </div>
@@ -157,7 +159,7 @@
       theme: "bootstrap",
       ajax: {
         headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
-        url: '/admin/ajax/users/managers',
+        url: '/admin/ajax/users/role-manager',
         type: 'GET',
         dataType: 'json',
         data: function (params) {

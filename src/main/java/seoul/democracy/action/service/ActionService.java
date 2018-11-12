@@ -13,25 +13,21 @@ import seoul.democracy.action.dto.ActionCreateDto;
 import seoul.democracy.action.dto.ActionDto;
 import seoul.democracy.action.dto.ActionUpdateDto;
 import seoul.democracy.action.repository.ActionRepository;
-import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
-import seoul.democracy.issue.domain.Category;
-import seoul.democracy.issue.repository.CategoryRepository;
-
-import static seoul.democracy.issue.predicate.CategoryPredicate.equalName;
+import seoul.democracy.issue.service.CategoryService;
 
 @Service
 @Transactional(readOnly = true)
 public class ActionService {
 
     private final ActionRepository actionRepository;
-    private final CategoryRepository categoryRepository;
+    final private CategoryService categoryService;
 
     @Autowired
     public ActionService(ActionRepository actionRepository,
-                         CategoryRepository categoryRepository) {
+                         CategoryService categoryService) {
         this.actionRepository = actionRepository;
-        this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
     }
 
     public Page<ActionDto> getActions(Predicate predicate, Pageable pageable, Expression<ActionDto> projection, boolean withFiles, boolean withRelations) {
@@ -42,21 +38,13 @@ public class ActionService {
         return actionRepository.findOne(predicate, projection, withFiles, withRelations);
     }
 
-    private Category getCategory(String categoryName) {
-        Category category = categoryRepository.findOne(equalName(categoryName));
-        if (category == null || !category.getEnabled())
-            throw new BadRequestException("category", "error.category", "카테고리를 확인해 주세요.");
-
-        return category;
-    }
-
     /**
      * 실행 등록
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public Action create(ActionCreateDto createDto) {
-        Action action = Action.create(createDto, getCategory(createDto.getCategory()));
+        Action action = Action.create(createDto, categoryService.getCategory(createDto.getCategory()));
 
         return actionRepository.save(action);
     }
@@ -70,7 +58,7 @@ public class ActionService {
         Action action = actionRepository.findOne(updateDto.getId());
         if (action == null) throw new NotFoundException("해당 실행을 찾을 수 없습니다.");
 
-        return action.update(updateDto, getCategory(updateDto.getCategory()));
+        return action.update(updateDto, categoryService.getCategory(updateDto.getCategory()));
     }
 
 }

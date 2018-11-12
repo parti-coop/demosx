@@ -9,31 +9,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.debate.domain.Debate;
 import seoul.democracy.debate.dto.DebateCreateDto;
 import seoul.democracy.debate.dto.DebateDto;
 import seoul.democracy.debate.dto.DebateUpdateDto;
 import seoul.democracy.debate.repository.DebateRepository;
-import seoul.democracy.issue.domain.Category;
 import seoul.democracy.issue.domain.IssueGroup;
-import seoul.democracy.issue.repository.CategoryRepository;
-
-import static seoul.democracy.issue.predicate.CategoryPredicate.equalName;
+import seoul.democracy.issue.service.CategoryService;
 
 @Service
 @Transactional(readOnly = true)
 public class DebateService {
 
     private final DebateRepository debateRepository;
-    private final CategoryRepository categoryRepository;
+    final private CategoryService categoryService;
 
     @Autowired
     public DebateService(DebateRepository debateRepository,
-                         CategoryRepository categoryRepository) {
+                         CategoryService categoryService) {
         this.debateRepository = debateRepository;
-        this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
     }
 
     public DebateDto getDebate(Predicate predicate, Expression<DebateDto> projection, boolean withFiles, boolean withRelations) {
@@ -44,21 +40,13 @@ public class DebateService {
         return debateRepository.findAll(predicate, pageable, projection, withFiles, withRelations);
     }
 
-    private Category getCategory(String categoryName) {
-        Category category = categoryRepository.findOne(equalName(categoryName));
-        if (category == null || !category.getEnabled())
-            throw new BadRequestException("category", "error.category", "카테고리를 확인해 주세요.");
-
-        return category;
-    }
-
     /**
      * 토론 등록
      */
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public Debate create(IssueGroup group, DebateCreateDto createDto) {
-        Debate debate = Debate.create(group, createDto, getCategory(createDto.getCategory()));
+        Debate debate = Debate.create(group, createDto, categoryService.getCategory(createDto.getCategory()));
 
         return debateRepository.save(debate);
     }
@@ -73,6 +61,6 @@ public class DebateService {
         if (debate == null)
             throw new NotFoundException("해당 토론을 찾을 수 없습니다.");
 
-        return debate.update(updateDto, getCategory(updateDto.getCategory()));
+        return debate.update(updateDto, categoryService.getCategory(updateDto.getCategory()));
     }
 }
