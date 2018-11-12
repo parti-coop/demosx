@@ -279,6 +279,7 @@ CREATE TABLE `TB_POST` (
 	`CHG_ID`       BIGINT(20) UNSIGNED NOT NULL COMMENT '수정ID', -- 수정ID
 	`REG_IP`       VARCHAR(15)         NOT NULL COMMENT '등록아이피', -- 등록아이피
 	`CHG_IP`       VARCHAR(15)         NOT NULL COMMENT '수정아이피', -- 수정아이피
+	`VIEW_CNT`     BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '조회수', -- 조회수
 	`POST_TYPE`    VARCHAR(12)         NOT NULL COMMENT '글타입', -- 글타입
 	`POST_STATUS`  VARCHAR(12)         NOT NULL COMMENT '글상태', -- 글상태
 	`POST_TITLE`   VARCHAR(300)        NOT NULL COMMENT '글제목', -- 글제목

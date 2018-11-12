@@ -19,7 +19,7 @@ public class PostDto {
         post.id, post.createdDate, post.modifiedDate,
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
         UserDto.projectionForBasicByModifiedBy.as("modifiedBy"),
-        post.createdIp, post.modifiedIp,
+        post.createdIp, post.modifiedIp, post.viewCount,
         post.type, post.status, post.title, post.content);
 
     /**
@@ -38,6 +38,19 @@ public class PostDto {
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
         post.type, post.status, post.title, post.content);
 
+    /**
+     * 사이트 게시판 리스트에서 사용
+     */
+    public final static QBean<PostDto> projectionForSiteList = Projections.fields(PostDto.class,
+        post.id, post.createdDate, post.viewCount, post.title);
+
+    /**
+     * 사이트 상세에서 사용
+     */
+    public final static QBean<PostDto> projectionForSiteDetail = Projections.fields(PostDto.class,
+        post.id, post.createdDate, post.viewCount, post.title, post.content);
+
+
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdDate;
@@ -46,6 +59,7 @@ public class PostDto {
     private UserDto modifiedBy;
     private String createdIp;
     private String modifiedIp;
+    private Long viewCount;
 
     private PostType type;
     private Post.Status status;

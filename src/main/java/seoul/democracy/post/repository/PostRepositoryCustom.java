@@ -12,4 +12,5 @@ public interface PostRepositoryCustom {
 
     PostDto findOne(Predicate predicate, Expression<PostDto> projection);
 
+    void increaseViewCount(Long id);
 }

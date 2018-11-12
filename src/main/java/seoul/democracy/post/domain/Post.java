@@ -82,6 +82,12 @@ public class Post {
     private String modifiedIp;
 
     /**
+     * 조회수
+     */
+    @Column(name = "VIEW_CNT", insertable = false, updatable = false)
+    private Long viewCount;
+
+    /**
      * 글 타입
      */
     @Enumerated(EnumType.STRING)

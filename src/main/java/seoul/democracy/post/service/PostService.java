@@ -57,4 +57,9 @@ public class PostService {
 
         return post.update(updateDto);
     }
+
+    @Transactional
+    public void increaseViewCount(Long id) {
+        postRepository.increaseViewCount(id);
+    }
 }

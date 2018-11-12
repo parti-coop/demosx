@@ -2,6 +2,7 @@ package seoul.democracy.post.repository;
 
 import com.mysema.query.SearchResults;
 import com.mysema.query.jpa.JPQLQuery;
+import com.mysema.query.support.Expressions;
 import com.mysema.query.types.Expression;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,8 @@ import static seoul.democracy.user.dto.UserDto.createdBy;
 import static seoul.democracy.user.dto.UserDto.modifiedBy;
 
 public class PostRepositoryImpl extends QueryDslRepositorySupport implements PostRepositoryCustom {
+
+    final private static Expression<Long> constant = Expressions.constant(1L);
 
     public PostRepositoryImpl() {
         super(Post.class);
@@ -48,5 +51,13 @@ public class PostRepositoryImpl extends QueryDslRepositorySupport implements Pos
         return getQuery(projection)
                    .where(predicate)
                    .uniqueResult(projection);
+    }
+
+    @Override
+    public void increaseViewCount(Long id) {
+        update(post)
+            .where(post.id.eq(id))
+            .set(post.viewCount, post.viewCount.add(constant))
+            .execute();
     }
 }
