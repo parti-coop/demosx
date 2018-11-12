@@ -2,43 +2,44 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<nav class="navbar" id="header">
-  <div class="container-fluid">
-    <div class="navbar-header visible-xs">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-              data-target="#header-menu" aria-expanded="false">
+<div class="nav-login-bar">
+  <div class="container">
+    <ul class="nav-login-ul list-inline text-right">
+      <li class="nav-login-li"><a href="" class="nav-login-li__link">로그인</a></li>
+      <li class="nav-login-li"><span class="li-middle-line">|</span></li>
+      <li class="nav-login-li"><a href="" class="nav-login-li__link">회원가입</a></li>
+    </ul>
+  </div>
+</div>
+<nav class="navbar navbar-default navbar-default--demo">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="<c:url value="/index.do"/>">
-        <img src="<c:url value="/images/logo.png"/>" alt="logo">
-      </a>
+      <a class="navbar-brand navbar-brand--demo" href="<c:url value="/index.do"/>">민주주의 서울 오픈소스</a>
     </div>
 
-    <div class="collapse navbar-collapse" id="header-menu">
-      <ul class="nav navbar-nav">
-        <li><a class="btn font-nanumsquare" href="<c:url value="/find-event.do"/>">이벤트 발견하기</a></li>
-        <li><a class="btn font-nanumsquare" href="/member/event.do">이벤트 시작하기</a></li>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right demo-nav">
+        <li class="demo-nav-li active"><a href="#">오픈소스<div class="nav-li-active-bar"></div></a></li>
+        <li class="li-middle"><span class="li-middle-line">|</span></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">시민제안<div class="nav-li-active-bar"></div></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">제안</a></li>
+            <li><a href="#">토론</a></li>
+            <li><a href="#">실행</a></li>
+          </ul>
+        </li>
+        <li class="li-middle"><span class="li-middle-line">|</span></li>
+        <li class="demo-nav-li"><a href="#">오픈소스가 묻습니다<div class="nav-li-active-bar"></div></a></li>
       </ul>
-      <a class="nav-logo hidden-xs" href="<c:url value="/index.do"/>">
-        <img src="<c:url value="/images/logo.png"/>" alt="logo">
-      </a>
-      <ul class="nav navbar-nav navbar-right">
-        <sec:authorize access="isAnonymous()">
-          <li><a class="btn font-nanumsquare modal-login-btn" href="#">로그인</a></li>
-          <li><a class="btn font-nanumsquare" href="<c:url value="/join.do"/>">회원가입</a></li>
-        </sec:authorize>
-        <sec:authorize access="isAuthenticated()">
-          <li><a class="btn font-nanumsquare" href="/member/mypage.do">마이페이지</a></li>
-          <li>
-            <form:form action="/logout.do" method="post">
-              <button type="submit" class="btn font-nanumsquare">로그아웃</button>
-            </form:form>
-          </li>
-        </sec:authorize>
-      </ul>
-    </div>
-  </div>
-</nav>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav><!-- nav end  -->

@@ -1,15 +1,21 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<div class="container-fluid" id="footer">
-  <div class="row">
-    <div class="container">
-      <div class="row">
-        footer
+<footer class="demo-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-9">
+        <address class="demo-address">04524 서울특별시 중구 세종대로 110</address>
+        <p class="footer-name">민주주의서울 오픈소스</p>
+        <p class="footer-copyright">© Seoul Metropolitan Goverment. all rights reserved.</p>
+      </div>
+      <div class="col-sm-3">
+        <p class="term-link-p"><a class="term-link" href=""><i class="xi-angle-right-min"></i> 개인정보처리방침</a></p>
+        <p class="term-link-p"><a class="term-link" href=""><i class="xi-angle-right-min"></i> 이용약관</a></p>
       </div>
     </div>
   </div>
-</div>
+</footer>
 
 <div class="modal fade" id="modal-login">
   <div class="modal-dialog">

@@ -32,4 +32,8 @@ public class ProposalPredicate {
 
         return ExpressionUtils.and(predicate, proposal.title.contains(search));
     }
+
+    public static Predicate equalIdAndStatus(Long id, Issue.Status status) {
+        return ExpressionUtils.and(proposal.id.eq(id), proposal.status.eq(status));
+    }
 }

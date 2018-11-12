@@ -42,4 +42,14 @@ public class IssueStatsDto {
         if(totalCount == 0) return 0;
         return etcCount * 100 / totalCount;
     }
+
+    public String viewLikeCount() {
+        return String.format("%,d", likeCount);
+    }
+
+    public long likePercentBy500() {
+        if(likeCount > 500) return 100;
+        if(likeCount == 0) return 0;
+        return likeCount * 100 / 500;
+    }
 }
