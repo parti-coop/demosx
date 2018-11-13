@@ -30,8 +30,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static seoul.democracy.debate.dto.DebateDto.projection;
 import static seoul.democracy.debate.predicate.DebatePredicate.equalId;
@@ -79,7 +78,7 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
      * 1. 관리자는 토론을 수정할 수 있다.
      */
     @Test
-    @WithUserDetails("admin1@googl.co.kr")
+    @WithUserDetails("admin2@googl.co.kr")
     public void T_1_관리자는_토론을_수정할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
 
@@ -87,7 +86,7 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
 
         DebateDto debateDto = debateService.getDebate(equalId(debate.getId()), projection, true, true);
         assertThat(debateDto.getModifiedDate().format(dateTimeFormatter), is(now));
-        assertThat(debateDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
+        assertThat(debateDto.getModifiedBy().getEmail(), is("admin2@googl.co.kr"));
         assertThat(debateDto.getModifiedIp(), is(ip));
 
         assertThat(debateDto.getOpinionType(), is(OpinionType.PROPOSAL));
@@ -144,5 +143,53 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
         Long notExistsRelation = 999L;
         updateDto.setRelations(Arrays.asList(1L, 11L, notExistsRelation));
         debateService.update(updateDto);
+    }
+
+    /**
+     * 6. 토론기간이 오늘이 포함될 경우 진행중 상태가 된다.
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_6_토론기간이_오늘이_포함될_경우_진행중_상태가_된다() {
+        LocalDate now = LocalDate.now();
+        updateDto.setStartDate(now.minusDays(1));
+        updateDto.setEndDate(now.plusDays(1));
+        Debate debate = debateService.update(updateDto);
+        assertThat(debate.getId(), is(notNullValue()));
+
+        DebateDto debateDto = debateService.getDebate(equalId(debate.getId()), projection, true, true);
+        assertThat(debateDto.getProcess(), is(Debate.Process.PROGRESS));
+    }
+
+    /**
+     * 7. 토론기간이 지난 경우 종료 상태가 된다.
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_7_토론기간이_지난_경우_종료_상태가_된다() {
+        LocalDate now = LocalDate.now();
+        updateDto.setStartDate(now.minusDays(2));
+        updateDto.setEndDate(now.minusDays(1));
+        Debate debate = debateService.update(updateDto);
+        assertThat(debate.getId(), is(notNullValue()));
+
+        DebateDto debateDto = debateService.getDebate(equalId(debate.getId()), projection, true, true);
+        assertThat(debateDto.getProcess(), is(Debate.Process.COMPLETE));
+    }
+
+    /**
+     * 8. 토론기간이 이전인 경우 진행예정 상태가 된다.
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_8_토론기간이_이전인_경우_진행예정_상태가_된다() {
+        LocalDate now = LocalDate.now();
+        updateDto.setStartDate(now.plusDays(1));
+        updateDto.setEndDate(now.plusDays(2));
+        Debate debate = debateService.update(updateDto);
+        assertThat(debate.getId(), is(notNullValue()));
+
+        DebateDto debateDto = debateService.getDebate(equalId(debate.getId()), projection, true, true);
+        assertThat(debateDto.getProcess(), is(Debate.Process.INIT));
     }
 }

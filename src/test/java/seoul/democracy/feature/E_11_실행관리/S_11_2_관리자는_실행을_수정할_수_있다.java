@@ -73,7 +73,7 @@ public class S_11_2_관리자는_실행을_수정할_수_있다 {
      * 1. 관리자는 실행을 수정할 수 있다.
      */
     @Test
-    @WithUserDetails("admin1@googl.co.kr")
+    @WithUserDetails("admin2@googl.co.kr")
     public void T_1_관리자는_실행을_수정할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
 
@@ -82,7 +82,7 @@ public class S_11_2_관리자는_실행을_수정할_수_있다 {
 
         ActionDto actionDto = actionService.getAction(equalId(action.getId()), projection, true, true);
         assertThat(actionDto.getModifiedDate().format(dateTimeFormatter), is(now));
-        assertThat(actionDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
+        assertThat(actionDto.getModifiedBy().getEmail(), is("admin2@googl.co.kr"));
         assertThat(actionDto.getModifiedIp(), is(ip));
 
         assertThat(actionDto.getCategory().getName(), is(updateDto.getCategory()));

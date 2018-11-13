@@ -11,6 +11,7 @@ import seoul.democracy.issue.dto.IssueFileDto;
 import seoul.democracy.opinion.domain.OpinionType;
 
 import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -60,8 +61,14 @@ public class DebateCreateDto {
 
     private Map<Long, IssueDto> issueMap;
 
+    @AssertTrue(message = "토론 일시를 확인해 주세요.")
+    public boolean isValidDate() {
+        if (startDate == null || endDate == null) return true;
+        return startDate.isEqual(endDate) || startDate.isBefore(endDate);
+    }
+
     public String period() {
-        if(startDate == null || endDate == null) return "";
+        if (startDate == null || endDate == null) return "";
         return startDate.toString() + " - " + endDate.toString();
     }
 }

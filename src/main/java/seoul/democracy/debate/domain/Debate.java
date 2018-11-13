@@ -64,18 +64,27 @@ public class Debate extends Issue {
         this.group = group;
         this.stats = IssueStats.create();
         this.status = status;
-        this.process = Process.INIT;
         this.category = category;
         this.opinionType = opinionType;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.thumbnail = thumbnail;
         this.title = title;
         this.excerpt = excerpt;
         this.content = content;
 
+        updateDate(startDate, endDate);
+
         this.files = files;
         this.relations = relations;
+    }
+
+    private void updateDate(LocalDate startDate, LocalDate endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+
+        LocalDate now = LocalDate.now();
+        if (now.isBefore(this.startDate)) this.process = Process.INIT;
+        else if (now.isAfter(this.endDate)) this.process = Process.COMPLETE;
+        else this.process = Process.PROGRESS;
     }
 
     public static Debate create(IssueGroup group, DebateCreateDto createDto, Category category) {
@@ -88,12 +97,12 @@ public class Debate extends Issue {
     public Debate update(DebateUpdateDto updateDto, Category category) {
         this.status = updateDto.getStatus();
         this.category = category;
-        this.startDate = updateDto.getStartDate();
-        this.endDate = updateDto.getEndDate();
         this.thumbnail = updateDto.getThumbnail();
         this.title = updateDto.getTitle();
         this.excerpt = updateDto.getExcerpt();
         this.content = updateDto.getContent();
+
+        updateDate(updateDto.getStartDate(), updateDto.getEndDate());
 
         updateFiles(updateDto.getFiles());
         updateRelations(updateDto.getRelations());

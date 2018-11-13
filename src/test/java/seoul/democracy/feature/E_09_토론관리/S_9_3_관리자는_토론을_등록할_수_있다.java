@@ -165,4 +165,52 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
         createDto.setRelations(Arrays.asList(1L, notExistsRelationId));
         debateService.create(IssueGroup.USER, createDto);
     }
+
+    /**
+     * 7. 토론기간이 오늘이 포함될 경우 진행중 상태가 된다.
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_7_토론기간이_오늘이_포함될_경우_진행중_상태가_된다() {
+        LocalDate now = LocalDate.now();
+        createDto.setStartDate(now.minusDays(1));
+        createDto.setEndDate(now.plusDays(1));
+        Debate debate = debateService.create(IssueGroup.USER, createDto);
+        assertThat(debate.getId(), is(notNullValue()));
+
+        DebateDto debateDto = debateService.getDebate(equalId(debate.getId()), projection, true, true);
+        assertThat(debateDto.getProcess(), is(Debate.Process.PROGRESS));
+    }
+
+    /**
+     * 8. 토론기간이 지난 경우 종료 상태가 된다.
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_8_토론기간이_지난_경우_종료_상태가_된다() {
+        LocalDate now = LocalDate.now();
+        createDto.setStartDate(now.minusDays(2));
+        createDto.setEndDate(now.minusDays(1));
+        Debate debate = debateService.create(IssueGroup.USER, createDto);
+        assertThat(debate.getId(), is(notNullValue()));
+
+        DebateDto debateDto = debateService.getDebate(equalId(debate.getId()), projection, true, true);
+        assertThat(debateDto.getProcess(), is(Debate.Process.COMPLETE));
+    }
+
+    /**
+     * 9. 토론기간이 이전인 경우 진행예정 상태가 된다.
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_9_토론기간이_이전인_경우_진행예정_상태가_된다() {
+        LocalDate now = LocalDate.now();
+        createDto.setStartDate(now.plusDays(1));
+        createDto.setEndDate(now.plusDays(2));
+        Debate debate = debateService.create(IssueGroup.USER, createDto);
+        assertThat(debate.getId(), is(notNullValue()));
+
+        DebateDto debateDto = debateService.getDebate(equalId(debate.getId()), projection, true, true);
+        assertThat(debateDto.getProcess(), is(Debate.Process.INIT));
+    }
 }
