@@ -17,19 +17,23 @@ import seoul.democracy.debate.dto.DebateUpdateDto;
 import seoul.democracy.debate.repository.DebateRepository;
 import seoul.democracy.issue.domain.IssueGroup;
 import seoul.democracy.issue.service.CategoryService;
+import seoul.democracy.issue.service.IssueService;
 
 @Service
 @Transactional(readOnly = true)
 public class DebateService {
 
     private final DebateRepository debateRepository;
-    final private CategoryService categoryService;
+    private final CategoryService categoryService;
+    private final IssueService issueService;
 
     @Autowired
     public DebateService(DebateRepository debateRepository,
-                         CategoryService categoryService) {
+                         CategoryService categoryService,
+                         IssueService issueService) {
         this.debateRepository = debateRepository;
         this.categoryService = categoryService;
+        this.issueService = issueService;
     }
 
     public DebateDto getDebate(Predicate predicate, Expression<DebateDto> projection, boolean withFiles, boolean withRelations) {
@@ -46,6 +50,8 @@ public class DebateService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public Debate create(IssueGroup group, DebateCreateDto createDto) {
+        issueService.validateRelations(createDto.getRelations());
+
         Debate debate = Debate.create(group, createDto, categoryService.getCategory(createDto.getCategory()));
 
         return debateRepository.save(debate);
@@ -57,6 +63,8 @@ public class DebateService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public Debate update(DebateUpdateDto updateDto) {
+        issueService.validateRelations(updateDto.getRelations());
+
         Debate debate = debateRepository.findOne(updateDto.getId());
         if (debate == null)
             throw new NotFoundException("해당 토론을 찾을 수 없습니다.");

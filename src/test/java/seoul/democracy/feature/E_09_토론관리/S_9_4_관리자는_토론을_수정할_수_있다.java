@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.debate.domain.Debate;
 import seoul.democracy.debate.dto.DebateDto;
@@ -131,6 +132,17 @@ public class S_9_4_관리자는_토론을_수정할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_4_사용자는_토론을_수정할_수_없다() {
+        debateService.update(updateDto);
+    }
+
+    /**
+     * 5. 존재하지 않는 항목을 연관으로 수정할 수 없다.
+     */
+    @Test(expected = BadRequestException.class)
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_5_존재하지_않는_항목을_연관으로_수정할_수_없다() {
+        Long notExistsRelation = 999L;
+        updateDto.setRelations(Arrays.asList(1L, 11L, notExistsRelation));
         debateService.update(updateDto);
     }
 }

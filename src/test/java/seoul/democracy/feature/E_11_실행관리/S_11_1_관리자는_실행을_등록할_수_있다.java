@@ -19,6 +19,7 @@ import seoul.democracy.action.domain.Action;
 import seoul.democracy.action.dto.ActionCreateDto;
 import seoul.democracy.action.dto.ActionDto;
 import seoul.democracy.action.service.ActionService;
+import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.dto.IssueFileDto;
 
@@ -114,6 +115,17 @@ public class S_11_1_관리자는_실행을_등록할_수_있다 {
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_3_사용자는_실행을_등록할_수_없다() {
+        actionService.create(createDto);
+    }
+
+    /**
+     * 4. 존재하지 않는 항목을 연관으로 등록할 수 없다.
+     */
+    @Test(expected = BadRequestException.class)
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_4_존재하지_않는_항목을_연관으로_등록할_수_없다() {
+        Long notExistsRelation = 999L;
+        createDto.setRelations(Arrays.asList(1L, 101L, notExistsRelation));
         actionService.create(createDto);
     }
 }

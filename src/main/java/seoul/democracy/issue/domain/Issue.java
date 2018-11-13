@@ -187,7 +187,6 @@ public abstract class Issue {
                                    .collect(Collectors.toList());
         if (relations.equals(updateRelations)) return;
 
-
         this.relations = IssueRelation.create(updateRelations);
     }
 

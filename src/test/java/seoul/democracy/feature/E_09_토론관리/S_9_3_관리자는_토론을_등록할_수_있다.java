@@ -51,7 +51,6 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
-    private MockHttpServletRequest request;
 
     @Autowired
     private DebateService debateService;
@@ -60,13 +59,13 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
 
     @Before
     public void setUp() throws Exception {
-        request = new MockHttpServletRequest();
+        MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr(ip);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
         createDto = DebateCreateDto.of("thumbnail.jpg", "복지", OpinionType.PROPOSAL,
             LocalDate.of(2019, 10, 10), LocalDate.of(2019, 12, 12),
-            "토론 + 제안의견", "토론한줄성명","제안의견인 토론입니다.", Issue.Status.OPEN,
+            "토론 + 제안의견", "토론한줄성명", "제안의견인 토론입니다.", Issue.Status.OPEN,
             Arrays.asList(IssueFileDto.of("파일1", "file1"), IssueFileDto.of("파일2", "file2")),
             Arrays.asList(1L, 11L), null);
     }
@@ -154,5 +153,16 @@ public class S_9_3_관리자는_토론을_등록할_수_있다 {
     @WithUserDetails("user1@googl.co.kr")
     public void T_5_사용자는_토론을_등록할_수_없다() {
         debateService.create(IssueGroup.ORG, createDto);
+    }
+
+    /**
+     * 6. 존재하지 않는 제안을 연관제안으로 등록할 수 없다.
+     */
+    @Test(expected = BadRequestException.class)
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_6_존재하지_않는_제안을_연관제안으로_등록할_수_없다() {
+        Long notExistsRelationId = 999L;
+        createDto.setRelations(Arrays.asList(1L, notExistsRelationId));
+        debateService.create(IssueGroup.USER, createDto);
     }
 }
