@@ -36,6 +36,8 @@ public class PostController {
         Page<PostDto> posts = postService.getPosts(predicateForSiteList(NOTICE, search), pageable, projectionForSiteList);
         model.addAttribute("posts", posts);
 
+        model.addAttribute("search", search);
+
         return "/site/post/list";
     }
 

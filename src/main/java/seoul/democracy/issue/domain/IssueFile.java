@@ -3,9 +3,13 @@ package seoul.democracy.issue.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
+import seoul.democracy.issue.dto.IssueFileDto;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 이슈 파일
@@ -13,7 +17,7 @@ import javax.persistence.Embeddable;
 @Getter
 @Embeddable
 @NoArgsConstructor
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor(staticName = "create")
 public class IssueFile {
 
     /**
@@ -33,4 +37,15 @@ public class IssueFile {
      */
     @Column(name = "FILE_URL")
     private String url;
+
+    public static List<IssueFile> create(List<IssueFileDto> createFiles) {
+        if (CollectionUtils.isEmpty(createFiles)) return null;
+
+        List<IssueFile> files = new ArrayList<>();
+        for (int i = 0; i < createFiles.size(); i++) {
+            IssueFileDto fileDto = createFiles.get(i);
+            files.add(IssueFile.create(i, fileDto.getName(), fileDto.getUrl()));
+        }
+        return files;
+    }
 }

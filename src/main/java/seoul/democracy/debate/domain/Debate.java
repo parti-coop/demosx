@@ -8,7 +8,6 @@ import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.debate.dto.DebateCreateDto;
 import seoul.democracy.debate.dto.DebateUpdateDto;
 import seoul.democracy.issue.domain.*;
-import seoul.democracy.issue.dto.IssueFileDto;
 import seoul.democracy.opinion.domain.DebateOpinion;
 import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.domain.OpinionType;
@@ -17,7 +16,6 @@ import seoul.democracy.opinion.dto.OpinionCreateDto;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -81,25 +79,10 @@ public class Debate extends Issue {
     }
 
     public static Debate create(IssueGroup group, DebateCreateDto createDto, Category category) {
-
-        // todo 정리 필요, update 부분과 같이
-        List<IssueFile> files = new ArrayList<>();
-        if (createDto.getFiles() != null) {
-            for (int i = 0; i < createDto.getFiles().size(); i++) {
-                IssueFileDto fileDto = createDto.getFiles().get(i);
-                files.add(IssueFile.of(i, fileDto.getName(), fileDto.getUrl()));
-            }
-        }
-        List<IssueRelation> relations = new ArrayList<>();
-        if (createDto.getRelations() != null) {
-            for (int i = 0; i < createDto.getRelations().size(); i++) {
-                relations.add(IssueRelation.create(i, createDto.getRelations().get(i)));
-            }
-        }
         return new Debate(group, category, createDto.getThumbnail(), createDto.getOpinionType(),
             createDto.getStartDate(), createDto.getEndDate(),
             createDto.getTitle(), createDto.getExcerpt(), createDto.getContent(), createDto.getStatus(),
-            files, relations);
+            IssueFile.create(createDto.getFiles()), IssueRelation.create(createDto.getRelations()));
     }
 
     public Debate update(DebateUpdateDto updateDto, Category category) {
@@ -112,22 +95,8 @@ public class Debate extends Issue {
         this.excerpt = updateDto.getExcerpt();
         this.content = updateDto.getContent();
 
-        List<IssueFile> files = new ArrayList<>();
-        if (updateDto.getFiles() != null) {
-            for (int i = 0; i < updateDto.getFiles().size(); i++) {
-                IssueFileDto fileDto = updateDto.getFiles().get(i);
-                files.add(IssueFile.of(i, fileDto.getName(), fileDto.getUrl()));
-            }
-        }
-        this.files = files;
-
-        List<IssueRelation> relations = new ArrayList<>();
-        if (updateDto.getRelations() != null) {
-            for (int i = 0; i < updateDto.getRelations().size(); i++) {
-                relations.add(IssueRelation.create(i, updateDto.getRelations().get(i)));
-            }
-        }
-        this.relations = relations;
+        updateFiles(updateDto.getFiles());
+        updateRelations(updateDto.getRelations());
 
         return this;
     }

@@ -8,12 +8,14 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 import seoul.democracy.common.annotation.CreatedIp;
 import seoul.democracy.common.annotation.ModifiedIp;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.listener.AuditingIpListener;
 import seoul.democracy.history.domain.IssueHistory;
+import seoul.democracy.issue.dto.IssueFileDto;
 import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.domain.OpinionType;
 import seoul.democracy.opinion.dto.OpinionCreateDto;
@@ -23,7 +25,9 @@ import seoul.democracy.user.domain.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 주제 Entity
@@ -161,6 +165,32 @@ public abstract class Issue {
         @JoinColumn(name = "ISSUE_ID", referencedColumnName = "ISSUE_ID")
     })
     protected List<IssueRelation> relations = new ArrayList<>();
+
+    protected void updateFiles(List<IssueFileDto> updateFiles) {
+        if(CollectionUtils.isEmpty(this.files) && CollectionUtils.isEmpty(updateFiles)) return;
+
+        List<IssueFileDto> files = this.files.stream()
+                                       .sorted(Comparator.comparing(IssueFile::getSeq))
+                                       .map(file -> IssueFileDto.of(file.getName(), file.getUrl()))
+                                       .collect(Collectors.toList());
+        if (files.equals(updateFiles)) return;
+
+        this.files = IssueFile.create(updateFiles);
+    }
+
+    protected void updateRelations(List<Long> updateRelations) {
+        if(CollectionUtils.isEmpty(this.relations) && CollectionUtils.isEmpty(updateRelations)) return;
+
+        List<Long> relations = this.relations.stream()
+                                   .sorted(Comparator.comparing(IssueRelation::getSeq))
+                                   .map(IssueRelation::getIssueId)
+                                   .collect(Collectors.toList());
+        if (relations.equals(updateRelations)) return;
+
+
+        this.relations = IssueRelation.create(updateRelations);
+    }
+
 
     public IssueHistory createHistory(String content) {
         if (this instanceof Proposal)
