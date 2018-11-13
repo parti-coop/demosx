@@ -12,6 +12,7 @@ import seoul.democracy.debate.domain.Debate;
 import seoul.democracy.debate.dto.DebateDto;
 import seoul.democracy.issue.dto.IssueFileDto;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -102,5 +103,26 @@ public class DebateRepositoryImpl extends QueryDslRepositorySupport implements D
         }
 
         return debateDto;
+    }
+
+    @Override
+    public void updateDebateProcess() {
+        LocalDate now = LocalDate.now();
+        // 전체를 진행 중 바꾼다.
+        update(debate)
+            .set(debate.process, Debate.Process.PROGRESS)
+            .execute();
+
+        // 종료일이 오늘 이전이면 종료로 바꾼다.
+        update(debate)
+            .where(debate.endDate.before(now))
+            .set(debate.process, Debate.Process.COMPLETE)
+            .execute();
+
+        // 시작일이 오늘 이후면 진행예정으로 바꾼다.
+        update(debate)
+            .where(debate.startDate.after(now))
+            .set(debate.process, Debate.Process.INIT)
+            .execute();
     }
 }

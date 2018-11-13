@@ -11,4 +11,6 @@ public interface DebateRepositoryCustom {
     Page<DebateDto> findAll(Predicate predicate, Pageable pageable, Expression<DebateDto> projection, boolean withFiles, boolean withRelations);
 
     DebateDto findOne(Predicate predicate, Expression<DebateDto> projection, boolean withFiles, boolean withRelations);
+
+    void updateDebateProcess();
 }
