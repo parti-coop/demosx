@@ -40,11 +40,14 @@ public class S_7_2_관리자는_공감수_50넘는_제안에_담당자_지정할
     @Autowired
     private ProposalService proposalService;
 
-    private final Long proposalIdUnder50Like = 1L;
-    private final Long proposalIdOver50Like = 51L;
+    private final Long initProposalId = 1L;
+    private final Long needAssignProposalId = 31L;
+    private final Long assignedProposalId = 41L;
+    private final Long completeProposalId = 51L;
 
     private final Long adminId = 1L;
     private final Long managerId = 11L;
+    private final Long otherManagerId = 12L;
     private final Long userId = 21L;
 
     @Before
@@ -53,12 +56,12 @@ public class S_7_2_관리자는_공감수_50넘는_제안에_담당자_지정할
     }
 
     /**
-     * 1. 관리자는 공감수 50넘는 제안에 매니저를 담당자로 지정할 수 있다.
+     * 1. 관리자는 담당지정대기 상태에 매니저를 담당자로 지정할 수 있다.
      */
     @Test
     @WithUserDetails("admin1@googl.co.kr")
-    public void T_1_관리자는_공감수_50넘는_제안에_매니저를_담당자로_지정할_수_있다() {
-        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(proposalIdOver50Like, managerId);
+    public void T_1_관리자는_담당지정대기_상태에_매니저를_담당자로_지정할_수_있다() {
+        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(needAssignProposalId, managerId);
         Proposal proposal = proposalService.assignManager(assignDto);
 
         ProposalDto proposalDto = proposalService.getProposal(equalId(proposal.getId()), projection);
@@ -67,52 +70,76 @@ public class S_7_2_관리자는_공감수_50넘는_제안에_담당자_지정할
     }
 
     /**
-     * 2. 공감수 50미만의 제안에 대해 담당자를 지정할 수 없다.
+     * 2. 일반상태 제안에 대해 담당자를 지정할 수 없다.
      */
     @Test(expected = BadRequestException.class)
     @WithUserDetails("admin2@googl.co.kr")
-    public void T_2_공감수_50미만의_제안에_대해_담당자를_지정할_수_없다() {
-        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(proposalIdUnder50Like, managerId);
+    public void T_2_일반상태_제안에_대해_담당자를_지정할_수_없다() {
+        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(initProposalId, managerId);
         proposalService.assignManager(assignDto);
     }
 
     /**
-     * 3. 관리자를 담당자로 지정할 수 없다.
+     * 3. 담당자가 지정된 제안의 담당자를 변경할 수 있다.
+     */
+    @Test
+    @WithUserDetails("admin2@googl.co.kr")
+    public void T_3_담당자가_지정된_제안의_담당자를_변경할_수_있다() {
+        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(assignedProposalId, otherManagerId);
+        Proposal proposal = proposalService.assignManager(assignDto);
+
+        ProposalDto proposalDto = proposalService.getProposal(equalId(proposal.getId()), projection);
+        assertThat(proposalDto.getProcess(), is(Proposal.Process.ASSIGNED));
+        assertThat(proposalDto.getManager().getId(), is(assignDto.getManagerId()));
+    }
+
+    /**
+     * 4. 답변이 완료된 제안에 담당자를 변경할 수 없다.
+     */
+    @Test(expected = BadRequestException.class)
+    @WithUserDetails("admin2@googl.co.kr")
+    public void T_4_답변이_완료된_제안에_담당자를_변경할_수_없다() {
+        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(completeProposalId, managerId);
+        proposalService.assignManager(assignDto);
+    }
+
+    /**
+     * 5. 관리자를 담당자로 지정할 수 없다.
      */
     @Test(expected = BadRequestException.class)
     @WithUserDetails("admin1@googl.co.kr")
-    public void T_3_관리자를_담당자로_지정할_수_없다() {
-        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(proposalIdOver50Like, adminId);
+    public void T_5_관리자를_담당자로_지정할_수_없다() {
+        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(needAssignProposalId, adminId);
         proposalService.assignManager(assignDto);
     }
 
     /**
-     * 4. 사용자를 담당자로 지정할 수 없다.
+     * 6. 사용자를 담당자로 지정할 수 없다.
      */
     @Test(expected = BadRequestException.class)
     @WithUserDetails("admin1@googl.co.kr")
-    public void T_4_사용자를_담당자로_지정할_수_없다() {
-        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(proposalIdOver50Like, userId);
+    public void T_6_사용자를_담당자로_지정할_수_없다() {
+        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(needAssignProposalId, userId);
         proposalService.assignManager(assignDto);
     }
 
     /**
-     * 5. 매니저는 담당자를 지정할 수 없다.
+     * 7. 매니저는 담당자를 지정할 수 없다.
      */
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
-    public void T_5_매니저는_담당자를_지정할_수_없다() {
-        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(proposalIdOver50Like, managerId);
+    public void T_7_매니저는_담당자를_지정할_수_없다() {
+        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(needAssignProposalId, managerId);
         proposalService.assignManager(assignDto);
     }
 
     /**
-     * 6. 사용자는 담당자를 지정할 수 없다.
+     * 8. 사용자는 담당자를 지정할 수 없다.
      */
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
-    public void T_6_사용자는_담당자를_지정할_수_없다() {
-        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(proposalIdOver50Like, managerId);
+    public void T_8_사용자는_담당자를_지정할_수_없다() {
+        ProposalManagerAssignDto assignDto = ProposalManagerAssignDto.of(needAssignProposalId, managerId);
         proposalService.assignManager(assignDto);
     }
 }

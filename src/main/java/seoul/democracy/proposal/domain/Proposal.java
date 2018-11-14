@@ -128,11 +128,14 @@ public class Proposal extends Issue {
         if (!status.isOpen())
             throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
 
-        if (getStats().getLikeCount() < 50)
+        if (process.isInit())
             throw new BadRequestException("likeCount", "error.likeCount", "공감수 50이상 제안만 담당자 지정이 가능합니다.");
 
+        if (process.isComplete())
+            throw new BadRequestException("process", "error.process", "담당자 답변이 완료된 경우 담당자를 변경할 수 없습니다.");
+
         if (!manager.getRole().isManager())
-            throw new BadRequestException("role", "error.role", "매니저만 담당자로 설정가능합니다.");
+            throw new BadRequestException("role", "error.role", "담당자로 지정되어 있지 않습니다.");
 
         this.manager = manager;
         this.process = Process.ASSIGNED;
@@ -159,16 +162,41 @@ public class Proposal extends Issue {
     public IssueLike createLike(User user) {
         if (!status.isOpen()) throw new NotFoundException("해당 제안을 찾을 수 없습니다.");
 
+        if (process.isInit() && stats.getLikeCount() >= 50)
+            process = Process.NEED_ASSIGN;
+
         return IssueLike.create(user, this);
+    }
+
+    public void deleteLike() {
+        if (process.isNeedAssign() && stats.getLikeCount() < 50)
+            process = Process.INIT;
     }
 
     @Getter
     @RequiredArgsConstructor
     public enum Process {
-        INIT(""),       // 초기상태
-        ASSIGNED("답변대기"),   // 답변대기
-        COMPLETE("부서답변");    // 부서답변
+        INIT("일반"),       // 일반
+        NEED_ASSIGN("담당지정대기"), // 담당지정대기
+        ASSIGNED("답변대기"),       // 답변대기
+        COMPLETE("부서답변");       // 부서답변
 
         private final String msg;
+
+        public boolean isInit() {
+            return this == INIT;
+        }
+
+        public boolean isNeedAssign() {
+            return this == NEED_ASSIGN;
+        }
+
+        public boolean isAssigned() {
+            return this == ASSIGNED;
+        }
+
+        public boolean isComplete() {
+            return this == COMPLETE;
+        }
     }
 }

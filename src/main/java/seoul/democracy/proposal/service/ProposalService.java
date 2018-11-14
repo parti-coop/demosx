@@ -136,10 +136,10 @@ public class ProposalService {
 
         Proposal proposal = getProposal(issueId);
 
+        statsRepository.selectLikeProposal(proposal.getStatsId());
+
         IssueLike like = proposal.createLike(user);
         likeRepository.save(like);
-
-        statsRepository.selectLikeProposal(proposal.getStatsId());
 
         return like;
     }
@@ -157,6 +157,8 @@ public class ProposalService {
 
         Proposal proposal = getProposal(issueId);
         statsRepository.deselectLikeProposal(proposal.getStatsId());
+
+        proposal.deleteLike();
         likeRepository.delete(like);
 
         return like;
