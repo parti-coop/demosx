@@ -1,0 +1,22 @@
+version: "3"
+services:
+  mysql-custom:
+    build: .
+    image: mysql-custom
+    environment:
+      - MYSQL_DATABASE=democracy
+      - MYSQL_ROOT_PASSWORD=12345
+      - TZ=Asia/Seoul
+  tomcat:
+    image: tomcat:8.5.35
+    ports:
+      - 18080:8080
+    environment:
+      - CATALINA_OPTS="-Djava.net.preferIPv4Stack=true"
+      - Globals.Url=jdbc:mysql://mysql-custom:3306/democracy?useSSL=false&characterEncoding=UTF-8
+      - Globals.Password=12345
+      - TZ=Asia/Seoul
+    volumes:
+      - ./webapps:/usr/local/tomcat/webapps
+    links:
+      - mysql-custom
