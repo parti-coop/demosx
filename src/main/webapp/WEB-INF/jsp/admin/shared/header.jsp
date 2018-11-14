@@ -46,74 +46,91 @@
   </nav>
 </header>
 
-<aside class="main-sidebar">
-  <section class="sidebar">
-    <ul class="sidebar-menu" data-widget="tree">
-      <li class="header">시민제안</li>
-      <li>
-        <a href="<c:url value="/admin/issue/proposal.do"/>">
-          <i class="fa fa-picture-o"></i>
-          <span>제안 관리</span>
-        </a>
-      </li>
-      <li>
-        <a href="<c:url value="/admin/issue/debate.do"/>">
-          <i class="fa fa-picture-o"></i>
-          <span>토론 관리</span>
-        </a>
-      </li>
-      <li>
-        <a href="<c:url value="/admin/issue/action.do"/>">
-          <i class="fa fa-picture-o"></i>
-          <span>실행 관리</span>
-        </a>
-      </li>
+<c:if test="${loginUser.isAdmin()}">
+  <aside class="main-sidebar">
+    <section class="sidebar">
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">시민제안</li>
+        <li>
+          <a href="<c:url value="/admin/issue/proposal.do"/>">
+            <i class="fa fa-picture-o"></i>
+            <span>제안 관리</span>
+          </a>
+        </li>
+        <li>
+          <a href="<c:url value="/admin/issue/debate.do"/>">
+            <i class="fa fa-picture-o"></i>
+            <span>토론 관리</span>
+          </a>
+        </li>
+        <li>
+          <a href="<c:url value="/admin/issue/action.do"/>">
+            <i class="fa fa-picture-o"></i>
+            <span>실행 관리</span>
+          </a>
+        </li>
 
-      <li class="header">기관제안</li>
-      <li>
-        <a href="<c:url value="/admin/issue/org-debate.do"/>">
-          <i class="fa fa-picture-o"></i>
-          <span>기관제안 관리</span>
-        </a>
-      </li>
+        <li class="header">기관제안</li>
+        <li>
+          <a href="<c:url value="/admin/issue/org-debate.do"/>">
+            <i class="fa fa-picture-o"></i>
+            <span>기관제안 관리</span>
+          </a>
+        </li>
 
-      <li class="header">회원</li>
-      <li>
-        <a href="<c:url value="/admin/users/list.do"/>">
-          <i class="fa fa-user"></i>
-          <span>회원 관리</span>
-        </a>
-      </li>
-      <li>
-        <a href="<c:url value="/admin/users/manager.do"/>">
-          <i class="fa fa-user"></i>
-          <span>담당자 관리</span>
-        </a>
-      </li>
+        <li class="header">회원</li>
+        <li>
+          <a href="<c:url value="/admin/users/list.do"/>">
+            <i class="fa fa-user"></i>
+            <span>회원 관리</span>
+          </a>
+        </li>
+        <li>
+          <a href="<c:url value="/admin/users/manager.do"/>">
+            <i class="fa fa-user"></i>
+            <span>담당자 관리</span>
+          </a>
+        </li>
 
-      <li class="header">게시판</li>
-      <li>
-        <a href="<c:url value="/admin/post/notice.do"/>">
-          <i class="fa fa-calendar-check-o"></i>
-          <span>공지사항 관리</span>
-        </a>
-      </li>
+        <li class="header">게시판</li>
+        <li>
+          <a href="<c:url value="/admin/post/notice.do"/>">
+            <i class="fa fa-calendar-check-o"></i>
+            <span>공지사항 관리</span>
+          </a>
+        </li>
 
-      <li class="header">카테고리</li>
-      <li>
-        <a href="<c:url value="/admin/category/list.do"/>">
-          <i class="fa fa-calendar-check-o"></i>
-          <span>카테고리 관리</span>
-        </a>
-      </li>
+        <li class="header">카테고리</li>
+        <li>
+          <a href="<c:url value="/admin/category/list.do"/>">
+            <i class="fa fa-calendar-check-o"></i>
+            <span>카테고리 관리</span>
+          </a>
+        </li>
 
-      <li class="header">Stats</li>
-      <li>
-        <a href="https://adminlte.io/docs">
-          <i class="fa fa-bar-chart"></i>
-          <span>통계</span>
-        </a>
-      </li>
-    </ul>
-  </section>
-</aside>
+        <li class="header">Stats</li>
+        <li>
+          <a href="https://adminlte.io/docs">
+            <i class="fa fa-bar-chart"></i>
+            <span>통계</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+  </aside>
+</c:if>
+<c:if test="${loginUser.isManager()}">
+  <aside class="main-sidebar">
+    <section class="sidebar">
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">시민제안</li>
+        <li>
+          <a href="<c:url value="/admin/issue/proposal.do"/>">
+            <i class="fa fa-picture-o"></i>
+            <span>제안 관리</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+  </aside>
+</c:if>

@@ -40,13 +40,18 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">분류</label>
                   <div class="col-sm-2">
-                    <select class="form-control input-sm" id="category-select">
-                      <option value="">분류선택</option>
-                      <c:forEach var="category" items="${categories}">
-                        <option value="${category.name}" <c:if
-                            test="${proposal.category.name eq category.name}">selected</c:if>>${category.name}</option>
-                      </c:forEach>
-                    </select>
+                    <c:if test="${loginUser.isManager()}">
+                      <p class="form-control-static">${proposal.category.name}</p>
+                    </c:if>
+                    <c:if test="${loginUser.isAdmin()}">
+                      <select class="form-control input-sm" id="category-select">
+                        <option value="">분류선택</option>
+                        <c:forEach var="category" items="${categories}">
+                          <option value="${category.name}" <c:if
+                              test="${proposal.category.name eq category.name}">selected</c:if>>${category.name}</option>
+                        </c:forEach>
+                      </select>
+                    </c:if>
                   </div>
                 </div>
                 <div class="form-group">
@@ -82,10 +87,10 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">공개여부</label>
                   <div class="col-sm-2">
-                    <c:if test="${proposal.status.isDelete()}">
+                    <c:if test="${loginUser.isManager() or proposal.status.isDelete()}">
                       <p class="form-control-static">${proposal.status.msg}</p>
                     </c:if>
-                    <c:if test="${proposal.status ne 'DELETE'}">
+                    <c:if test="${loginUser.isAdmin() and proposal.status ne 'DELETE'}">
                       <select class="form-control input-sm" id="status-select">
                         <option value="OPEN" <c:if test="${proposal.status.isOpen()}">selected</c:if>>공개</option>
                         <option value="CLOSED" <c:if test="${proposal.status.isClosed()}">selected</c:if>>비공개</option>
@@ -100,9 +105,15 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">관리자 댓글</label>
                   <div class="col-sm-10">
-                    <textarea class="form-control" id="admin-comment-textarea"
-                              rows="4">${proposal.adminComment}</textarea>
-                    <button type="button" class="btn btn-default btn-sm pull-right" id="admin-comment-btn">저장하기</button>
+                    <c:if test="${loginUser.isAdmin() and proposal.status.isOpen()}">
+                      <textarea class="form-control" id="admin-comment-textarea"
+                                rows="4">${proposal.adminComment}</textarea>
+                      <button type="button" class="btn btn-default btn-sm pull-right" id="admin-comment-btn">저장하기
+                      </button>
+                    </c:if>
+                    <c:if test="${loginUser.isManager() or not proposal.status.isOpen()}">
+                      <p class="form-control-static">${proposal.adminComment}</p>
+                    </c:if>
                   </div>
                 </div>
                 <div class="form-group">
@@ -111,7 +122,9 @@
                     <p class="form-control-static" id="assigned-manager">${proposal.manager.name}</p>
                   </div>
                   <div class="col-sm-4">
-                    <c:if test="${proposal.stats.likeCount ge 50}">
+                    <c:if
+                        test="${loginUser.isAdmin() and proposal.status.isOpen()
+                        and (proposal.process.isNeedAssign() or proposal.process.isAssigned())}">
                       <div class="input-group input-group-sm">
                         <select id="select-manager-input" class="form-control"></select>
                         <span class="input-group-btn">
@@ -124,7 +137,15 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">담당자 답변</label>
                   <div class="col-sm-10">
-                    <p class="form-control-static">${proposal.managerComment}</p>
+                    <c:if test="${loginUser.isAdmin() or not proposal.status.isOpen()}">
+                      <p class="form-control-static">${proposal.managerComment}</p>
+                    </c:if>
+                    <c:if test="${loginUser.isManager() and proposal.status.isOpen()}">
+                      <textarea class="form-control" id="admin-comment-textarea"
+                                rows="4">${proposal.managerComment}</textarea>
+                      <button type="button" class="btn btn-default btn-sm pull-right" id="manager-comment-btn">저장하기
+                      </button>
+                    </c:if>
                   </div>
                 </div>
               </div>
@@ -151,72 +172,15 @@
   </div>
   <%@ include file="../shared/footer.jsp" %>
 </div>
-<script>
-  $(function () {
-    var $selectManagerInput = $('#select-manager-input');
-    $selectManagerInput.select2({
-      language: 'ko',
-      theme: "bootstrap",
-      ajax: {
-        headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
-        url: '/admin/ajax/users/role-manager',
-        type: 'GET',
-        dataType: 'json',
-        data: function (params) {
-          return {
-            search: params.term
-          };
-        },
-        processResults: function (data) {
-          return {
-            results: data.content.map(function (item) {
-              return {
-                id: item.id,
-                text: item.name,
-                item: item
-              }
-            })
-          };
-        }
-      }
-    });
-
-    // 담당자 지정
-    $('#assign-manager-btn').click(function () {
-      var selectedData = $selectManagerInput.select2('data');
-      if (selectedData.length === 0) {
-        alert('선택된 항목이 없습니다.');
-        return;
-      }
-
-      adminAjax({
-        csrf: '${_csrf.token}',
-        url: '/admin/ajax/issue/proposals/${proposal.id}/assignManager',
-        type: 'PATCH',
-        data: {
-          proposalId: ${proposal.id},
-          managerId: selectedData[0].id
-        },
-        success: function (data) {
-          $selectManagerInput.val(null).trigger('change');
-          $('#assigned-manager').text(data.manager.name);
-        },
-        error: function () {
-        }
-      });
-    });
-  });
-
-
-  $(function () {
-    // 관리자 댓글 저장
-    $('#admin-comment-btn').click(function () {
-      if (!window.confirm('관리자 댓글을 저장할까요?')) return;
+<c:if test="${loginUser.isManager()}">
+  <script>
+    $('#manager-comment-btn').click(function () {
+      if (!window.confirm('담당자 댓글을 저장할까요?')) return;
 
       var comment = $('#admin-comment-textarea').val();
       adminAjax({
         csrf: '${_csrf.token}',
-        url: '/admin/ajax/issue/proposals/${proposal.id}/adminComment',
+        url: '/admin/ajax/issue/proposals/${proposal.id}/managerComment',
         type: 'PATCH',
         data: {
           proposalId: ${proposal.id},
@@ -228,58 +192,140 @@
         }
       });
     });
-
-    // 분류 수정
-    var categoryValue = '${proposal.category.name}';
-    var $categorySelect = $('#category-select');
-    $categorySelect.change(function () {
-      if (!confirm('분류를 변경할까요?')) {
-        $(this).val(categoryValue);
-        return;
-      }
-
-      adminAjax({
-        csrf: '${_csrf.token}',
-        url: '/admin/ajax/issue/proposals/${proposal.id}/category',
-        type: 'PATCH',
-        data: {
-          proposalId: ${proposal.id},
-          category: $(this).val()
-        },
-        success: function () {
-          categoryValue = $categorySelect.val();
-        },
-        error: function () {
-          $categorySelect.val(categoryValue);
+  </script>
+</c:if>
+<c:if test="${loginUser.isAdmin()}">
+  <script>
+    $(function () {
+      var $selectManagerInput = $('#select-manager-input');
+      $selectManagerInput.select2({
+        language: 'ko',
+        theme: "bootstrap",
+        ajax: {
+          headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
+          url: '/admin/ajax/users/role-manager',
+          type: 'GET',
+          dataType: 'json',
+          data: function (params) {
+            return {
+              search: params.term
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data.content.map(function (item) {
+                return {
+                  id: item.id,
+                  text: item.name,
+                  item: item
+                }
+              })
+            };
+          }
         }
+      });
+
+      // 담당자 지정
+      $('#assign-manager-btn').click(function () {
+        var selectedData = $selectManagerInput.select2('data');
+        if (selectedData.length === 0) {
+          alert('선택된 항목이 없습니다.');
+          return;
+        }
+
+        adminAjax({
+          csrf: '${_csrf.token}',
+          url: '/admin/ajax/issue/proposals/${proposal.id}/assignManager',
+          type: 'PATCH',
+          data: {
+            proposalId: ${proposal.id},
+            managerId: selectedData[0].id
+          },
+          success: function (data) {
+            $selectManagerInput.val(null).trigger('change');
+            $('#assigned-manager').text(data.manager.name);
+          },
+          error: function () {
+          }
+        });
       });
     });
 
-    // 공개여부 수정
-    var statusValue = '${proposal.status}';
-    var $statusSelect = $('#status-select');
-    $statusSelect.change(function () {
-      var status = $(this).val();
-      if (!confirm((status === 'OPEN' ? '공개' : '비공개') + '로 변경할까요?')) {
-        $(this).val(statusValue);
-        return;
-      }
 
-      adminAjax({
-        csrf: '${_csrf.token}',
-        url: '/admin/ajax/issue/proposals/${proposal.id}/' + status.toLowerCase(),
-        type: 'PATCH',
-        data: null,
-        success: function () {
-          statusValue = $statusSelect.val();
-        },
-        error: function () {
-          $statusSelect.val(statusValue);
-        }
+    $(function () {
+      // 관리자 댓글 저장
+      $('#admin-comment-btn').click(function () {
+        if (!window.confirm('관리자 댓글을 저장할까요?')) return;
+
+        var comment = $('#admin-comment-textarea').val();
+        adminAjax({
+          csrf: '${_csrf.token}',
+          url: '/admin/ajax/issue/proposals/${proposal.id}/adminComment',
+          type: 'PATCH',
+          data: {
+            proposalId: ${proposal.id},
+            comment: comment
+          },
+          success: function () {
+          },
+          error: function () {
+          }
+        });
       });
-    });
 
-  });
-</script>
+      // 분류 수정
+      var categoryValue = '${proposal.category.name}';
+      var $categorySelect = $('#category-select');
+      $categorySelect.change(function () {
+        if (!confirm('분류를 변경할까요?')) {
+          $(this).val(categoryValue);
+          return;
+        }
+
+        adminAjax({
+          csrf: '${_csrf.token}',
+          url: '/admin/ajax/issue/proposals/${proposal.id}/category',
+          type: 'PATCH',
+          data: {
+            proposalId: ${proposal.id},
+            category: $(this).val()
+          },
+          success: function () {
+            categoryValue = $categorySelect.val();
+          },
+          error: function () {
+            $categorySelect.val(categoryValue);
+          }
+        });
+      });
+
+      // 공개여부 수정
+      var statusValue = '${proposal.status}';
+      var $statusSelect = $('#status-select');
+      $statusSelect.change(function () {
+        var status = $(this).val();
+        if (!confirm((status === 'OPEN' ? '공개' : '비공개') + '로 변경할까요?')) {
+          $(this).val(statusValue);
+          return;
+        }
+
+        adminAjax({
+          csrf: '${_csrf.token}',
+          url: '/admin/ajax/issue/proposals/${proposal.id}/' + status.toLowerCase(),
+          type: 'PATCH',
+          data: null,
+          success: function () {
+            statusValue = $statusSelect.val();
+            window.location.reload();
+          },
+          error: function () {
+            $statusSelect.val(statusValue);
+          }
+        });
+      });
+
+    });
+  </script>
+</c:if>
 </body>
 </html>

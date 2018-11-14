@@ -41,7 +41,15 @@
                   <th>조회수</th>
                   <th>공감수</th>
                   <th>댓글수</th>
-                  <th>진행사항</th>
+                  <th>
+                    <select name="process" aria-controls="list" class="form-control input-sm" title="분류">
+                      <option value="">진행사항</option>
+                      <option value="INIT">일반</option>
+                      <option value="NEED_ASSIGN">담당지정대기</option>
+                      <option value="ASSIGNED">답변대기</option>
+                      <option value="COMPLETE">부서답변완료</option>
+                    </select>
+                  </th>
                   <th>담당자</th>
                   <th>공개여부</th>
                 </tr>
@@ -64,6 +72,11 @@
       table.draw();
     });
 
+    var $process = $('select[name=process]');
+    $process.change(function () {
+      table.draw();
+    });
+
     var table = $('#list')
       .on('preXhr.dt', function (e, settings, data) {
         console.log(data);
@@ -73,6 +86,8 @@
         data['search'] = data['search'].value;
         var category = $category.val();
         if (category) data['category'] = category;
+        var process = $process.val();
+        if (process) data['process'] = process;
 
         delete data['draw'];
         delete data['columns'];
@@ -140,14 +155,15 @@
           { data: 'stats.opinionCount', orderable: false },
           {
             data: function (item) {
+              if (item.process === 'NEED_ASSIGN') return '담당지정대기';
               if (item.process === 'ASSIGNED') return '답변대기';
-              if (item.process === 'COMPLETE') return '부서답변';
-              return '';
+              if (item.process === 'COMPLETE') return '부서답변완료';
+              return '일반';
             }, orderable: false
           },
           {
             data: function (item) {
-              return item.manager.name || '없음';
+              return item.manager.name || '';
             }, orderable: false
           },
           {

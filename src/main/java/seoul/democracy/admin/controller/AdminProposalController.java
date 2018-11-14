@@ -1,5 +1,6 @@
 package seoul.democracy.admin.controller;
 
+import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import seoul.democracy.issue.dto.CategoryDto;
 import seoul.democracy.issue.service.CategoryService;
 import seoul.democracy.proposal.dto.ProposalDto;
+import seoul.democracy.proposal.predicate.ProposalPredicate;
 import seoul.democracy.proposal.service.ProposalService;
+import seoul.democracy.user.domain.User;
+import seoul.democracy.user.utils.UserUtils;
 
 import java.util.List;
 
@@ -52,7 +56,12 @@ public class AdminProposalController {
     public String proposalDetail(@RequestParam("id") Long id,
                                  Model model) {
 
-        ProposalDto proposalDto = proposalService.getProposal(equalId(id), ProposalDto.projectionForAdminDetail);
+        User user = UserUtils.getLoginUser();
+        Predicate predicate = user.isAdmin() ?
+                                  equalId(id) :
+                                  ProposalPredicate.equalIdAndManagerId(id, user.getId());
+
+        ProposalDto proposalDto = proposalService.getProposal(predicate, ProposalDto.projectionForAdminDetail);
         model.addAttribute("proposal", proposalDto);
 
         return "/admin/proposal/detail";

@@ -134,7 +134,7 @@ public class Proposal extends Issue {
         if (process.isComplete())
             throw new BadRequestException("process", "error.process", "담당자 답변이 완료된 경우 담당자를 변경할 수 없습니다.");
 
-        if (!manager.getRole().isManager())
+        if (!manager.isManager())
             throw new BadRequestException("role", "error.role", "담당자로 지정되어 있지 않습니다.");
 
         this.manager = manager;

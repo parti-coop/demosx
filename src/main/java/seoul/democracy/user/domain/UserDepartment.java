@@ -6,11 +6,12 @@ import seoul.democracy.issue.domain.Category;
 import seoul.democracy.user.dto.UserManagerUpdateDto;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "create")
-public class UserDepartment {
+public class UserDepartment implements Serializable {
 
     /**
      * 카테고리

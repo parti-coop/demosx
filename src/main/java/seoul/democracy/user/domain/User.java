@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 @Entity(name = "TB_USER")
 @EntityListeners({AuditingEntityListener.class, AuditingIpListener.class})
 public class User implements Serializable {
+    private static final long serialVersionUID = 8169967433018770688L;
 
     @Id
     @GeneratedValue(generator = "native")
@@ -134,8 +135,8 @@ public class User implements Serializable {
     }
 
     public User createManager(UserManagerCreateDto createDto, Category category) {
-        if (this.role.isAdmin()) throw new NotFoundException("해당 사용자가 없습니다.");
-        if (this.role.isManager()) throw new AlreadyExistsException("이미 담당자로 지정되어 있습니다.");
+        if (isAdmin()) throw new NotFoundException("해당 사용자가 없습니다.");
+        if (isManager()) throw new AlreadyExistsException("이미 담당자로 지정되어 있습니다.");
 
         this.department = UserDepartment.create(category, createDto.getDepartment1(), createDto.getDepartment2(), createDto.getDepartment3());
         this.role = Role.ROLE_MANAGER;
@@ -144,18 +145,30 @@ public class User implements Serializable {
     }
 
     public User updateManager(UserManagerUpdateDto updateDto, Category category) {
-        if (this.role.isAdmin() || this.role.isUser()) throw new NotFoundException("해당 사용자가 없습니다.");
+        if (isAdmin() || isUser()) throw new NotFoundException("해당 사용자가 없습니다.");
 
         this.department.update(updateDto, category);
         return this;
     }
 
     public User deleteManager() {
-        if (this.role.isAdmin() || this.role.isUser()) throw new NotFoundException("해당 사용자가 없습니다.");
+        if (isAdmin() || isUser()) throw new NotFoundException("해당 사용자가 없습니다.");
 
         this.department = null;
         this.role = Role.ROLE_USER;
         return this;
+    }
+
+    public boolean isAdmin() {
+        return this.role.isAdmin();
+    }
+
+    public boolean isManager() {
+        return this.role.isManager();
+    }
+
+    public boolean isUser() {
+        return this.role.isUser();
     }
 
     public enum Status {

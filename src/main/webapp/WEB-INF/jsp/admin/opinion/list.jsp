@@ -83,12 +83,19 @@
           { data: 'createdBy.name', orderable: false },
           {
             data: function (item) {
+              <c:if test="${loginUser.isManager()}">
+              if (item.status === 'DELETE') return '삭제';
+              if (item.status === 'BLOCK') return '비공개';
+              return '공개';
+              </c:if>
+              <c:if test="${loginUser.isAdmin()}">
               if (item.status === 'DELETE') return '삭제';
 
               return '<select class="form-control input-sm opinion-status-select" data-status="' + item.status + '" data-id="' + item.id + '">' +
                 '<option value="OPEN"' + (item.status === 'OPEN' ? ' selected' : '') + '>공개</option>' +
                 '<option value="BLOCK"' + (item.status === 'BLOCK' ? ' selected' : '') + '>비공개</option>' +
                 '</select>';
+              </c:if>
             }, orderable: false
           }
         ]
@@ -98,6 +105,7 @@
     table.column(2).visible(false);
     </c:if>
 
+    <c:if test="${loginUser.isAdmin()}">
     $(document).on('change', '.opinion-status-select', function () {
       var status = $(this).val();
       if (!confirm((status === 'OPEN' ? '공개' : '비공개') + '로 변경할까요?')) {
@@ -119,6 +127,7 @@
         }
       });
     });
+    </c:if>
   });
 </script>
 <style>

@@ -10,7 +10,15 @@
     <global-method-security pre-post-annotations="enabled"/>
     <http auto-config="true" use-expressions="true">
 
+        <intercept-url pattern="/admin/ajax/issue/proposals" access="hasRole('ROLE_MANAGER')"/>
+        <intercept-url pattern="/admin/ajax/issue/proposals/**/managerComment" access="hasRole('ROLE_MANAGER')"/>
+        <intercept-url pattern="/admin/ajax/opinions" access="hasRole('ROLE_MANAGER')"/>
+        <intercept-url pattern="/admin/index.do" access="hasRole('ROLE_MANAGER')"/>
+        <intercept-url pattern="/admin/issue/proposal.do" access="hasRole('ROLE_MANAGER')"/>
+        <intercept-url pattern="/admin/issue/proposal-detail.do" access="hasRole('ROLE_MANAGER')"/>
+
         <intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
+
         <intercept-url pattern="/user/**" access="hasRole('ROLE_USER')"/>
         <intercept-url pattern="/ajax/user/**" access="hasRole('ROLE_USER')"/>
 

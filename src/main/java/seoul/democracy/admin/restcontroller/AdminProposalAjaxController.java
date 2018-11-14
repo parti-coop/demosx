@@ -1,5 +1,6 @@
 package seoul.democracy.admin.restcontroller;
 
+import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,8 @@ import seoul.democracy.common.dto.ResultInfo;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.*;
 import seoul.democracy.proposal.service.ProposalService;
+import seoul.democracy.user.domain.User;
+import seoul.democracy.user.utils.UserUtils;
 
 import javax.validation.Valid;
 
@@ -29,8 +32,14 @@ public class AdminProposalAjaxController {
     @RequestMapping(method = RequestMethod.GET)
     public Page<ProposalDto> getProposals(@RequestParam(value = "search") String search,
                                           @RequestParam(value = "category", required = false) String category,
+                                          @RequestParam(value = "process", required = false) Proposal.Process process,
                                           @PageableDefault Pageable pageable) {
-        return proposalService.getProposals(getPredicateForAdminList(search, category), pageable, projectionForAdminList);
+        User user = UserUtils.getLoginUser();
+        Predicate predicate = user.isAdmin() ?
+                                  getPredicateForAdminList(search, category, process) :
+                                  getPredicateForManagerList(user.getId(), search, category, process);
+
+        return proposalService.getProposals(predicate, pageable, projectionForAdminList);
     }
 
     /**
