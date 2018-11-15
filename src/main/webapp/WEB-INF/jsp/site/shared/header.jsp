@@ -5,9 +5,31 @@
 <div class="nav-login-bar">
   <div class="container">
     <ul class="nav-login-ul list-inline text-right">
-      <li class="nav-login-li"><a href="" class="nav-login-li__link">로그인</a></li>
-      <li class="nav-login-li"><span class="li-middle-line">|</span></li>
-      <li class="nav-login-li"><a href="" class="nav-login-li__link">회원가입</a></li>
+      <c:if test="${empty loginUser}">
+        <li class="nav-login-li"><a href="<c:url value="/login.do"/>" class="nav-login-li__link">로그인</a></li>
+        <li class="nav-login-li"><span class="li-middle-line">|</span></li>
+        <li class="nav-login-li"><a href="<c:url value="/join.do"/>" class="nav-login-li__link">회원가입</a></li>
+      </c:if>
+      <c:if test="${not empty loginUser}">
+        <c:if test="${loginUser.isAdmin() or loginUser.isManager()}">
+          <li class="nav-login-li"><a href="<c:url value="/admin/index.do"/>" class="nav-login-li__link">관리자페이지</a></li>
+          <li class="nav-login-li"><span class="li-middle-line">|</span></li>
+        </c:if>
+        <li class="nav-login-li"><a href="" class="nav-login-li__link">마이페이지</a></li>
+        <li class="nav-login-li"><span class="li-middle-line">|</span></li>
+        <li class="nav-login-li"><a href="#" class="nav-login-li__link" id="logout-link">로그아웃</a></li>
+        <form:form action="/logout.do" method="post" class="hidden" id="form-logout">
+        </form:form>
+        <script>
+          $(function () {
+            $('#logout-link').click(function (event) {
+              $('#form-logout').submit();
+
+              event.preventDefault();
+            });
+          });
+        </script>
+      </c:if>
     </ul>
   </div>
 </div>
@@ -15,7 +37,8 @@
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -27,10 +50,15 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right demo-nav">
-        <li class="demo-nav-li active"><a href="#">오픈소스<div class="nav-li-active-bar"></div></a></li>
+        <li class="demo-nav-li"><a href="<c:url value="/intro.do"/>">오픈소스
+          <div class="nav-li-active-bar"></div>
+        </a></li>
         <li class="li-middle"><span class="li-middle-line">|</span></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">시민제안<div class="nav-li-active-bar"></div></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+             aria-expanded="false">시민제안
+            <div class="nav-li-active-bar"></div>
+          </a>
           <ul class="dropdown-menu">
             <li><a href="<c:url value="/proposal-list.do"/>">제안</a></li>
             <li><a href="<c:url value="/debate-list.do"/>">토론</a></li>
@@ -38,8 +66,10 @@
           </ul>
         </li>
         <li class="li-middle"><span class="li-middle-line">|</span></li>
-        <li class="demo-nav-li"><a href="<c:url value="/org-debate-list.do"/>">기관제안<div class="nav-li-active-bar"></div></a></li>
+        <li class="demo-nav-li"><a href="<c:url value="/org-debate-list.do"/>">기관제안
+          <div class="nav-li-active-bar"></div>
+        </a></li>
       </ul>
-    </div><!-- /.navbar-collapse -->
+    </div>
   </div><!-- /.container-fluid -->
-</nav><!-- nav end  -->
+</nav>

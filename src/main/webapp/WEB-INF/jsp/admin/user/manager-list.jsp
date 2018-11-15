@@ -93,21 +93,21 @@
             <label title="department1" class="col-sm-2 control-label">소속<span> *</span></label>
             <div class="col-sm-10">
               <input type="text" class="form-control input-sm" name="department1" autocomplete="off"
-                     data-parsley-required="true" data-parsley-maxlength="30" data-parsley-trim-value="true">
+                     data-parsley-required="true" data-parsley-maxlength="30" data-parsley-whitespace="trim">
             </div>
           </div>
           <div class="form-group">
             <label title="department3" class="col-sm-2 control-label">실국<span> *</span></label>
             <div class="col-sm-10">
               <input type="text" class="form-control input-sm" name="department3" autocomplete="off"
-                     data-parsley-required="true" data-parsley-maxlength="30" data-parsley-trim-value="true">
+                     data-parsley-required="true" data-parsley-maxlength="30" data-parsley-whitespace="trim">
             </div>
           </div>
           <div class="form-group">
             <label title="department2" class="col-sm-2 control-label">부서<span> *</span></label>
             <div class="col-sm-10">
               <input type="text" class="form-control input-sm" name="department2" autocomplete="off"
-                     data-parsley-required="true" data-parsley-maxlength="30" data-parsley-trim-value="true">
+                     data-parsley-required="true" data-parsley-maxlength="30" data-parsley-whitespace="trim">
             </div>
           </div>
           <div class="form-group">

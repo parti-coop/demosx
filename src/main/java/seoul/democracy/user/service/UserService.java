@@ -13,7 +13,9 @@ import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.service.CategoryService;
 import seoul.democracy.user.domain.User;
+import seoul.democracy.user.domain.UserLogin;
 import seoul.democracy.user.dto.*;
+import seoul.democracy.user.repository.UserLoginRepository;
 import seoul.democracy.user.repository.UserRepository;
 import seoul.democracy.user.utils.UserUtils;
 
@@ -23,15 +25,18 @@ import static seoul.democracy.user.predicate.UserPredicate.equalEmail;
 @Transactional(readOnly = true)
 public class UserService {
 
-    final private UserRepository userRepository;
-    final private PasswordEncoder passwordEncoder;
-    final private CategoryService categoryService;
+    private final UserRepository userRepository;
+    private final UserLoginRepository loginRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final CategoryService categoryService;
 
     @Autowired
     public UserService(UserRepository userRepository,
+                       UserLoginRepository loginRepository,
                        PasswordEncoder passwordEncoder,
                        CategoryService categoryService) {
         this.userRepository = userRepository;
+        this.loginRepository = loginRepository;
         this.passwordEncoder = passwordEncoder;
         this.categoryService = categoryService;
     }
@@ -72,6 +77,13 @@ public class UserService {
         User user = getMe();
 
         return user.update(updateDto);
+    }
+
+    @Transactional
+    public UserLogin login(String ip) {
+        User user = getMe();
+        UserLogin userLogin = user.login(ip);
+        return loginRepository.save(userLogin);
     }
 
     private boolean existsEmail(String email) {

@@ -85,13 +85,13 @@ public class User implements Serializable {
      * 로그인 일시
      */
     @Convert(converter = LocalDateTimeAttributeConverter.class)
-    @Column(name = "LOGIN_DT", insertable = false, updatable = false)
+    @Column(name = "LOGIN_DT")
     private LocalDateTime loginDate;
 
     /**
      * 로그인 아이피
      */
-    @Column(name = "LOGIN_IP", insertable = false, updatable = false)
+    @Column(name = "LOGIN_IP")
     private String loginIp;
 
     /**
@@ -157,6 +157,13 @@ public class User implements Serializable {
         this.department = null;
         this.role = Role.ROLE_USER;
         return this;
+    }
+
+    public UserLogin login(String ip) {
+        this.loginIp = ip;
+        this.loginDate = LocalDateTime.now();
+
+        return UserLogin.create(this.id, this.loginDate, this.loginIp);
     }
 
     public boolean isAdmin() {

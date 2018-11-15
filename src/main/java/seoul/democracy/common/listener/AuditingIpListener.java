@@ -3,15 +3,12 @@ package seoul.democracy.common.listener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.annotation.CreatedIp;
 import seoul.democracy.common.annotation.ModifiedIp;
+import seoul.democracy.common.util.IpUtils;
 
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,22 +43,11 @@ public class AuditingIpListener {
         return ipField;
     }
 
-    private String getIp() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        if (request == null) return "empty";
-
-        String remoteAddr = request.getHeader("X-FORWARDED_FOR");
-        if (StringUtils.isEmpty(remoteAddr)) {
-            return request.getRemoteAddr();
-        }
-        return "empty";
-    }
-
     @PrePersist
     public void touchForCreate(Object target) {
         IpField ipField = getIpField(target);
         if (ipField.getCreatedIp() != null || ipField.getModifiedIp() != null) {
-            String ip = getIp();
+            String ip = IpUtils.getIp();
             ipField.updateCreatedIp(ip, target);
             ipField.updateModifiedIp(ip, target);
         }
@@ -71,7 +57,7 @@ public class AuditingIpListener {
     public void touchForUpdate(Object target) {
         IpField ipField = getIpField(target);
         if (ipField.getModifiedIp() != null) {
-            String ip = getIp();
+            String ip = IpUtils.getIp();
             ipField.updateModifiedIp(ip, target);
         }
     }

@@ -44,7 +44,7 @@
     <beans:bean id="csrfSecurityRequestMatcher" class="seoul.democracy.common.config.CsrfSecurityRequestMatcher"/>
 
     <beans:bean id="authenticationSuccessHandler"
-                class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+                class="seoul.democracy.common.handler.SiteAuthenticationSuccessHandler">
         <beans:property name="defaultTargetUrl" value="/index.do"/>
     </beans:bean>
 

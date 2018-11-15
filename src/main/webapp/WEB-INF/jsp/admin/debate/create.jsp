@@ -148,7 +148,7 @@
                   <label class="col-sm-2 control-label">제목<span> *</span></label>
                   <div class="col-sm-10">
                     <form:input path="title" type="text" class="form-control input-sm" autocomplete="off"
-                                data-parsley-required="true" data-parsley-trim-value="true"
+                                data-parsley-required="true" data-parsley-whitespace="trim"
                                 data-parsley-maxlength="100"/>
                   </div>
                 </div>
@@ -156,7 +156,7 @@
                   <label class="col-sm-2 control-label">한줄설명<span> *</span></label>
                   <div class="col-sm-10">
                     <form:input path="excerpt" type="text" class="form-control input-sm" autocomplete="off"
-                                data-parsley-required="true" data-parsley-trim-value="true"
+                                data-parsley-required="true" data-parsley-whitespace="trim"
                                 data-parsley-maxlength="100"/>
                   </div>
                 </div>

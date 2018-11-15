@@ -70,7 +70,7 @@
             <label title="name" class="col-sm-2 control-label">카테고리명<span> *</span></label>
             <div class="col-sm-10">
               <input type="text" class="form-control" name="name" autocomplete="off"
-                     data-parsley-required="true" data-parsley-maxlength="30" data-parsley-trim-value="true">
+                     data-parsley-required="true" data-parsley-maxlength="30" data-parsley-whitespace="trim">
             </div>
           </div>
           <div class="form-group">
