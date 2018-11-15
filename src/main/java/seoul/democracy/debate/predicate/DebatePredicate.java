@@ -18,6 +18,10 @@ public class DebatePredicate {
         return ExpressionUtils.and(debate.id.eq(id), debate.group.eq(group));
     }
 
+    public static Predicate equalIdAndGroupAndStatus(Long id, IssueGroup group, Issue.Status status) {
+        return ExpressionUtils.allOf(debate.id.eq(id), debate.group.eq(group), debate.status.eq(status));
+    }
+
     public static Predicate getPredicateForAdminList(IssueGroup group, String search, String category) {
         Predicate predicate = null;
 
@@ -37,4 +41,5 @@ public class DebatePredicate {
 
         return ExpressionUtils.and(predicate, debate.title.contains(search));
     }
+
 }

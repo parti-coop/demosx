@@ -32,13 +32,13 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">시민제안<div class="nav-li-active-bar"></div></a>
           <ul class="dropdown-menu">
-            <li><a href="#">제안</a></li>
-            <li><a href="#">토론</a></li>
-            <li><a href="#">실행</a></li>
+            <li><a href="<c:url value="/proposal-list.do"/>">제안</a></li>
+            <li><a href="<c:url value="/debate-list.do"/>">토론</a></li>
+            <li><a href="<c:url value="/action-list.do"/>">실행</a></li>
           </ul>
         </li>
         <li class="li-middle"><span class="li-middle-line">|</span></li>
-        <li class="demo-nav-li"><a href="#">오픈소스가 묻습니다<div class="nav-li-active-bar"></div></a></li>
+        <li class="demo-nav-li"><a href="<c:url value="/org-debate-list.do"/>">기관제안<div class="nav-li-active-bar"></div></a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->

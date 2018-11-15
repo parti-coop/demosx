@@ -38,12 +38,6 @@ public class Debate extends Issue {
     private String thumbnail;
 
     /**
-     * 이슈 요약
-     */
-    @Column(name = "ISSUE_EXCERPT")
-    private String excerpt;
-
-    /**
      * 토론 시작일
      */
     @Convert(converter = LocalDateAttributeConverter.class)

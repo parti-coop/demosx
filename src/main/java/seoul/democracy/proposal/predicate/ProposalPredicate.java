@@ -14,6 +14,10 @@ public class ProposalPredicate {
         return proposal.id.eq(id);
     }
 
+    public static Predicate equalStatus(Issue.Status status) {
+        return proposal.status.eq(status);
+    }
+
     public static Predicate equalIdAndStatus(Long id, Issue.Status status) {
         return ExpressionUtils.and(proposal.id.eq(id), proposal.status.eq(status));
     }
@@ -50,4 +54,17 @@ public class ProposalPredicate {
 
         return ExpressionUtils.and(predicate, getPredicateForAdminList(search, category, process));
     }
+
+    public static Predicate predicateForSiteList(String search, String category) {
+        Predicate predicate = proposal.status.eq(Issue.Status.OPEN);
+
+        if (StringUtils.hasText(search))
+            predicate = ExpressionUtils.and(predicate, proposal.title.contains(search));
+
+        if (StringUtils.hasText(category))
+            predicate = ExpressionUtils.and(predicate, proposal.category.name.eq(category));
+
+        return predicate;
+    }
+
 }

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html lang="ko">
+<!DOCTYPE html>
+<html>
 <head>
   <title>Login page</title>
   <%@ include file="./shared/head.jsp" %>

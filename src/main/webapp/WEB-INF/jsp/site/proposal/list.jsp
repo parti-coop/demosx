@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>민주주의 서울</title>
-  <%@ include file="./shared/head.jsp" %>
+  <title>제안 - 민주주의 서울</title>
+  <%@ include file="../shared/head.jsp" %>
 </head>
 <body class="home">
-<%@ include file="./shared/header.jsp" %>
+<%@ include file="../shared/header.jsp" %>
 
 <div class="container">
   <div class="main-top-search clearfix">
@@ -145,14 +145,12 @@
     </div><!-- card .row END -->
   </div><!-- .main-card-wrapper END -->
 
-
-  <div class="show-more-container text-center">
-    <a class="white-btn d-btn btn-more" href="<c:url value="/proposal-list.do"/>">더보기<i
-        class="xi-angle-down-min"></i></a>
-  </div>
-
+  <jsp:include page="../shared/pagination.jsp">
+    <jsp:param name="totalPages" value="${page.totalPages}"/>
+    <jsp:param name="current" value="${page.number + 1}"/>
+  </jsp:include>
 </div>
 
-<%@ include file="./shared/footer.jsp" %>
+<%@ include file="../shared/footer.jsp" %>
 </body>
 </html>

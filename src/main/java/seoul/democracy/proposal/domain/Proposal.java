@@ -3,6 +3,8 @@ package seoul.democracy.proposal.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
+import org.springframework.web.util.HtmlUtils;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
@@ -75,7 +77,14 @@ public class Proposal extends Issue {
         this.process = Process.INIT;
         this.title = title;
         this.content = content;
+        updateExcerpt(this.content);
+    }
 
+    private void updateExcerpt(String content) {
+        if (StringUtils.hasText(content)) {
+            String unescapeString = HtmlUtils.htmlUnescape(content).replaceAll("<.*?>", "").trim();
+            this.excerpt = (unescapeString.length() > 100) ? unescapeString.substring(0, 100) : unescapeString;
+        }
     }
 
     public static Proposal create(ProposalCreateDto createDto) {
@@ -87,6 +96,8 @@ public class Proposal extends Issue {
 
         this.title = updateDto.getTitle();
         this.content = updateDto.getContent();
+        updateExcerpt(this.content);
+
         return this;
     }
 

@@ -128,6 +128,12 @@ public abstract class Issue {
     protected String title;
 
     /**
+     * 이슈 요약
+     */
+    @Column(name = "ISSUE_EXCERPT")
+    protected String excerpt;
+
+    /**
      * 이슈 내용
      */
     @Lob
