@@ -75,7 +75,7 @@ public class S_8_6_사용자는_토론의견에_공감_및_해제할_수_있다 
         assertThat(count, is(1L));
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinionId), projection);
-        assertThat(opinionDto.getLikeCount(), is(1L));
+        assertThat(opinionDto.getLikeCount(), is(11L));
     }
 
     /**

@@ -38,6 +38,9 @@ public class OpinionRepositoryImpl extends QueryDslRepositorySupport implements 
             query.innerJoin(opinion.createdBy, createdBy);
             query.innerJoin(opinion.modifiedBy, modifiedBy);
             query.innerJoin(opinion.issue, issue);
+        } else if (projection == OpinionDto.projectionForIssueDetail) {
+            query.innerJoin(opinion.createdBy, createdBy);
+            query.innerJoin(opinion.issue, issue);
         } else if (projection == ProposalOpinionDto.projection) {
             query.innerJoin(proposalOpinion.createdBy, createdBy);
             query.innerJoin(proposalOpinion.modifiedBy, modifiedBy);
