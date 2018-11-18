@@ -65,6 +65,14 @@ public class DebateDto {
     public final static QBean<DebateDto> projectionForAdminSelect = Projections.fields(DebateDto.class,
         debate.id, debate.title);
 
+    /**
+     * 토론 리스트에서 사용
+     */
+    public final static QBean<DebateDto> projectionForSiteList = Projections.fields(DebateDto.class,
+        debate.id, debate.opinionType,
+        CategoryDto.projectionForFilter.as("category"),
+        IssueStatsDto.projection.as("stats"),
+        debate.process, debate.thumbnail, debate.title, debate.excerpt, debate.startDate, debate.endDate);
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")

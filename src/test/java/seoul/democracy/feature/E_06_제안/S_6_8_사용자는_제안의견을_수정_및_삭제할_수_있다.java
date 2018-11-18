@@ -206,7 +206,7 @@ public class S_6_8_사용자는_제안의견을_수정_및_삭제할_수_있다 
         assertThat(opinionDto.getStatus(), is(Opinion.Status.DELETE));
 
         ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
-        assertThat(proposalDto.getStats().getOpinionCount(), is(2L));
+        assertThat(proposalDto.getStats().getOpinionCount(), is(8L));
         assertThat(proposalDto.getStats().getApplicantCount(), is(1L));
     }
 }

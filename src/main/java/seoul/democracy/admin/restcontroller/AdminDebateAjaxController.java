@@ -14,8 +14,8 @@ import seoul.democracy.issue.domain.IssueGroup;
 
 import static seoul.democracy.debate.dto.DebateDto.projectionForAdminList;
 import static seoul.democracy.debate.dto.DebateDto.projectionForAdminSelect;
-import static seoul.democracy.debate.predicate.DebatePredicate.getPredicateForAdminList;
-import static seoul.democracy.debate.predicate.DebatePredicate.getPredicateForRelationSelect;
+import static seoul.democracy.debate.predicate.DebatePredicate.predicateForAdminList;
+import static seoul.democracy.debate.predicate.DebatePredicate.predicateForRelationSelect;
 
 @RestController
 @RequestMapping("/admin/ajax/issue/debates")
@@ -33,8 +33,7 @@ public class AdminDebateAjaxController {
                                       @RequestParam(value = "search") String search,
                                       @RequestParam(value = "category", required = false) String category,
                                       @PageableDefault Pageable pageable) {
-        return debateService.getDebates(getPredicateForAdminList(group, search, category), pageable,
-            projectionForAdminList, false, false);
+        return debateService.getDebates(predicateForAdminList(group, search, category), pageable, projectionForAdminList);
     }
 
     /**
@@ -43,7 +42,6 @@ public class AdminDebateAjaxController {
     @RequestMapping(value = "/select", method = RequestMethod.GET)
     public Page<DebateDto> getProposalsForSelect(@RequestParam(value = "search", required = false) String search,
                                                  @PageableDefault Pageable pageable) {
-        return debateService.getDebates(getPredicateForRelationSelect(search), pageable,
-            projectionForAdminSelect, false, false);
+        return debateService.getDebates(predicateForRelationSelect(search), pageable, projectionForAdminSelect);
     }
 }

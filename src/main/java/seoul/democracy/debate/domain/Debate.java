@@ -122,9 +122,9 @@ public class Debate extends Issue {
     @Getter
     @RequiredArgsConstructor
     public enum Process {
-        INIT("진행 예정"),
-        PROGRESS("진행 중"),       // 진행 중
-        COMPLETE("진행 완료");       // 토론 종료
+        INIT("진행예정"),
+        PROGRESS("진행중"),       // 진행 중
+        COMPLETE("진행완료");       // 토론 종료
 
         private final String msg;
 

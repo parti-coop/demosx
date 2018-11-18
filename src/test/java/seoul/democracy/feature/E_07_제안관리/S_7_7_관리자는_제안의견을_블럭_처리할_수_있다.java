@@ -141,7 +141,7 @@ public class S_7_7_관리자는_제안의견을_블럭_처리할_수_있다 {
         assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
 
         ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
-        assertThat(proposalDto.getStats().getOpinionCount(), is(2L));
+        assertThat(proposalDto.getStats().getOpinionCount(), is(8L));
         assertThat(proposalDto.getStats().getApplicantCount(), is(1L));
     }
 }

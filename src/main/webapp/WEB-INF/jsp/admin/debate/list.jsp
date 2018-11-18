@@ -149,9 +149,9 @@
           { data: 'stats.opinionCount', orderable: false },
           {
             data: function (item) {
-              if (item.process === 'PROGRESS') return '진행 중';
-              if (item.process === 'COMPLETE') return '진행 완료';
-              return '진행 예정';
+              if (item.process === 'PROGRESS') return '진행중';
+              if (item.process === 'COMPLETE') return '진행완료';
+              return '진행예정';
             }, orderable: false
           },
           {

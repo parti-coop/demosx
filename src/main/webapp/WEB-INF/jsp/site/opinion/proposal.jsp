@@ -80,7 +80,6 @@
         data: {
           issueId: ${param.id},
           page: page,
-          size: 10,
           'sort[]': sort
         },
         success: function (data) {
@@ -90,7 +89,6 @@
             var content = makeOpinionString(data.content[i]);
             $opinionList.append(content);
           }
-          $('.comment-li').removeClass('hidden');
           $opinionList.css('height', 'auto');
           if(data.last) $opinionMore.addClass('hidden');
           else $opinionMore.removeClass('hidden');
@@ -103,7 +101,7 @@
 
     function makeOpinionString(opinion) {
       var photo = opinion.createdBy.photo || '/images/noavatar.png';
-      return '<li class="comment-li hidden">' +
+      return '<li class="comment-li">' +
         '<div class="profile-circle profile-circle--comment" style="background-image: url(' + photo + ')">' +
         '<p class="alt-text">' + opinion.createdBy.name + '사진</p></div>' +
         '<div class="comment-content">' +

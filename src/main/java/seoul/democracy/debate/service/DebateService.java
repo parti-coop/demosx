@@ -45,8 +45,8 @@ public class DebateService {
         return debateRepository.findOne(predicate, projection, withFiles, withRelations);
     }
 
-    public Page<DebateDto> getDebates(Predicate predicate, Pageable pageable, Expression<DebateDto> projection, boolean withFiles, boolean withRelations) {
-        return debateRepository.findAll(predicate, pageable, projection, withFiles, withRelations);
+    public Page<DebateDto> getDebates(Predicate predicate, Pageable pageable, Expression<DebateDto> projection) {
+        return debateRepository.findAll(predicate, pageable, projection);
     }
 
     /**

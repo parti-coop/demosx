@@ -36,8 +36,8 @@ public class AdminProposalAjaxController {
                                           @PageableDefault Pageable pageable) {
         User user = UserUtils.getLoginUser();
         Predicate predicate = user.isAdmin() ?
-                                  getPredicateForAdminList(search, category, process) :
-                                  getPredicateForManagerList(user.getId(), search, category, process);
+                                  predicateForAdminList(search, category, process) :
+                                  predicateForManagerList(user.getId(), search, category, process);
 
         return proposalService.getProposals(predicate, pageable, projectionForAdminList);
     }
@@ -48,7 +48,7 @@ public class AdminProposalAjaxController {
     @RequestMapping(value = "/select", method = RequestMethod.GET)
     public Page<ProposalDto> getProposalsForSelect(@RequestParam(value = "search", required = false) String search,
                                                    @PageableDefault Pageable pageable) {
-        return proposalService.getProposals(getPredicateForRelationSelect(search), pageable, projectionForAdminSelect);
+        return proposalService.getProposals(predicateForRelationSelect(search), pageable, projectionForAdminSelect);
     }
 
     @RequestMapping(value = "/{proposalId}/category", method = RequestMethod.PATCH)

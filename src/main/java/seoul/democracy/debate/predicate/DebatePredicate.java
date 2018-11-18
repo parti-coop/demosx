@@ -3,6 +3,7 @@ package seoul.democracy.debate.predicate;
 import com.mysema.query.types.ExpressionUtils;
 import com.mysema.query.types.Predicate;
 import org.springframework.util.StringUtils;
+import seoul.democracy.debate.domain.Debate;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.domain.IssueGroup;
 
@@ -22,7 +23,7 @@ public class DebatePredicate {
         return ExpressionUtils.allOf(debate.id.eq(id), debate.group.eq(group), debate.status.eq(status));
     }
 
-    public static Predicate getPredicateForAdminList(IssueGroup group, String search, String category) {
+    public static Predicate predicateForAdminList(IssueGroup group, String search, String category) {
         Predicate predicate = null;
 
         if (StringUtils.hasText(search))
@@ -34,7 +35,7 @@ public class DebatePredicate {
         return ExpressionUtils.and(predicate, debate.group.eq(group));
     }
 
-    public static Predicate getPredicateForRelationSelect(String search) {
+    public static Predicate predicateForRelationSelect(String search) {
         Predicate predicate = ExpressionUtils.and(debate.group.eq(IssueGroup.USER), debate.status.eq(Issue.Status.OPEN));
 
         if (StringUtils.isEmpty(search)) return predicate;
@@ -42,4 +43,17 @@ public class DebatePredicate {
         return ExpressionUtils.and(predicate, debate.title.contains(search));
     }
 
+    public static Predicate predicateForSiteList(Debate.Process process, String category, String search) {
+        Predicate predicate = ExpressionUtils.and(debate.group.eq(IssueGroup.USER), debate.status.eq(Issue.Status.OPEN));
+
+        if (process != null)
+            predicate = ExpressionUtils.and(predicate, debate.process.eq(process));
+
+        if (!StringUtils.isEmpty(category))
+            predicate = ExpressionUtils.and(predicate, debate.category.name.eq(category));
+
+        if (StringUtils.isEmpty(search)) return predicate;
+
+        return ExpressionUtils.and(predicate, debate.title.contains(search));
+    }
 }

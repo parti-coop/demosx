@@ -1,6 +1,7 @@
 package seoul.democracy.site.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -17,7 +18,9 @@ import seoul.democracy.issue.service.CategoryService;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
+import static seoul.democracy.debate.dto.DebateDto.projectionForSiteList;
 import static seoul.democracy.debate.predicate.DebatePredicate.equalIdAndGroupAndStatus;
+import static seoul.democracy.debate.predicate.DebatePredicate.predicateForSiteList;
 import static seoul.democracy.issue.domain.Issue.Status.OPEN;
 import static seoul.democracy.issue.domain.IssueGroup.USER;
 import static seoul.democracy.issue.dto.CategoryDto.projectionForFilter;
@@ -43,8 +46,14 @@ public class DebateController {
                              @PageableDefault(sort = "createdDate", direction = DESC) Pageable pageable,
                              Model model) {
 
+        Page<DebateDto> page = debateService.getDebates(predicateForSiteList(process, category, search), pageable, projectionForSiteList);
+        model.addAttribute("page", page);
+
         List<CategoryDto> categories = categoryService.getCategories(enabled(), projectionForFilter);
         model.addAttribute("categories", categories);
+        model.addAttribute("process", process);
+        model.addAttribute("category", category);
+        model.addAttribute("search", search);
 
         return "/site/debate/list";
     }

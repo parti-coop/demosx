@@ -26,7 +26,7 @@ public class ProposalPredicate {
         return ExpressionUtils.and(proposal.id.eq(id), proposal.managerId.eq(managerId));
     }
 
-    public static Predicate getPredicateForRelationSelect(String search) {
+    public static Predicate predicateForRelationSelect(String search) {
         Predicate predicate = proposal.status.eq(Issue.Status.OPEN);
 
         if (StringUtils.isEmpty(search)) return predicate;
@@ -34,7 +34,7 @@ public class ProposalPredicate {
         return ExpressionUtils.and(predicate, proposal.title.contains(search));
     }
 
-    public static Predicate getPredicateForAdminList(String search, String category, Proposal.Process process) {
+    public static Predicate predicateForAdminList(String search, String category, Proposal.Process process) {
         Predicate predicate = null;
 
         if (StringUtils.hasText(search))
@@ -49,10 +49,10 @@ public class ProposalPredicate {
         return predicate;
     }
 
-    public static Predicate getPredicateForManagerList(Long managerId, String search, String category, Proposal.Process process) {
+    public static Predicate predicateForManagerList(Long managerId, String search, String category, Proposal.Process process) {
         Predicate predicate = proposal.managerId.eq(managerId);
 
-        return ExpressionUtils.and(predicate, getPredicateForAdminList(search, category, process));
+        return ExpressionUtils.and(predicate, predicateForAdminList(search, category, process));
     }
 
     public static Predicate predicateForSiteList(String search, String category) {
