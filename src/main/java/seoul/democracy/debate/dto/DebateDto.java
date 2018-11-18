@@ -72,7 +72,16 @@ public class DebateDto {
         debate.id, debate.opinionType,
         CategoryDto.projectionForFilter.as("category"),
         IssueStatsDto.projection.as("stats"),
-        debate.process, debate.thumbnail, debate.title, debate.excerpt, debate.startDate, debate.endDate);
+        debate.group, debate.process, debate.thumbnail, debate.title, debate.excerpt, debate.startDate, debate.endDate);
+
+    /**
+     * 토론 상세에서 사용
+     */
+    public final static QBean<DebateDto> projectionForSiteDetail = Projections.fields(DebateDto.class,
+        debate.id, debate.opinionType,
+        CategoryDto.projection.as("category"),
+        IssueStatsDto.projection.as("stats"),
+        debate.group, debate.process, debate.thumbnail, debate.title, debate.content, debate.startDate, debate.endDate);
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")

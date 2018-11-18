@@ -1,5 +1,6 @@
 package seoul.democracy.site.controller;
 
+import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import seoul.democracy.issue.service.CategoryService;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
+import static seoul.democracy.debate.dto.DebateDto.projectionForSiteDetail;
 import static seoul.democracy.debate.dto.DebateDto.projectionForSiteList;
 import static seoul.democracy.debate.predicate.DebatePredicate.equalIdAndGroupAndStatus;
 import static seoul.democracy.debate.predicate.DebatePredicate.predicateForSiteList;
@@ -46,7 +48,8 @@ public class DebateController {
                              @PageableDefault(sort = "createdDate", direction = DESC) Pageable pageable,
                              Model model) {
 
-        Page<DebateDto> page = debateService.getDebates(predicateForSiteList(process, category, search), pageable, projectionForSiteList);
+        Predicate predicate = predicateForSiteList(USER, process, category, search);
+        Page<DebateDto> page = debateService.getDebates(predicate, pageable, projectionForSiteList);
         model.addAttribute("page", page);
 
         List<CategoryDto> categories = categoryService.getCategories(enabled(), projectionForFilter);
@@ -61,8 +64,9 @@ public class DebateController {
     @RequestMapping(value = "/debate.do", method = RequestMethod.GET)
     public String proposal(@RequestParam("id") Long id,
                            Model model) {
-        DebateDto debateDto = debateService.getDebate(equalIdAndGroupAndStatus(id, USER, OPEN),
-            DebateDto.projectionForAdminDetail, true, true);
+
+        Predicate predicate = equalIdAndGroupAndStatus(id, USER, OPEN);
+        DebateDto debateDto = debateService.getDebate(predicate, projectionForSiteDetail, true, true);
 
         model.addAttribute("debate", debateDto);
 

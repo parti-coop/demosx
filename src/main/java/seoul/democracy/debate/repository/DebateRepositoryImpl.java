@@ -40,7 +40,7 @@ public class DebateRepositoryImpl extends QueryDslRepositorySupport implements D
             query.innerJoin(debate.createdBy, createdBy);
             query.innerJoin(debate.category, category);
             query.innerJoin(debate.stats, issueStats);
-        } else if (projection == DebateDto.projectionForSiteList) {
+        } else if (projection == DebateDto.projectionForSiteList || projection == DebateDto.projectionForSiteDetail) {
             query.innerJoin(debate.category, category);
             query.innerJoin(debate.stats, issueStats);
         }

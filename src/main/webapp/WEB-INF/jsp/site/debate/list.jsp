@@ -53,7 +53,7 @@
   <div class="l-img-card-wrapper">
     <c:forEach var="item" items="${page.content}">
       <div class="l-img-card">
-        <a href="#" class="l-img-card__link">
+        <a href="<c:url value="/debate.do?id=${item.id}"/>" class="l-img-card__link">
           <div class="l-img-card__img bg-img" style="background-image: url(${item.thumbnail})">
             <p class="sr-only">${item.title} 썸네일</p>
           </div>
@@ -79,6 +79,11 @@
       </div>
     </c:forEach>
   </div>
+
+  <jsp:include page="../shared/pagination.jsp">
+    <jsp:param name="totalPages" value="${posts.totalPages}"/>
+    <jsp:param name="current" value="${posts.number + 1}"/>
+  </jsp:include>
 
   <nav class="demo-pagination" aria-label="page navigation">
     <ul class="pagination pagination--demo">

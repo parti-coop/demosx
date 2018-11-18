@@ -43,8 +43,8 @@ public class DebatePredicate {
         return ExpressionUtils.and(predicate, debate.title.contains(search));
     }
 
-    public static Predicate predicateForSiteList(Debate.Process process, String category, String search) {
-        Predicate predicate = ExpressionUtils.and(debate.group.eq(IssueGroup.USER), debate.status.eq(Issue.Status.OPEN));
+    public static Predicate predicateForSiteList(IssueGroup group, Debate.Process process, String category, String search) {
+        Predicate predicate = ExpressionUtils.and(debate.group.eq(group), debate.status.eq(Issue.Status.OPEN));
 
         if (process != null)
             predicate = ExpressionUtils.and(predicate, debate.process.eq(process));
