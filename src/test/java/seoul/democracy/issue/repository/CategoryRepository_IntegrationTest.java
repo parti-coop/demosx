@@ -19,6 +19,7 @@ import static seoul.democracy.issue.predicate.CategoryPredicate.equalId;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
     "file:src/test/resources/egovframework/spring-test/context-*.xml",
+    "file:src/main/webapp/WEB-INF/config/egovframework/springmvc/egov-com-*.xml"
 })
 @Transactional
 @Rollback
