@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.proposal.domain.Proposal;
 
+import static seoul.democracy.issue.domain.Issue.Status.OPEN;
 import static seoul.democracy.proposal.domain.QProposal.proposal;
 
 public class ProposalPredicate {
@@ -27,7 +28,7 @@ public class ProposalPredicate {
     }
 
     public static Predicate predicateForRelationSelect(String search) {
-        Predicate predicate = proposal.status.eq(Issue.Status.OPEN);
+        Predicate predicate = proposal.status.eq(OPEN);
 
         if (StringUtils.isEmpty(search)) return predicate;
 
@@ -56,7 +57,7 @@ public class ProposalPredicate {
     }
 
     public static Predicate predicateForSiteList(String search, String category) {
-        Predicate predicate = proposal.status.eq(Issue.Status.OPEN);
+        Predicate predicate = proposal.status.eq(OPEN);
 
         if (StringUtils.hasText(search))
             predicate = ExpressionUtils.and(predicate, proposal.title.contains(search));
@@ -67,4 +68,12 @@ public class ProposalPredicate {
         return predicate;
     }
 
+    public static Predicate predicateForMypageProposal(Long userId, String search) {
+        Predicate predicate = ExpressionUtils.and(proposal.createdById.eq(userId), proposal.status.eq(OPEN));
+
+        if (StringUtils.hasText(search))
+            predicate = ExpressionUtils.and(predicate, proposal.title.contains(search));
+
+        return predicate;
+    }
 }

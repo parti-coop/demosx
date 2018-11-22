@@ -38,6 +38,13 @@ public abstract class Opinion {
     private Long id;
 
     /**
+     * 의견 종류
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "OPINION_DTYPE", columnDefinition = "char(1)", insertable = false, updatable = false)
+    private Type type;
+
+    /**
      * 등록 일시
      */
     @Convert(converter = LocalDateTimeAttributeConverter.class)
@@ -177,6 +184,19 @@ public abstract class Opinion {
 
         public boolean isBlock() {
             return this == BLOCK;
+        }
+    }
+
+    public enum Type {
+        P,
+        D;
+
+        public boolean isProposal() {
+            return this == P;
+        }
+
+        public boolean isDebate() {
+            return this == D;
         }
     }
 

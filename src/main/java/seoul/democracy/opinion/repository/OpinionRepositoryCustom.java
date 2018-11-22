@@ -10,7 +10,7 @@ public interface OpinionRepositoryCustom {
 
     Page<OpinionDto> findAll(Predicate predicate, Pageable pageable, Expression<OpinionDto> projection);
 
-    <T extends OpinionDto> T findOne(Predicate predicate, Expression<T> projection);
+    OpinionDto findOne(Predicate predicate, Expression<OpinionDto> projection);
 
 
     /**

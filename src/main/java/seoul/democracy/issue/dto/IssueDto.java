@@ -3,7 +3,9 @@ package seoul.democracy.issue.dto;
 import com.mysema.query.types.Projections;
 import com.mysema.query.types.QBean;
 import lombok.Data;
+import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.domain.IssueFile;
+import seoul.democracy.issue.domain.IssueGroup;
 import seoul.democracy.issue.domain.IssueType;
 import seoul.democracy.opinion.domain.OpinionType;
 import seoul.democracy.user.dto.UserDto;
@@ -19,6 +21,9 @@ public class IssueDto {
     public final static QBean<IssueDto> projectionForRelation = Projections.fields(IssueDto.class,
         issue.id, issue.type, issue.title);
 
+    public final static QBean<IssueDto> projectionForOpinion = Projections.fields(IssueDto.class,
+        issue.id, issue.type, issue.title, issue.group, issue.status);
+
     private Long id;
     private IssueType type;
     private LocalDateTime createdDate;
@@ -28,6 +33,9 @@ public class IssueDto {
     private String createdIp;
     private String modifiedIp;
     private OpinionType opinionType;
+
+    private IssueGroup group;
+    private Issue.Status status;
 
     private CategoryDto category;
 

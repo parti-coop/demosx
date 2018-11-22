@@ -99,6 +99,14 @@ public class ProposalDto {
         proposal.managerCommentDate, proposal.managerComment,
         proposal.title, proposal.content);
 
+    /**
+     * 마이페이지에서 사용
+     */
+    public final static QBean<ProposalDto> projectionForMypageProposal = Projections.fields(ProposalDto.class,
+        proposal.id, proposal.createdDate,
+        IssueStatsDto.projection.as("stats"),
+        proposal.status, proposal.process, proposal.title);
+
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -19,7 +19,7 @@
 
         <intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
 
-        <intercept-url pattern="/user/**" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/mypage/**" access="hasRole('ROLE_USER')"/>
         <intercept-url pattern="/ajax/user/**" access="hasRole('ROLE_USER')"/>
 
         <form-login login-page="/login.do"

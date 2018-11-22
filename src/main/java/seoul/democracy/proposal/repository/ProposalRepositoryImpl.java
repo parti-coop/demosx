@@ -42,6 +42,8 @@ public class ProposalRepositoryImpl extends QueryDslRepositorySupport implements
             query.leftJoin(proposal.manager, user);
         } else if (projection == ProposalDto.projectionForAssignManager) {
             query.leftJoin(proposal.manager, user);
+        } else if (projection == ProposalDto.projectionForMypageProposal) {
+            query.innerJoin(proposal.stats, issueStats);
         }
         return query;
     }

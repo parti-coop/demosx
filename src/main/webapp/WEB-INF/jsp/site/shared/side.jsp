@@ -18,10 +18,11 @@
         <p class="alt-text">${loginUser.name}프로필</p>
       </div>
       <h5 class="profile-name">${loginUser.name}</h5>
-
       <div class="domo-box-buttons">
-        <a href="" class="btn demo-btn demo-btn--primary btn-side">나의 제안 목록 <i class="xi-angle-right"></i></a>
-        <a href="" class="btn demo-btn demo-btn--primary btn-side">나의 투표 목록 <i class="xi-angle-right"></i></a>
+        <a href="<c:url value="/mypage/proposal.do"/>" class="btn demo-btn demo-btn--primary btn-side">나의 제안 목록 <i
+            class="xi-angle-right"></i></a>
+        <a href="<c:url value="/mypage/vote.do"/>" class="btn demo-btn demo-btn--primary btn-side">나의 투표 목록 <i
+            class="xi-angle-right"></i></a>
       </div>
     </div>
   </div>

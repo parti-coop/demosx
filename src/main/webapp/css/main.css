@@ -649,6 +649,10 @@ a:hover {
         display: block;
         border-bottom: 1px solid #b6c1cc;
     }
+    .demo-row--vote{
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
     .demo-row--vote .demo-td{
         display: block;
     }
@@ -765,6 +769,7 @@ a:hover {
 }
 @media (max-width: 767px){
     .td-post-info-p{
+        font-size: 14px;
         margin-right: 5px;
     }
     .td-post-info-p--date{
@@ -833,6 +838,9 @@ a:hover {
     margin-bottom: 12px;
     display: block;
 }
+.block-list-li__ask-link:hover{
+    text-decoration: underline;
+}
 
 .my-sugest-ul{
     list-style: none;
@@ -850,16 +858,25 @@ a:hover {
 
 .my-sugest-li .my-sugest-li__title{
     color: #191919;
-    font-size: 20px;
+    font-size: 16px;
     text-align: left;
     margin-bottom: 10px;
+}
+.my-sugest-li__title__status--agree{
+    color: #1e60b1;
+}
+.my-sugest-li__title__status--reject{
+    color: #cf2239;
+}
+.my-sugest-li__title__status--ect{
+    color: #b6c1cc;
 }
 .my-sugest-li__title__status{
     color: #0ccbd2;
 }
 @media (max-width: 767px){
     .my-sugest-li .my-sugest-li__title{
-        font-size: 18px;
+        font-size: 14px;
     }
 }
 /* table END */

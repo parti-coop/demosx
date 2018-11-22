@@ -23,7 +23,7 @@ public class OpinionDto {
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
         UserDto.projectionForBasicByModifiedBy.as("modifiedBy"),
         opinion.createdIp, opinion.modifiedIp,
-        IssueDto.projectionForRelation.as("issue"),
+        IssueDto.projectionForOpinion.as("issue"),
         opinion.likeCount, opinion.content, opinion.status, opinion.vote);
 
     /**
@@ -32,6 +32,14 @@ public class OpinionDto {
     public final static QBean<OpinionDto> projectionForIssueDetail = Projections.fields(OpinionDto.class,
         opinion.id, opinion.createdDate,
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        opinion.likeCount, opinion.content, opinion.vote);
+
+    /**
+     * 사이트 내 의견 활동
+     */
+    public final static QBean<OpinionDto> projectionForMypage = Projections.fields(OpinionDto.class,
+        opinion.id, opinion.createdDate,
+        IssueDto.projectionForOpinion.as("issue"),
         opinion.likeCount, opinion.content, opinion.vote);
 
     protected Long id;
