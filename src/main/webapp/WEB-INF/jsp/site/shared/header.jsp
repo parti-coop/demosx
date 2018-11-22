@@ -17,12 +17,12 @@
         </c:if>
         <li class="nav-login-li"><a href="" class="nav-login-li__link">마이페이지</a></li>
         <li class="nav-login-li"><span class="li-middle-line">|</span></li>
-        <li class="nav-login-li"><a href="#" class="nav-login-li__link" id="logout-link">로그아웃</a></li>
+        <li class="nav-login-li"><a href="#" class="nav-login-li__link logout-link">로그아웃</a></li>
         <form:form action="/logout.do" method="post" class="hidden" id="form-logout">
         </form:form>
         <script>
           $(function () {
-            $('#logout-link').click(function (event) {
+            $('.logout-link').click(function (event) {
               $('#form-logout').submit();
 
               event.preventDefault();
@@ -35,22 +35,20 @@
 </div>
 <nav class="navbar navbar-default navbar-default--demo">
   <div class="container">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-              data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+    <div class="navbar-header navbar-header--demo">
+      <button type="button" class="navbar-toggle navbar-toggle--demo collapsed" data-toggle="collapse"
+              data-target="#demo-navbar-collapse" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+        <i class="xi-bars xi-2x demo-toggle demo-toggle--open"></i>
+        <i class="xi-close xi-2x demo-toggle demo-toggle--close"></i>
       </button>
       <a class="navbar-brand navbar-brand--demo" href="<c:url value="/index.do"/>">민주주의 서울 오픈소스</a>
     </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <div class="demo-collapse collapse navbar-collapse" id="demo-navbar-collapse">
+      <a class="navbar-brand navbar-brand--demo navbar-brand--demo--collapse" href="#">민주주의 서울 오픈소스</a>
       <ul class="nav navbar-nav navbar-right demo-nav">
-        <li class="demo-nav-li"><a href="<c:url value="/intro.do"/>">오픈소스
+        <li class="demo-nav-li active"><a href="#">오픈소스
           <div class="nav-li-active-bar"></div>
         </a></li>
         <li class="li-middle"><span class="li-middle-line">|</span></li>
@@ -60,9 +58,9 @@
             <div class="nav-li-active-bar"></div>
           </a>
           <ul class="dropdown-menu">
-            <li><a href="<c:url value="/proposal-list.do"/>">제안</a></li>
-            <li><a href="<c:url value="/debate-list.do"/>">토론</a></li>
-            <li><a href="<c:url value="/action-list.do"/>">실행</a></li>
+            <li><a href="<c:url value="/proposal-list.do"/>"><i class="xi-angle-right-min"></i> 제안</a></li>
+            <li><a href="<c:url value="/debate-list.do"/>"><i class="xi-angle-right-min"></i> 토론</a></li>
+            <li><a href="<c:url value="/action-list.do"/>"><i class="xi-angle-right-min"></i> 실행</a></li>
           </ul>
         </li>
         <li class="li-middle"><span class="li-middle-line">|</span></li>
@@ -70,6 +68,29 @@
           <div class="nav-li-active-bar"></div>
         </a></li>
       </ul>
+
+      <div class="nav-login-m">
+        <!-- mobile login START -->
+        <ul class="nav-login-m-ul clearfix">
+          <c:if test="${empty loginUser}">
+            <li class="nav-login-m-li">
+              <a href="<c:url value="/login.do"/>" class="nav-login-m-li__link">로그인</a>
+            </li>
+            <li class="nav-login-m-li">
+              <a href="<c:url value="/join.do"/>" class="nav-login-m-li__link nav-login-m-li__link--last">회원가입</a>
+            </li>
+          </c:if>
+          <c:if test="${not empty loginUser}">
+            <li class="nav-login-m-li">
+              <a href="<c:url value="/mypage.do"/>" class="nav-login-m-li__link">마이페이지</a>
+            </li>
+            <li class="nav-login-m-li">
+              <a href="#" class="nav-login-m-li__link nav-login-m-li__link--last logout-link">로그아웃</a>
+            </li>
+          </c:if>
+        </ul>
+      </div><!-- mobile login ENDs -->
+
     </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </nav>

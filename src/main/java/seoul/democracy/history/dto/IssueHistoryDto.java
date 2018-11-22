@@ -22,6 +22,13 @@ public class IssueHistoryDto {
         IssueDto.projectionForRelation.as("issue"),
         issueHistory.status, issueHistory.content);
 
+    /**
+     * 사이트에서
+     */
+    public final static QBean<IssueHistoryDto> projectionForSite = Projections.fields(IssueHistoryDto.class,
+        issueHistory.id, issueHistory.createdDate,
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"), issueHistory.content);
+
     private Long id;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;

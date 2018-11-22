@@ -8,7 +8,7 @@ import seoul.democracy.action.dto.ActionDto;
 
 public interface ActionRepositoryCustom {
 
-    Page<ActionDto> findAll(Predicate predicate, Pageable pageable, Expression<ActionDto> projection, boolean withFiles, boolean withRelations);
+    Page<ActionDto> findAll(Predicate predicate, Pageable pageable, Expression<ActionDto> projection);
 
     ActionDto findOne(Predicate predicate, Expression<ActionDto> projection, boolean withFiles, boolean withRelations);
 }

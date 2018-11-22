@@ -5,6 +5,7 @@ import com.mysema.query.types.Projections;
 import com.mysema.query.types.QBean;
 import lombok.Data;
 import seoul.democracy.issue.domain.Issue;
+import seoul.democracy.issue.domain.IssueType;
 import seoul.democracy.issue.dto.CategoryDto;
 import seoul.democracy.issue.dto.IssueDto;
 import seoul.democracy.issue.dto.IssueFileDto;
@@ -14,6 +15,7 @@ import seoul.democracy.user.dto.UserDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static seoul.democracy.action.domain.QAction.action;
 
@@ -50,6 +52,18 @@ public class ActionDto {
         IssueStatsDto.projection.as("stats"),
         action.status, action.thumbnail, action.title, action.content);
 
+    /**
+     * 사이트 실행 리스트에서 사용
+     */
+    public final static QBean<ActionDto> projectionForSiteList = Projections.fields(ActionDto.class,
+        action.id, action.thumbnail, action.title);
+
+    /**
+     * 관리자 실행 상세에서 사용
+     */
+    public final static QBean<ActionDto> projectionForSiteDetail = Projections.fields(ActionDto.class,
+        action.id, action.title, action.content);
+
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdDate;
@@ -72,4 +86,18 @@ public class ActionDto {
 
     private List<Long> relations;
     private Map<Long, IssueDto> issueMap;
+
+    public List<IssueDto> viewProposals() {
+        return relations.stream()
+                   .map(relation -> issueMap.get(relation))
+                   .filter(relation -> relation.getType() == IssueType.P)
+                   .collect(Collectors.toList());
+    }
+
+    public List<IssueDto> viewDebates() {
+        return relations.stream()
+                   .map(relation -> issueMap.get(relation))
+                   .filter(relation -> relation.getType() == IssueType.D)
+                   .collect(Collectors.toList());
+    }
 }

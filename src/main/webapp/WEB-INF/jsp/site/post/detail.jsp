@@ -22,14 +22,13 @@
     </div>
   </div>
 
-  <div class="content-box">
-    <div class="content-raw">
-      ${post.content}
-    </div>
+  <div class="contents-box">
+    <div class="contents-box__contents">${post.content}</div>
+
   </div>
 
   <div class="to-list-btns text-center">
-    <a class="d-btn white-btn" href="/notice-list.do">목록</a>
+    <a class="d-btn white-btn" href="<c:url value="/notice-list.do"/>">목록</a>
   </div>
 
 </div>

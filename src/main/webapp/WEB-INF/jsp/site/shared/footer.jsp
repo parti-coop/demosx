@@ -4,20 +4,19 @@
 <footer class="demo-footer">
   <div class="container">
     <div class="row">
-      <div class="col-sm-9">
-        <address class="demo-address">04524 서울특별시 중구 세종대로 110</address>
-        <p class="footer-name">민주주의서울 오픈소스</p>
-        <p class="footer-copyright">© Seoul Metropolitan Goverment. all rights reserved.</p>
-      </div>
-      <div class="col-sm-3">
+      <div class="col-sm-3 col-sm-push-9">
         <p class="term-link-p"><a class="term-link" href="<c:url value="/notice-list.do"/>"><i class="xi-angle-right-min"></i> 공지사항</a></p>
         <p class="term-link-p"><a class="term-link" href="<c:url value="/privacy.do"/>"><i class="xi-angle-right-min"></i> 개인정보처리방침</a></p>
         <p class="term-link-p"><a class="term-link" href="<c:url value="/terms.do"/>"><i class="xi-angle-right-min"></i> 이용약관</a></p>
       </div>
+      <div class="col-sm-9 col-sm-pull-3">
+        <address class="demo-address">04524 서울특별시 중구 세종대로 110</address>
+        <p class="footer-name">민주주의서울 오픈소스</p>
+        <p class="footer-copyright">© Seoul Metropolitan Goverment. all rights reserved.</p>
+      </div>
     </div>
   </div>
 </footer>
-
 <div class="modal fade" id="modal-login">
   <div class="modal-dialog">
     <div class="modal-content">

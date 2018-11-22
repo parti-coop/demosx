@@ -9,46 +9,55 @@
     </c:if>
   </c:forTokens>
   <c:set var="url" value="${requestScope['javax.servlet.forward.request_uri']}?${queries}"/>
-  <c:set var="minPage" value="${param.current - (param.current - 1) % 8}"/>
-  <c:set var="maxPage" value="${param.current - (param.current - 1) % 8 + 7}"/>
-  <div class="pagination-wrapper">
-    <div class="pagination-btn-group">
+  <c:set var="minPage" value="${param.current - (param.current - 1) % 5}"/>
+  <c:set var="maxPage" value="${param.current - (param.current - 1) % 5 + 4}"/>
+  <nav class="demo-pagination" aria-label="page navigation">
+    <ul class="pagination pagination--demo">
       <c:choose>
         <c:when test="${minPage eq 1}">
-          <span class="pagination-btn before">&lt;</span>
+          <li class="page-arrow page-arrow--pre"><span><i class="xi-angle-left"></i></span></li>
         </c:when>
         <c:otherwise>
           <c:url value="${url}" var="link">
             <c:param name="page" value="${minPage - 1}"/>
           </c:url>
-          <a href="${link}" class="pagination-btn before">&lt;</a>
+          <li class="page-arrow page-arrow--pre">
+            <a href="${link}" aria-label="Previous">
+              <span aria-hidden="true"><i class="xi-angle-left"></i></span>
+            </a>
+          </li>
         </c:otherwise>
       </c:choose>
-      <c:forEach begin="${minPage}" end="${(param.totalPages > maxPage) ? maxPage : param.totalPages}"
-                 varStatus="status">
+
+      <c:forEach begin="${minPage}" end="${param.totalPages > maxPage ? maxPage : param.totalPages}" varStatus="status">
         <c:choose>
           <c:when test="${status.current eq param.current}">
-            <span class="pagination-btn active">${status.current}</span>
+            <li class="active"><span>${status.current}</span></li>
           </c:when>
           <c:otherwise>
             <c:url value="${url}" var="link">
               <c:param name="page" value="${status.current}"/>
             </c:url>
-            <a href="${link}" class="pagination-btn">${status.current}</a>
+            <li><a href="${link}">${status.current}</a></li>
           </c:otherwise>
         </c:choose>
       </c:forEach>
+
       <c:choose>
         <c:when test="${param.totalPages - param.current > 0 and param.totalPages > maxPage}">
           <c:url value="${url}" var="link">
             <c:param name="page" value="${maxPage + 1}"/>
           </c:url>
-          <a href="${link}" class="pagination-btn next">&gt;</a>
+          <li class="page-arrow page-arrow--next">
+            <a href="${link}" aria-label="Next">
+              <span aria-hidden="true"><i class="xi-angle-right"></i></span>
+            </a>
+          </li>
         </c:when>
         <c:otherwise>
-          <span class="pagination-btn next">&gt;</span>
+          <li class="page-arrow page-arrow--next"><span><i class="xi-angle-right"></i></span></li>
         </c:otherwise>
       </c:choose>
-    </div>
-  </div>
+    </ul>
+  </nav>
 </c:if>

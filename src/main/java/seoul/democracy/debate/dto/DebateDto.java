@@ -7,6 +7,7 @@ import lombok.Data;
 import seoul.democracy.debate.domain.Debate;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.domain.IssueGroup;
+import seoul.democracy.issue.domain.IssueType;
 import seoul.democracy.issue.dto.CategoryDto;
 import seoul.democracy.issue.dto.IssueDto;
 import seoul.democracy.issue.dto.IssueFileDto;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static seoul.democracy.debate.domain.QDebate.debate;
 
@@ -112,4 +114,11 @@ public class DebateDto {
 
     private List<Long> relations;
     private Map<Long, IssueDto> issueMap;
+
+    public List<IssueDto> viewProposals() {
+        return relations.stream()
+                   .map(relation -> issueMap.get(relation))
+                   .filter(relation -> relation.getType() == IssueType.P)
+                   .collect(Collectors.toList());
+    }
 }

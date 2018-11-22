@@ -34,8 +34,8 @@ public class ActionService {
         this.issueService = issueService;
     }
 
-    public Page<ActionDto> getActions(Predicate predicate, Pageable pageable, Expression<ActionDto> projection, boolean withFiles, boolean withRelations) {
-        return actionRepository.findAll(predicate, pageable, projection, withFiles, withRelations);
+    public Page<ActionDto> getActions(Predicate predicate, Pageable pageable, Expression<ActionDto> projection) {
+        return actionRepository.findAll(predicate, pageable, projection);
     }
 
     public ActionDto getAction(Predicate predicate, Expression<ActionDto> projection, boolean withFiles, boolean withRelations) {

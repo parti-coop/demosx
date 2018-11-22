@@ -28,7 +28,7 @@
       </div>
       <div class="sorting-tab__select sorting-tab__select--last">
         <select class="form-control" name="category">
-          <option value="">분류선택</option>
+          <option value="">분류</option>
           <c:forEach var="item" items="${categories}">
             <option value="${item.name}" <c:if test="${category eq item.name}">selected</c:if>>${item.name}</option>
           </c:forEach>
@@ -40,7 +40,7 @@
           <input type="text" class="form-control demo-input" name="search" id="inputSearch" placeholder="제목을 검색해보세요."
                  value="${search}">
           <button type="submit" class="search-submit-btn">
-            <i class="xi-search"><p class="sr-only">돋보기</p></i>
+            <i class="xi-search"><span class="sr-only">돋보기</span></i>
           </button>
         </div>
       </div>
@@ -81,34 +81,11 @@
   </div>
 
   <jsp:include page="../shared/pagination.jsp">
-    <jsp:param name="totalPages" value="${posts.totalPages}"/>
-    <jsp:param name="current" value="${posts.number + 1}"/>
+    <jsp:param name="totalPages" value="${page.totalPages}"/>
+    <jsp:param name="current" value="${page.number + 1}"/>
   </jsp:include>
-
-  <nav class="demo-pagination" aria-label="page navigation">
-    <ul class="pagination pagination--demo">
-      <li class="page-arrow page-arrow--pre">
-        <a href="#" aria-label="Previous">
-          <span aria-hidden="true"><i class="xi-angle-left"></i></span>
-        </a>
-      </li>
-      <li class="active"><a href="#">1</a></li>
-      <li><a href="#">2</a></li>
-      <li><a href="#">3</a></li>
-      <li><a href="#">4</a></li>
-      <li><a href="#">5</a></li>
-      <li><a href="#">6</a></li>
-      <li><a href="#">7</a></li>
-      <li><a href="#">8</a></li>
-      <li><a href="#">9</a></li>
-      <li class="page-arrow page-arrow--next">
-        <a href="#" aria-label="Next">
-          <span aria-hidden="true"><i class="xi-angle-right"></i></span>
-        </a>
-      </li>
-    </ul>
-  </nav>
 </div>
+
 <script>
   $(function () {
     var $debateSearch = $('form[name=debate-search]');

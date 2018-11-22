@@ -11,48 +11,58 @@
 
 <div class="container">
   <h3 class="demo-detail-title">제안보기</h3>
-
-  <div class="demo-row clearfix">
+  <div class="clearfix">
     <div class="demo-content">
       <div class="title-box">
         <div class="title-row clearfix">
-          <div class="thumbs-ups">
-            <div class="thumbs-up-btn" style="background-image: url(/images/thumbs-up-bg.png)">공감<i class="xi-thumbs-up"></i>
-            </div>
-            <div class="answer-status" style="background-image: url(/images/thumbs-up-bg-2.png)">부서답변</div>
-          </div>
           <div class="detail-title-container">
             <h2 class="detail-title">${proposal.title}</h2>
+          </div>
+          <div class="thumbs-ups">
+            <div class="thumbs-up-btn ${proposal.process.isInit() ? '' : 'active'}">공감<i class="xi-thumbs-up"></i></div>
+            <div class="answer-status ${proposal.process.isComplete() ? 'active' : ''}">부서답변</div>
           </div>
         </div>
 
         <div class="title-info clearfix">
           <div class="title-author">
-            <div class="profile-circle profile-circle--title" style="background-image: url(${proposal.createdBy.viewPhoto()})"><p
-                class="alt-text">${proposal.createdBy.name}사진</p></div>
+            <div class="profile-circle profile-circle--title"
+                 style="background-image: url(${proposal.createdBy.viewPhoto()})">
+              <p class="alt-text">${proposal.createdBy.name}사진</p>
+            </div>
             <p class="title-author__name">${proposal.createdBy.name}</p>
             <p class="title-author__date"><i class="xi-time"></i> ${proposal.createdDate.toLocalDate()}</p>
           </div>
           <div class="sns-group">
-            <button href="" class="sns-btn" type="button"><i class="xi-facebook"><p class="alt-text">facebook</p></i>
-            </button>
-            <button href="" class="sns-btn" type="button"><i class="xi-kakaotalk"><p class="alt-text">kakaotalk</p></i>
-            </button>
-            <button href="" class="sns-btn" type="button"><i class="xi-twitter"><p class="alt-text">twitter</p></i>
-            </button>
-            <button href="" class="sns-btn" type="button"><i class="xi-blogger"><p class="alt-text">blogger</p></i>
-            </button>
+            <button class="sns-btn sns-btn--trigger collapsed" type="button" data-toggle="collapse"
+                    data-target="#sns-collapse" aria-expanded="false" aria-controls="sns-collapse"><i
+                class="xi-share-alt">
+              <p class="alt-text">share-open</p>
+            </i></button>
+            <div class="collapse collapse-sns" id="sns-collapse">
+              <button href="" class="sns-btn" type="button"><i class="xi-facebook">
+                <p class="alt-text">facebook</p>
+              </i></button>
+              <button href="" class="sns-btn" type="button"><i class="xi-kakaotalk">
+                <p class="alt-text">kakaotalk</p>
+              </i></button>
+              <button href="" class="sns-btn" type="button"><i class="xi-twitter">
+                <p class="alt-text">twitter</p>
+              </i></button>
+              <button href="" class="sns-btn" type="button"><i class="xi-blogger">
+                <p class="alt-text">blogger</p>
+              </i></button>
+            </div>
           </div>
-
         </div>
       </div>
 
-      <div class="content-box">
-        <div class="content-raw">
-          ${proposal.content}
-        </div>
+      <div class="contents-box">
+        <div class="contents-box__contents"> ${proposal.content}</div>
 
-        <div class="content-thumbs-up-count"><i class="xi-thumbs-up"></i> 공감 <strong>${proposal.stats.viewLikeCount()}</strong>개</div>
+        <button class="content-thumbs-up-btn" id="proposal-like-btn">
+          <i class="xi-thumbs-up"></i> 공감 <strong>${proposal.stats.likeCount}</strong>개
+        </button>
 
         <div class="demo-progress">
           <div class="progress-container">
@@ -73,87 +83,73 @@
 
       <div class="admin-feedbacks">
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-          <div class="panel panel-default panel-demo">
-            <div class="panel-heading panel-heading--demo" role="tab" id="headingOne">
-              <h4 class="panel-title">
-                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
-                   aria-expanded="true" aria-controls="collapseOne">
-                  <div class="feedback-title-wrapper clearfix">
-                    <div class="profile-circle profile-circle--admin-feedback"
-                         style="background-image: url('./img/hong-people.png')"><p class="alt-text">홍길동프로필</p></div>
-                    <p class="feedback-name">관리자</p>
-                    <p class="feedback-date"><i class="xi-time"></i> 2018. 10. 22</p>
-                  </div>
-                </a>
-              </h4>
-            </div>
-            <div id="collapseOne" class="panel-collapse collapse collapse-demo in " role="tabpanel"
-                 aria-labelledby="headingOne">
-              <div class="panel-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf
-                moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
-                Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
-                shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
-                proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim
-                aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+          <c:if test="${not empty proposal.adminComment}">
+            <div class="panel panel-default panel-demo">
+              <div class="panel-heading panel-heading--demo" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                  <a class="demo-collapse-btn" role="button" data-toggle="collapse" data-parent="#accordion"
+                     href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <div class="feedback-title-wrapper clearfix">
+                      <p class="feedback-name">관리자 답변</p>
+                      <p class="feedback-date"><i class="xi-time"></i> ${proposal.adminCommentDate.toLocalDate()}</p>
+                    </div>
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse collapse-demo" role="tabpanel"
+                   aria-labelledby="headingOne">
+                <div class="panel-body">${proposal.adminComment}</div>
+              </div>
+              <div class="feedback-arrow-group">
+                <i class="xi-angle-down">
+                  <p class="sr-only">아래 화살표</p>
+                </i>
+                <i class="xi-angle-up">
+                  <p class="sr-only">아래 화살표</p>
+                </i>
               </div>
             </div>
-            <div class="feedback-arrow-group">
-              <i class="xi-angle-down"><p class="sr-only">아래 화살표</p></i>
-              <i class="xi-angle-up"><p class="sr-only">아래 화살표</p></i>
-            </div>
-          </div>
-          <div class="panel panel-default panel-demo">
-            <div class="panel-heading panel-heading--demo" role="tab" id="headingTwo">
-              <h4 class="panel-title">
-                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
-                   aria-expanded="false" aria-controls="collapseTwo">
-                  <div class="feedback-title-wrapper clearfix">
-                    <div class="profile-circle profile-circle--admin-feedback"
-                         style="background-image: url('./img/hong-people.png')"><p class="alt-text">홍길동프로필</p></div>
-                    <p class="feedback-name">관리자</p>
-                    <p class="feedback-date"><i class="xi-time"></i> 2018. 10. 22</p>
-                  </div>
-                </a>
-              </h4>
-            </div>
-            <div id="collapseTwo" class="panel-collapse collapse collapse-demo" role="tabpanel"
-                 aria-labelledby="headingTwo">
-              <div class="panel-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf
-                moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
-                Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
-                shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
-                proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim
-                aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+          </c:if>
+          <c:if test="${proposal.process.isComplete()}">
+            <div class="panel panel-default panel-demo">
+              <div class="panel-heading panel-heading--demo" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                  <a class="demo-collapse-btn" role="button" data-toggle="collapse" data-parent="#accordion"
+                     href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <div class="feedback-title-wrapper clearfix">
+                      <div class="profile-circle profile-circle--admin-feedback"
+                           style="background-image: url(${proposal.manager.viewPhoto()})">
+                        <p class="alt-text">${proposal.manager.name}사진</p>
+                      </div>
+                      <p class="feedback-name">${proposal.manager.name}</p>
+                      <p class="feedback-date"><i class="xi-time"></i> ${proposal.managerCommentDate.toLocalDate()}</p>
+                    </div>
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseTwo" class="panel-collapse collapse collapse-demo" role="tabpanel"
+                   aria-labelledby="headingTwo">
+                <div class="panel-body">${proposal.managerComment}</div>
+              </div>
+              <div class="feedback-arrow-group">
+                <i class="xi-angle-down">
+                  <p class="sr-only">아래 화살표</p>
+                </i>
+                <i class="xi-angle-up">
+                  <p class="sr-only">아래 화살표</p>
+                </i>
               </div>
             </div>
-            <div class="feedback-arrow-group">
-              <i class="xi-angle-down"><p class="sr-only">아래 화살표</p></i>
-              <i class="xi-angle-up"><p class="sr-only">아래 화살표</p></i>
-            </div>
-          </div>
+          </c:if>
         </div>
       </div>
 
-      <jsp:include page="../opinion/proposal.jsp">
-        <jsp:param name="id" value="${proposal.id}"/>
-      </jsp:include>
+      <%@include file="../opinion/proposal.jsp" %>
     </div>
 
-    <div class="demo-side">
-      <div class="side-box">
-        <p class="side-help-text">로그인 하시면, 다양한 제안과 토론에 참여가 가능합니다.</p>
-
-        <div class="domo-box-buttons">
-          <a href="" class="btn demo-btn demo-btn--primary btn-side">로그인하기<i class="xi-angle-right"></i></a>
-        </div>
-
-      </div>
-
-    </div>
+    <%@include file="../shared/side.jsp" %>
   </div><!-- demo-row end  -->
-</div><!-- constainer end  -->
+</div>
 
 <%@ include file="../shared/footer.jsp" %>
 

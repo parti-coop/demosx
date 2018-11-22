@@ -29,8 +29,7 @@ public class AdminActionAjaxController {
     public Page<ActionDto> getActions(@RequestParam("search") String search,
                                       @RequestParam(value = "category", required = false) String category,
                                       @PageableDefault Pageable pageable) {
-        return actionService.getActions(getPredicateForAdminList(search, category), pageable,
-            projectionForAdminList, false, false);
+        return actionService.getActions(getPredicateForAdminList(search, category), pageable, projectionForAdminList);
     }
 
 }

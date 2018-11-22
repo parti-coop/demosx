@@ -85,6 +85,20 @@ public class ProposalDto {
         UserDto.projectionForBasic.as("manager"),
         proposal.title, proposal.excerpt);
 
+    /**
+     * 제안 상세에서 사용
+     */
+    public final static QBean<ProposalDto> projectionForSiteDetail = Projections.fields(ProposalDto.class,
+        proposal.id, proposal.createdDate,
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        CategoryDto.projection.as("category"),
+        IssueStatsDto.projection.as("stats"),
+        proposal.status, proposal.process,
+        proposal.adminCommentDate, proposal.adminComment,
+        UserDto.projectionForBasic.as("manager"),
+        proposal.managerCommentDate, proposal.managerComment,
+        proposal.title, proposal.content);
+
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")

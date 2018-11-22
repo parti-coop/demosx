@@ -13,11 +13,7 @@ import seoul.democracy.action.dto.ActionDto;
 import seoul.democracy.issue.dto.IssueFileDto;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import static com.mysema.query.group.GroupBy.groupBy;
-import static com.mysema.query.group.GroupBy.list;
 import static seoul.democracy.action.domain.QAction.action;
 import static seoul.democracy.issue.domain.QCategory.category;
 import static seoul.democracy.issue.domain.QIssueFile.issueFile;
@@ -43,38 +39,21 @@ public class ActionRepositoryImpl extends QueryDslRepositorySupport implements A
             query.innerJoin(action.createdBy, createdBy);
             query.innerJoin(action.category, category);
             query.innerJoin(action.stats, issueStats);
+        } else if (projection == ActionDto.projectionForSiteList) {
+            query.innerJoin(action.category, category);
         }
 
         return query;
     }
 
     @Override
-    public Page<ActionDto> findAll(Predicate predicate, Pageable pageable, Expression<ActionDto> projection, boolean withFiles, boolean withRelations) {
+    public Page<ActionDto> findAll(Predicate predicate, Pageable pageable, Expression<ActionDto> projection) {
         SearchResults<ActionDto> results = getQuerydsl()
                                                .applyPagination(
                                                    pageable,
                                                    getQuery(projection)
                                                        .where(predicate))
                                                .listResults(projection);
-        List<Long> actionIds = results.getResults().stream().map(ActionDto::getId).collect(Collectors.toList());
-        if (withFiles && actionIds.size() != 0) {
-            Map<Long, List<IssueFileDto>> filesMap = from(action)
-                                                         .innerJoin(action.files, issueFile)
-                                                         .where(action.id.in(actionIds))
-                                                         .orderBy(issueFile.seq.asc())
-                                                         .transform(groupBy(action.id).as(list(IssueFileDto.projection)));
-            results.getResults().forEach(debateDto -> debateDto.setFiles(filesMap.get(debateDto.getId())));
-        }
-
-        if (withRelations && actionIds.size() != 0) {
-            Map<Long, List<Long>> relationsMap = from(action)
-                                                     .innerJoin(action.relations, issueRelation)
-                                                     .where(action.id.in(actionIds))
-                                                     .orderBy(issueRelation.seq.asc())
-                                                     .transform(groupBy(action.id).as(list(issueRelation.issueId)));
-            results.getResults().forEach(actionDto -> actionDto.setRelations(relationsMap.get(actionDto.getId())));
-        }
-
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 

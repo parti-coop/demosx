@@ -40,44 +40,28 @@
 
     <c:forEach var="post" items="${posts.content}">
       <div class="demo-row clearfix">
-        <div class="demo-td">
+        <div class="demo-td demo-td--title">
           <p class="demo-td__title"><a href="<c:url value="/notice.do?id=${post.id}"/>">${post.title}</a></p>
           <div class="demo-title-post-info">
             <p class="td-post-info-p"><i class="xi-eye-o"></i> 조회 <strong>${post.viewCount}</strong>회</p>
+            <p class="td-post-info-p td-post-info-p--date"><i class="xi-clock"></i> ${post.createdDate.toLocalDate()}</p>
           </div>
         </div>
-        <div class="demo-td">
-          <p class="">${post.createdDate.toLocalDate()}</p>
-        </div>
+        <div class="demo-td demo-td--date"><p>${post.createdDate.toLocalDate()}</p></div>
       </div>
     </c:forEach>
+    <c:if test="${posts.totalElements eq 0}">
+      <div class="demo-row clearfix">
+        <div class="demo-td demo-td--title">검색 결과가 없습니다.</div>
+        <div class="demo-td demo-td--date"></div>
+      </div>
+    </c:if>
   </div>
 
   <jsp:include page="../shared/pagination.jsp">
     <jsp:param name="totalPages" value="${posts.totalPages}"/>
     <jsp:param name="current" value="${posts.number + 1}"/>
   </jsp:include>
-
-  <nav class="demo-pagination" aria-label="page navigation">
-    <ul class="pagination pagination--demo">
-      <li class="page-arrow page-arrow--pre">
-        <a href="#" aria-label="Previous">
-          <span aria-hidden="true"><i class="xi-angle-left"></i></span>
-        </a>
-      </li>
-      <li class="active"><a href="#">1</a></li>
-      <li><a href="#">2</a></li>
-      <li><a href="#">3</a></li>
-      <li><a href="#">4</a></li>
-      <li><a href="#">5</a></li>
-      <li class="page-arrow page-arrow--next">
-        <a href="#" aria-label="Next">
-          <span aria-hidden="true"><i class="xi-angle-right"></i></span>
-        </a>
-      </li>
-    </ul>
-  </nav>
-
 </div>
 
 <%@ include file="../shared/footer.jsp" %>

@@ -1,7 +1,7 @@
 package seoul.democracy.history.service;
 
+import com.mysema.query.types.Expression;
 import com.mysema.query.types.Predicate;
-import com.mysema.query.types.QBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,8 @@ import seoul.democracy.history.dto.IssueHistoryUpdateDto;
 import seoul.democracy.history.repository.IssueHistoryRepository;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.repository.IssueRepository;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -36,8 +38,12 @@ public class IssueHistoryService {
         return history;
     }
 
-    public IssueHistoryDto getHistory(Predicate predicate, QBean<IssueHistoryDto> projection) {
+    public IssueHistoryDto getHistory(Predicate predicate, Expression<IssueHistoryDto> projection) {
         return historyRepository.findOne(predicate, projection);
+    }
+
+    public List<IssueHistoryDto> getHistories(Predicate predicate, Expression<IssueHistoryDto> projection) {
+        return historyRepository.findAll(predicate, projection);
     }
 
     /**
@@ -72,4 +78,6 @@ public class IssueHistoryService {
     public IssueHistory delete(Long historyId) {
         return getHistory(historyId).delete();
     }
+
+
 }

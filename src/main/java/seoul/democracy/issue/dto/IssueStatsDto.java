@@ -51,9 +51,9 @@ public class IssueStatsDto {
         return String.format("%,d", getOpinionCount());
     }
 
-    public long likePercentBy500() {
+    public double likePercentBy500() {
         if(likeCount > 500) return 100;
         if(likeCount == 0) return 0;
-        return likeCount * 100 / 500;
+        return likeCount * 100.0 / 500.0;
     }
 }

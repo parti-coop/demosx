@@ -45,91 +45,75 @@
       <p class="img-box-top__date">투표기간 : <br class="visible-xs"/>${debate.startDate} ~ ${debate.endDate}</p>
 
       <div class="demo-progress">
-        <c:if test="${debate.opinionType.isDebate()}">
-          <div class="progress-container">
-            <div class="progress-bg progress-bg--discussion">
-              <div class="progress-fill-bar progress-fill-bar--blue"
-                   style="width: ${debate.stats.yesPercent()}%;"></div>
-              <div class="progress-fill-bar progress-fill-bar--grey"
-                   style="width: ${debate.stats.etcPercent()}%;"></div>
-              <div class="progress-fill-bar progress-fill-bar--red" style="width: ${debate.stats.noPercent()}%;"></div>
-            </div>
+        <div class="progress-container">
+          <div class="progress-bg progress-bg--discussion">
+            <div class="progress-fill-bar progress-fill-bar--blue"
+                 style="width: ${debate.stats.yesPercent()}%;"></div>
+            <div class="progress-fill-bar progress-fill-bar--grey"
+                 style="width: ${debate.stats.etcPercent()}%;"></div>
+            <div class="progress-fill-bar progress-fill-bar--red" style="width: ${debate.stats.noPercent()}%;"></div>
           </div>
-        </c:if>
+        </div>
         <div class="progress-info clearfix">
           <div class="progress-info__left">
             <p class="progress-info__count">
               <i class="xi-user-plus"></i> 참여자 <strong>${debate.stats.applicantCount}</strong>명
-              <c:if test="${debate.opinionType.isProposal()}">
-                • <i class="xi-message"></i> 댓글 <strong>${debate.stats.opinionCount}</strong>개
-              </c:if>
             </p>
           </div>
-          <c:if test="${debate.opinionType.isDebate()}">
-            <div class="progress-info__right">
-              <p class="progress-info__text">
-                <sapn class="progress-blue">찬성(${debate.stats.yesPercent()}%)</sapn>
-                <span class="progress-grey"> • 기타(${debate.stats.etcPercent()}%) • </span>
-                <span class="progress-red">반대(${debate.stats.noPercent()}%)</span>
-              </p>
-            </div>
-          </c:if>
+          <div class="progress-info__right">
+            <p class="progress-info__text">
+              <sapn class="progress-blue">찬성(${debate.stats.yesPercent()}%)</sapn>
+              <span class="progress-grey"> • 기타(${debate.stats.etcPercent()}%) • </span>
+              <span class="progress-red">반대(${debate.stats.noPercent()}%)</span>
+            </p>
+          </div>
         </div>
       </div>
 
-      <c:if test="${debate.opinionType.isProposal()}">
-        <div class="discuss-btn-group clearfix">
-          <button type="button" class="btn d-btn btn-white btn-block suggest-click-btn">의견남기기 <i
-              class="xi-angle-right"></i></button>
+      <div class="discuss-btn-group clearfix">
+        <div class="middle-btn-wrapper">
+          <button type="button" class="btn d-btn d-btn--discuss btn-blue" data-toggle="modal" data-target="#myModal">
+            찬성합니다
+          </button>
         </div>
-      </c:if>
-
-      <c:if test="${debate.opinionType.isDebate()}">
-        <div class="discuss-btn-group clearfix">
-          <div class="middle-btn-wrapper">
-            <button type="button" class="btn d-btn d-btn--discuss btn-blue" data-toggle="modal" data-target="#myModal">
-              찬성합니다
-            </button>
-          </div>
-          <div class="middle-btn-wrapper">
-            <button type="button" class="btn d-btn d-btn--discuss btn-grey" data-toggle="modal" data-target="#myModal">
-              기타의견입니다
-            </button>
-          </div>
-          <div class="middle-btn-wrapper">
-            <button type="button" class="btn d-btn d-btn--discuss btn-red" data-toggle="modal" data-target="#myModal">
-              반대합니다
-            </button>
-          </div>
+        <div class="middle-btn-wrapper">
+          <button type="button" class="btn d-btn d-btn--discuss btn-grey" data-toggle="modal" data-target="#myModal">
+            기타의견입니다
+          </button>
         </div>
+        <div class="middle-btn-wrapper">
+          <button type="button" class="btn d-btn d-btn--discuss btn-red" data-toggle="modal" data-target="#myModal">
+            반대합니다
+          </button>
+        </div>
+      </div>
 
-        <!-- modal START-->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-body">
-                <form class="demo-form">
-                  <div class="form-input-container form-input-container--history">
-                    <div class="form-group form-group--demo">
-                      <label class="demo-form-label" for="inputContent">의견</label>
-                      <textarea class="form-control" id="inputContent" rows="10"></textarea>
-                    </div>
+      <!-- modal START-->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <form class="demo-form">
+                <div class="form-input-container form-input-container--history">
+                  <div class="form-group form-group--demo">
+                    <label class="demo-form-label" for="inputContent">의견</label>
+                    <textarea class="form-control" id="inputContent" rows="10"></textarea>
                   </div>
-                  <div class="form-action text-right">
-                    <div class="btn-group clearfix">
-                      <button class="btn demo-submit-btn cancel-btn" data-dismiss="modal"
-                              aria-label="Close" href="" role="button">취소
-                      </button>
-                      <button type="submit" class="demo-submit-btn demo-submit-btn--submit">저장하기</button>
-                    </div>
+                </div>
+                <div class="form-action text-right">
+                  <div class="btn-group clearfix">
+                    <button class="btn demo-submit-btn cancel-btn" data-dismiss="modal"
+                            aria-label="Close" href="" role="button">취소
+                    </button>
+                    <button type="submit" class="demo-submit-btn demo-submit-btn--submit">저장하기</button>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
-        <!-- modal END -->
-      </c:if>
+      </div>
+      <!-- modal END -->
     </div>
   </div>
 </div>
@@ -138,8 +122,10 @@
   <div class="container">
     <div class="middle-nav clearfix">
       <ul class="sorting-tab__ul clearfix">
-        <li class="sorting-tab__li"><a href="#middle-nav-tab" class="sorting-tab__li__link">내용</a></li>
-        <li class="sorting-tab__li active"><a href="#middle-nav-tab" class="sorting-tab__li__link">히스토리</a></li>
+        <li class="sorting-tab__li active"><a href="#middle-nav-tab" class="sorting-tab__li__link">내용</a></li>
+        <li class="sorting-tab__li">
+          <a href="<c:url value="/debate-history.do?id=${debate.id}#middle-nav-tab"/>" class="sorting-tab__li__link">히스토리</a>
+        </li>
       </ul>
     </div>
 
@@ -150,59 +136,37 @@
   <div class="container">
     <div class="middle-nav clearfix">
       <ul class="sorting-tab__ul clearfix">
-        <li class="sorting-tab__li"><a href="#middle-nav-tab" class="sorting-tab__li__link">내용</a></li>
-        <li class="sorting-tab__li active"><a href="#middle-nav-tab" class="sorting-tab__li__link">히스토리</a></li>
+        <li class="sorting-tab__li active"><a href="#middle-nav-tab" class="sorting-tab__li__link">내용</a></li>
+        <li class="sorting-tab__li">
+          <a href="<c:url value="/debate-history.do?id=${debate.id}#middle-nav-tab"/>" class="sorting-tab__li__link">히스토리</a>
+        </li>
       </ul>
-      <c:if test="${debate.opinionType.isProposal()}">
-        <div class="middle-btn-group">
-          <button type="button" class="btn d-btn btn-white suggest-click-btn">
-            의견남기기
-          </button>
-        </div>
-      </c:if>
-      <c:if test="${debate.opinionType.isDebate()}">
-        <div class="middle-btn-group">
-          <button type="button" class="btn d-btn btn-blue" data-toggle="modal" data-target="#myModal">
-            찬성합니다
-          </button>
-          <button type="button" class="btn d-btn btn-grey" data-toggle="modal" data-target="#myModal">
-            기타의견입니다
-          </button>
-          <button type="button" class="btn d-btn btn-red" data-toggle="modal" data-target="#myModal">
-            반대합니다
-          </button>
-        </div>
-      </c:if>
+      <div class="middle-btn-group">
+        <button type="button" class="btn d-btn btn-blue" data-toggle="modal" data-target="#myModal">찬성합니다</button>
+        <button type="button" class="btn d-btn btn-grey" data-toggle="modal" data-target="#myModal">기타의견입니다</button>
+        <button type="button" class="btn d-btn btn-red" data-toggle="modal" data-target="#myModal">반대합니다</button>
+      </div>
     </div>
   </div>
 </div>
 
-<c:if test="${debate.opinionType.isProposal()}">
-  <div class="scroll-bottom-btn-group clearfix" id="bottom-discuss-btn">
-    <button type="button" class="btn d-btn btn-white btn-block suggest-click-btn">
-      의견남기기
+<div class="scroll-bottom-btn-group clearfix" id="bottom-discuss-btn">
+  <div class="middle-btn-wrapper middle-btn-wrapper--ok">
+    <button type="button" class="btn d-btn btn-blue" data-toggle="modal" data-target="#myModal">
+      찬성합니다
     </button>
   </div>
-</c:if>
-<c:if test="${debate.opinionType.isDebate()}">
-  <div class="scroll-bottom-btn-group clearfix" id="bottom-discuss-btn">
-    <div class="middle-btn-wrapper middle-btn-wrapper--ok">
-      <button type="button" class="btn d-btn btn-blue" data-toggle="modal" data-target="#myModal">
-        찬성합니다
-      </button>
-    </div>
-    <div class="middle-btn-wrapper middle-btn-wrapper--etc">
-      <button type="button" class="btn d-btn btn-grey" data-toggle="modal" data-target="#myModal">
-        기타의견입니다
-      </button>
-    </div>
-    <div class="middle-btn-wrapper middle-btn-wrapper--no">
-      <button type="button" class="btn d-btn btn-red" data-toggle="modal" data-target="#myModal">
-        반대합니다
-      </button>
-    </div>
+  <div class="middle-btn-wrapper middle-btn-wrapper--etc">
+    <button type="button" class="btn d-btn btn-grey" data-toggle="modal" data-target="#myModal">
+      기타의견입니다
+    </button>
   </div>
-</c:if>
+  <div class="middle-btn-wrapper middle-btn-wrapper--no">
+    <button type="button" class="btn d-btn btn-red" data-toggle="modal" data-target="#myModal">
+      반대합니다
+    </button>
+  </div>
+</div>
 
 <div class="container discussion-contents-container">
   <div class="demo-row clearfix">
@@ -397,18 +361,11 @@
     </div>
 
     <%@ include file="../shared/side.jsp" %>
-  </div><!-- demo-row end  -->
+  </div>
 </div>
 
 <script>
   $(function () {
-
-    $('.suggest-click-btn').click(function() {
-      $('html, body').animate({
-        scrollTop: $('#suggest-scroll-position').offset().top - 80
-      }, 300);
-    });
-
     function listener() {
       var elementOffset = $('#middle-nav-tab').offset().top;
       console.log('top_height', elementOffset);

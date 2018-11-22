@@ -26,6 +26,8 @@ public class IssueHistoryRepositoryImpl extends QueryDslRepositorySupport implem
             query.innerJoin(issueHistory.createdBy, createdBy);
             query.innerJoin(issueHistory.modifiedBy, modifiedBy);
             query.innerJoin(issueHistory.issue, issue);
+        } else if (projection == IssueHistoryDto.projectionForSite) {
+            query.innerJoin(issueHistory.createdBy, createdBy);
         }
         return query;
     }
