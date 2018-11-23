@@ -13,6 +13,8 @@ import seoul.democracy.opinion.dto.OpinionDto;
 import seoul.democracy.opinion.service.OpinionService;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.service.ProposalService;
+import seoul.democracy.user.dto.UserDto;
+import seoul.democracy.user.service.UserService;
 import seoul.democracy.user.utils.UserUtils;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -21,6 +23,8 @@ import static seoul.democracy.opinion.predicate.OpinionPredicate.predicateForMyp
 import static seoul.democracy.opinion.predicate.OpinionPredicate.predicateForMypageProposalOpinion;
 import static seoul.democracy.proposal.dto.ProposalDto.projectionForMypageProposal;
 import static seoul.democracy.proposal.predicate.ProposalPredicate.predicateForMypageProposal;
+import static seoul.democracy.user.dto.UserDto.projectionForBasic;
+import static seoul.democracy.user.predicate.UserPredicate.equalId;
 
 @Controller
 @RequestMapping("/mypage")
@@ -28,20 +32,31 @@ public class MyPageController {
 
     private final OpinionService opinionService;
     private final ProposalService proposalService;
+    private final UserService userService;
 
     @Autowired
     public MyPageController(OpinionService opinionService,
-                            ProposalService proposalService) {
+                            ProposalService proposalService,
+                            UserService userService) {
         this.opinionService = opinionService;
         this.proposalService = proposalService;
+        this.userService = userService;
     }
 
     /**
      * 내 정보 수정
      */
     @RequestMapping(value = "/info.do", method = RequestMethod.GET)
-    public String info() {
-        return null;
+    public String info(Model model) {
+        UserDto userDto = userService.getUser(equalId(UserUtils.getUserId()), projectionForBasic);
+        model.addAttribute("me", userDto);
+
+        return "/site/mypage/info";
+    }
+
+    @RequestMapping(value = "/change-password.do", method = RequestMethod.GET)
+    public String changePassword() {
+        return "/site/mypage/change-password";
     }
 
     /**

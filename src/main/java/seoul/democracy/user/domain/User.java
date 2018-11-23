@@ -166,6 +166,11 @@ public class User implements Serializable {
         return UserLogin.create(this.id, this.loginDate, this.loginIp);
     }
 
+    public User changePassword(String password) {
+        this.password = password;
+        return this;
+    }
+
     public boolean isAdmin() {
         return this.role.isAdmin();
     }

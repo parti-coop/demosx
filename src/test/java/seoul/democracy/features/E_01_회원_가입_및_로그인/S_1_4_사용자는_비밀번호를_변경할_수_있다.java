@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.user.domain.User;
 import seoul.democracy.user.dto.UserDto;
-import seoul.democracy.user.dto.UserUpdateDto;
+import seoul.democracy.user.dto.UserPasswordChangeDto;
 import seoul.democracy.user.predicate.UserPredicate;
 import seoul.democracy.user.service.UserService;
 
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
 
 /**
  * epic : 1. 회원 가입 및 로그인
- * story : 1.3 사용자는 본인 정보를 수정할 수 있다.
+ * story : 1.4 사용자는 비밀번호를 변경할 수 있다.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertThat;
 @Transactional
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class S_1_3_사용자는_본인_정보를_수정할_수_있다 {
+public class S_1_4_사용자는_비밀번호를_변경할_수_있다 {
 
     @Autowired
     private UserService userService;
@@ -48,24 +48,24 @@ public class S_1_3_사용자는_본인_정보를_수정할_수_있다 {
      */
     @Test
     @WithUserDetails("user1@googl.co.kr")
-    public void T_1_이름_프로필_사진을_수정할_수_있다() {
-        UserUpdateDto updateDto = UserUpdateDto.of("유저999", "photo999.jpg", "12345");
-        User user = userService.update(updateDto);
+    public void T_1_사용자는_비밀번호를_변경할_수_있다() {
+        UserPasswordChangeDto changeDto = UserPasswordChangeDto.of("12345", "09876");
+        User user = userService.changePassword(changeDto);
         assertThat(user.getId(), is(21L));
 
-        UserDto userDto = userService.getUser(UserPredicate.equalEmail("user1@googl.co.kr"), UserDto.projection);
-        assertThat(userDto.getName(), is(updateDto.getName()));
-        assertThat(userDto.getPhoto(), is(updateDto.getPhoto()));
+        userService.getUser(UserPredicate.equalEmail("user1@googl.co.kr"), UserDto.projection);
+
+        assertThat(userService.matchPassword(changeDto.getChangePassword()), is(true));
     }
 
     /**
-     * 2. 비밀번호 다를 경우 수정할 수 없다.
+     * 2. 비밀번호 다를 경우 변경할 수 없다.
      */
     @Test(expected = BadRequestException.class)
     @WithUserDetails("user1@googl.co.kr")
-    public void T_2_비밀번호_다를_경우_수정할_수_없다() {
-        UserUpdateDto updateDto = UserUpdateDto.of("유저999", "photo999.jpg", "wrongpassword");
-        userService.update(updateDto);
+    public void T_2_비밀번호_다를_경우_변경할_수_없다() {
+        UserPasswordChangeDto changeDto = UserPasswordChangeDto.of("123", "09876");
+        userService.changePassword(changeDto);
     }
 
 }

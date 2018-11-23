@@ -15,7 +15,7 @@
           <li class="nav-login-li"><a href="<c:url value="/admin/index.do"/>" class="nav-login-li__link">관리자페이지</a></li>
           <li class="nav-login-li"><span class="li-middle-line">|</span></li>
         </c:if>
-        <li class="nav-login-li"><a href="" class="nav-login-li__link">마이페이지</a></li>
+        <li class="nav-login-li"><a href="<c:url value="/mypage/info.do"/>" class="nav-login-li__link">마이페이지</a></li>
         <li class="nav-login-li"><span class="li-middle-line">|</span></li>
         <li class="nav-login-li"><a href="#" class="nav-login-li__link logout-link">로그아웃</a></li>
         <form:form action="/logout.do" method="post" class="hidden" id="form-logout">

@@ -10,15 +10,12 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class UserUpdateDto {
+public class UserPasswordChangeDto {
 
     @NotBlank
-    @Size(max = 30)
-    private String name;
-
-    @Size(max = 100)
-    private String photo;
+    private String currentPassword;
 
     @NotBlank
-    private String password;
+    @Size(max = 20)
+    private String changePassword;
 }

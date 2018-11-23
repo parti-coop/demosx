@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.AlreadyExistsException;
+import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.service.CategoryService;
 import seoul.democracy.user.domain.User;
@@ -76,6 +77,9 @@ public class UserService {
     public User update(UserUpdateDto updateDto) {
         User user = getMe();
 
+        if (!passwordEncoder.matches(updateDto.getPassword(), user.getPassword()))
+            throw new BadRequestException("password", "error.password", "패스워드가 일치하지 않습니다.");
+
         return user.update(updateDto);
     }
 
@@ -112,5 +116,21 @@ public class UserService {
         User user = getUser(userId);
 
         return user.deleteManager();
+    }
+
+    @Transactional
+    public User changePassword(UserPasswordChangeDto changeDto) {
+        User user = getMe();
+
+        if (!passwordEncoder.matches(changeDto.getCurrentPassword(), user.getPassword()))
+            throw new BadRequestException("password", "error.password", "패스워드가 일치하지 않습니다.");
+
+        String password = passwordEncoder.encode(changeDto.getChangePassword());
+        return user.changePassword(password);
+    }
+
+    public boolean matchPassword(String password) {
+        User user = getMe();
+        return passwordEncoder.matches(password, user.getPassword());
     }
 }

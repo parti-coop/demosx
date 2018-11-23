@@ -3,7 +3,9 @@ package seoul.democracy.common.dto;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import seoul.democracy.common.exception.BadRequestException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +19,9 @@ public class ErrorInfo {
     public ErrorInfo(String url, Exception ex) {
         this.url = url;
         this.msg = ex.getLocalizedMessage();
-        if (ex instanceof MethodArgumentNotValidException) {
+        if (ex instanceof BadRequestException) {
+            this.fieldErrors = Collections.singletonList(new FieldError(((BadRequestException) ex).getField(), ex.getLocalizedMessage()));
+        } else if (ex instanceof MethodArgumentNotValidException) {
             this.fieldErrors = ((MethodArgumentNotValidException) ex).getBindingResult().getFieldErrors().stream()
                                    .map(error -> new FieldError(error.getField(), error.getDefaultMessage()))
                                    .collect(Collectors.toList());
