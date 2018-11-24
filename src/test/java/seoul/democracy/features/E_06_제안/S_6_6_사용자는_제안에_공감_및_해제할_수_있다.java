@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import seoul.democracy.common.exception.AlreadyExistsException;
+import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.domain.IssueLike;
 import seoul.democracy.issue.predicate.IssueLikePredicate;
@@ -110,7 +111,7 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
     /**
      * 4. 공감하지 않은 제안에 공감해제할 수 없다.
      */
-    @Test(expected = NotFoundException.class)
+    @Test(expected = BadRequestException.class)
     @WithUserDetails("user2@googl.co.kr")
     public void T_04_공감하지_않은_제안에_공감해제할_수_없다() {
         proposalService.deselectLike(proposalId);
@@ -137,7 +138,7 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
     /**
      * 7. 삭제된 제안에 공감해제할 수 없다.
      */
-    @Test(expected = NotFoundException.class)
+    @Test(expected = BadRequestException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_07_삭제된_제안에_공감해제할_수_없다() {
         proposalService.deselectLike(deleteProposalId);
@@ -146,7 +147,7 @@ public class S_6_6_사용자는_제안에_공감_및_해제할_수_있다 {
     /**
      * 8. 블럭된 제안에 공감해제할 수 없다.
      */
-    @Test(expected = NotFoundException.class)
+    @Test(expected = BadRequestException.class)
     @WithUserDetails("user1@googl.co.kr")
     public void T_08_블럭된_제안에_공감해제할_수_없다() {
         proposalService.deselectLike(blockProposalId);

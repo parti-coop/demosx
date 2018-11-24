@@ -8,6 +8,7 @@ import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.issue.domain.IssueGroup;
 
 import static seoul.democracy.debate.domain.QDebate.debate;
+import static seoul.democracy.issue.domain.Issue.Status.OPEN;
 
 public class DebatePredicate {
 
@@ -19,8 +20,8 @@ public class DebatePredicate {
         return ExpressionUtils.and(debate.id.eq(id), debate.group.eq(group));
     }
 
-    public static Predicate equalIdAndGroupAndStatus(Long id, IssueGroup group, Issue.Status status) {
-        return ExpressionUtils.allOf(debate.id.eq(id), debate.group.eq(group), debate.status.eq(status));
+    public static Predicate equalIdAndStatus(Long id, Issue.Status status) {
+        return ExpressionUtils.and(debate.id.eq(id), debate.status.eq(status));
     }
 
     public static Predicate predicateForAdminList(IssueGroup group, String search, String category) {
@@ -36,7 +37,7 @@ public class DebatePredicate {
     }
 
     public static Predicate predicateForRelationSelect(String search) {
-        Predicate predicate = ExpressionUtils.and(debate.group.eq(IssueGroup.USER), debate.status.eq(Issue.Status.OPEN));
+        Predicate predicate = ExpressionUtils.and(debate.group.eq(IssueGroup.USER), debate.status.eq(OPEN));
 
         if (StringUtils.isEmpty(search)) return predicate;
 
@@ -44,7 +45,7 @@ public class DebatePredicate {
     }
 
     public static Predicate predicateForSiteList(IssueGroup group, Debate.Process process, String category, String search) {
-        Predicate predicate = ExpressionUtils.and(debate.group.eq(group), debate.status.eq(Issue.Status.OPEN));
+        Predicate predicate = ExpressionUtils.and(debate.group.eq(group), debate.status.eq(OPEN));
 
         if (process != null)
             predicate = ExpressionUtils.and(predicate, debate.process.eq(process));

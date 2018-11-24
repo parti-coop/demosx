@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>토론 - 민주주의 서울</title>
+  <title>${group eq 'USER' ? '토론' : '기관제안'} - 민주주의 서울</title>
   <%@ include file="../shared/head.jsp" %>
 </head>
 <body class="home">
@@ -12,7 +12,7 @@
 <div class="container">
   <div class="top-row clearfix">
     <div class="top-left">
-      <h3 class="top-row__title">토론</h3>
+      <h3 class="top-row__title">${group eq 'USER' ? '토론' : '기관제안'}</h3>
     </div>
   </div>
 

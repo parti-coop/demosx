@@ -68,7 +68,7 @@
         </c:if>
         <div class="contents-box__contents">${proposal.contentWithBr()}</div>
 
-        <button class="content-thumbs-up-btn" id="proposal-like-btn">
+        <button class="content-thumbs-up-btn${proposal.liked eq true ? ' active' : ''}" id="proposal-like-btn">
           <i class="xi-thumbs-up"></i> 공감 <strong>${proposal.stats.likeCount}</strong>개
         </button>
 
@@ -193,6 +193,51 @@
     });
   </script>
 </c:if>
+<script>
+  $(function () {
+    $('#proposal-like-btn').click(function () {
+      var hasLike = $(this).hasClass('active');
+      var that = $(this);
+      $.ajax({
+        headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
+        url: '/ajax/mypage/proposals/${proposal.id}/' + (hasLike ? 'deselectLike' : 'selectLike'),
+        type: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (data) {
+          alert(data.msg);
+          var count = +$('strong', that).text();
+          console.log(count);
+          if(hasLike) {
+            that.removeClass('active');
+            if(count !== 0) $('strong', that).text(count - 1);
+          }
+          else {
+            that.addClass('active');
+            $('strong', that).text(count + 1);
+          }
+        },
+        error: function (error) {
+          if (error.status === 400) {
+            console.log(hasLike);
+            if(hasLike) that.removeClass('active');
+            else that.addClass('active');
+            if (error.responseJSON.fieldErrors) {
+              var msg = error.responseJSON.fieldErrors.map(function (item) {
+                return item.fieldError;
+              }).join('/n');
+              alert(msg);
+            } else alert(error.responseJSON.msg);
+          } else if (error.status === 403) {
+            alert('로그인이 필요합니다.');
+            window.location.reload();
+          }
+        }
+      });
+    });
+  });
+</script>
+
 <%@ include file="../shared/footer.jsp" %>
 
 </body>

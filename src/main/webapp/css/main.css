@@ -1,7 +1,7 @@
 /* default START */
 
 body{
-    font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', 'Sans-serif';
+    font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', 'Sans-serif', serif;
 }
 
 a:hover, a:focus {
@@ -1777,6 +1777,7 @@ a:hover {
     display: inline-block;
     padding: 3px 9px 4px;
     margin-bottom: 7px;
+    background-color: white;
 
     border: 1px solid #b6c1cc;
 
@@ -1787,6 +1788,10 @@ a:hover {
     -moz-box-shadow:    0 2px 0 rgba(0, 0, 0, 0.15);
     -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
     box-shadow:         0 2px 0 rgba(0, 0, 0, 0.15);
+}
+.content-thumbs-up-btn.active {
+    background-color: #ff5600;
+    color: white;
 }
 @media (max-width: 767px){
     .d-btn-lg{

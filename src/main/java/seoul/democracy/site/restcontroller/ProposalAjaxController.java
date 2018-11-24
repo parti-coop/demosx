@@ -41,4 +41,18 @@ public class ProposalAjaxController {
 
         return ResultInfo.of("제안을 삭제하였습니다.");
     }
+
+    @RequestMapping(value = "/proposals/{id}/selectLike", method = RequestMethod.PUT)
+    public ResultInfo selectLikeProposal(@PathVariable("id") Long id) {
+        proposalService.selectLike(id);
+
+        return ResultInfo.of("공감하였습니다.");
+    }
+
+    @RequestMapping(value = "/proposals/{id}/deselectLike", method = RequestMethod.PUT)
+    public ResultInfo deselectLikeProposal(@PathVariable("id") Long id) {
+        proposalService.deselectLike(id);
+
+        return ResultInfo.of("공감해제하였습니다.");
+    }
 }

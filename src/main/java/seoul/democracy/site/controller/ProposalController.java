@@ -62,8 +62,7 @@ public class ProposalController {
     @RequestMapping(value = "/proposal.do", method = RequestMethod.GET)
     public String proposal(@RequestParam("id") Long id,
                            Model model) {
-        ProposalDto proposalDto = proposalService.getProposal(equalIdAndStatus(id, OPEN), projectionForSiteDetail);
-
+        ProposalDto proposalDto = proposalService.getProposalWithLiked(equalIdAndStatus(id, OPEN), projectionForSiteDetail);
         model.addAttribute("proposal", proposalDto);
 
         return "/site/proposal/detail";

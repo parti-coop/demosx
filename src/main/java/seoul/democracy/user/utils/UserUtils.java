@@ -46,6 +46,8 @@ public class UserUtils {
     }
 
     public static Long getUserId() {
-        return getLoginUser().getId();
+        User loginUser = getLoginUser();
+        if (loginUser == null) return null;
+        return loginUser.getId();
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seoul.democracy.common.exception.AlreadyExistsException;
+import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.domain.IssueLike;
 import seoul.democracy.issue.predicate.IssueLikePredicate;
@@ -52,6 +53,19 @@ public class ProposalService {
 
     public ProposalDto getProposal(Predicate predicate, Expression<ProposalDto> projection) {
         return proposalRepository.findOne(predicate, projection);
+    }
+
+    public ProposalDto getProposalWithLiked(Predicate predicate, Expression<ProposalDto> projection) {
+        ProposalDto proposal = proposalRepository.findOne(predicate, projection);
+
+        if (proposal == null) return null;
+
+        Long userId = UserUtils.getUserId();
+        if (userId == null) return proposal;
+
+        proposal.setLiked(likeRepository.exists(IssueLikePredicate.equalUserIdAndIssueId(userId, proposal.getId())));
+
+        return proposal;
     }
 
     public Page<ProposalDto> getProposals(Predicate predicate, Pageable pageable, Expression<ProposalDto> projection) {
@@ -153,7 +167,7 @@ public class ProposalService {
 
         IssueLike like = likeRepository.findOne(equalUserIdAndIssueId(user.getId(), issueId));
         if (like == null)
-            throw new NotFoundException("공감 상태가 아닙니다.");
+            throw new BadRequestException("like", "error.like", "공감 상태가 아닙니다.");
 
         Proposal proposal = getProposal(issueId);
         statsRepository.deselectLikeProposal(proposal.getStatsId());
