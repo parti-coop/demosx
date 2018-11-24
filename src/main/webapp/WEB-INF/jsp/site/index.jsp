@@ -25,7 +25,7 @@
       </form>
     </div>
     <div class="top-search__right">
-      <a href="" class="btn demo-btn demo-btn--primary d-btn-lg btn-block">시민제안<i class="xi-angle-right"></i></a>
+      <a href="<c:url value="/new-proposal.do"/>" class="btn demo-btn demo-btn--primary d-btn-lg btn-block">시민제안<i class="xi-angle-right"></i></a>
     </div>
   </div>
   <div class="row demo-search-top">

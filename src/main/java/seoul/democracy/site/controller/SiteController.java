@@ -63,4 +63,12 @@ public class SiteController {
     public String terms() {
         return "/site/static/terms";
     }
+
+    /**
+     * 저작권 및 컨텐츠 관련안내
+     */
+    @RequestMapping(value = "/copyright.do", method = RequestMethod.GET)
+    public String copyright() {
+        return "/site/static/copyright";
+    }
 }

@@ -79,7 +79,7 @@
       </div>
 
       <div class="panel-group panel-group--mypage">
-        <a class="change-password-collapse-btn" href="<c:url value="/mypage/change-password.do"/>">비밀번호 변경하기</a>
+        <a class="blue-link" href="<c:url value="/mypage/change-password.do"/>">비밀번호 변경하기</a>
       </div>
 
       <div class="sing-action">

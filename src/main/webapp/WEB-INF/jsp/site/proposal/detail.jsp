@@ -58,7 +58,15 @@
       </div>
 
       <div class="contents-box">
-        <div class="contents-box__contents"> ${proposal.content}</div>
+        <c:if test="${proposal.createdBy.id eq loginUser.id}">
+          <div class="clearfix">
+            <div class="pull-right">
+              <a href="<c:url value="/edit-proposal.do?id=${proposal.id}"/>" class="btn btn-default btn-sm">수정하기</a>
+              <button type="button" class="btn btn-default btn-sm" id="delete-proposal-btn">삭제하기</button>
+            </div>
+          </div>
+        </c:if>
+        <div class="contents-box__contents">${proposal.contentWithBr()}</div>
 
         <button class="content-thumbs-up-btn" id="proposal-like-btn">
           <i class="xi-thumbs-up"></i> 공감 <strong>${proposal.stats.likeCount}</strong>개
@@ -151,6 +159,40 @@
   </div><!-- demo-row end  -->
 </div>
 
+<c:if test="${proposal.createdBy.id eq loginUser.id}">
+  <script>
+    $(function () {
+      $('#delete-proposal-btn').click(function () {
+        if (!window.confirm('제안을 삭제하시겠습니까?')) return;
+
+        $.ajax({
+          headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
+          url: '/ajax/mypage/proposals/${proposal.id}',
+          type: 'DELETE',
+          contentType: 'application/json',
+          dataType: 'json',
+          success: function (data) {
+            alert(data.msg);
+            window.location.href = '/mypage/proposal.do';
+          },
+          error: function (error) {
+            if (error.status === 400) {
+              if (error.responseJSON.fieldErrors) {
+                var msg = error.responseJSON.fieldErrors.map(function (item) {
+                  return item.fieldError;
+                }).join('/n');
+                alert(msg);
+              } else alert(error.responseJSON.msg);
+            } else if (error.status === 403) {
+              alert('로그인이 필요합니다.');
+              window.location.reload();
+            }
+          }
+        });
+      });
+    });
+  </script>
+</c:if>
 <%@ include file="../shared/footer.jsp" %>
 
 </body>

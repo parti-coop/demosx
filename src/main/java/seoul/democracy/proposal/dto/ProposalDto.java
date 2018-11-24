@@ -107,6 +107,12 @@ public class ProposalDto {
         IssueStatsDto.projection.as("stats"),
         proposal.status, proposal.process, proposal.title);
 
+    /**
+     * 나의 제안 수정 시 사용
+     */
+    public final static QBean<ProposalDto> projectionForSiteEdit = Projections.fields(ProposalDto.class,
+        proposal.id, proposal.title, proposal.content);
+
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -136,4 +142,8 @@ public class ProposalDto {
     private String title;
     private String excerpt;
     private String content;
+
+    public String contentWithBr() {
+        return content.replaceAll("(\r\n|\r|\n|\n\r)", "<br>");
+    }
 }

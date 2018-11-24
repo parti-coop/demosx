@@ -16,6 +16,7 @@ public class ProposalCreateDto {
     @Size(max = 100)
     private String title;
 
+    @NotBlank
     private String content;
 
 }

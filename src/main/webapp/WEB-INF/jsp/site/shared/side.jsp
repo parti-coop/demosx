@@ -14,7 +14,7 @@
 <c:if test="${not empty loginUser}">
   <div class="demo-side">
     <div class="side-box">
-      <div class="profile-circle profile-circle--m" style="background-image: url(${loginUser.photo})">
+      <div class="profile-circle profile-circle--m" style="background-image: url(${loginUser.viewPhoto()})">
         <p class="alt-text">${loginUser.name}프로필</p>
       </div>
       <h5 class="profile-name">${loginUser.name}</h5>

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.StringUtils;
 import seoul.democracy.common.annotation.CreatedIp;
 import seoul.democracy.common.converter.LocalDateTimeAttributeConverter;
 import seoul.democracy.common.exception.AlreadyExistsException;
@@ -169,6 +170,10 @@ public class User implements Serializable {
     public User changePassword(String password) {
         this.password = password;
         return this;
+    }
+
+    public String viewPhoto() {
+        return StringUtils.hasText(photo) ? photo : "/images/noavatar.png";
     }
 
     public boolean isAdmin() {

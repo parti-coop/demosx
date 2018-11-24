@@ -29,7 +29,9 @@
              data-parsley-required="true">
     </div>
     <c:if test="${not empty loginError}">
-      <p>아이디 및 비밀번호를 확인해 주세요.</p>
+      <div class="has-error">
+        <p class="help-block help-block-error">아이디 및 비밀번호를 확인해 주세요.</p>
+      </div>
     </c:if>
     <p class="form-help-text form-help-text--blue">
       <a class="blue-link" href="<c:url value="/find-password.do"/>">비밀번호를 잊어버리셨나요?</a>

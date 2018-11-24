@@ -76,4 +76,11 @@ public class ProposalPredicate {
 
         return predicate;
     }
+
+    public static Predicate predicateForEdit(Long id, Long userId) {
+        return ExpressionUtils.allOf(
+            proposal.id.eq(id),
+            proposal.createdById.eq(userId),
+            proposal.status.eq(OPEN));
+    }
 }

@@ -21,6 +21,7 @@
 
         <intercept-url pattern="/mypage/**" access="hasRole('ROLE_USER')"/>
         <intercept-url pattern="/ajax/mypage/**" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/new-proposal.do" access="hasRole('ROLE_USER')"/>
 
         <form-login login-page="/login.do"
                     username-parameter="id"

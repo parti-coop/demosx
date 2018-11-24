@@ -100,7 +100,7 @@
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">내용</label>
-                  <div class="col-sm-10"><p class="form-control-static">${proposal.content}</p></div>
+                  <div class="col-sm-10"><p class="form-control-static">${proposal.contentWithBr()}</p></div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">관리자 댓글</label>
