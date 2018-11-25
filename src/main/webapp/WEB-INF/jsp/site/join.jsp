@@ -5,10 +5,6 @@
 <head>
   <title>회원가입 - Democracy</title>
   <%@ include file="./shared/head.jsp" %>
-
-  <!-- form validation -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.8.1/parsley.min.js"></script>
-  <script type="text/javascript" src="<c:url value="/js/parsley-ko.js"/>"></script>
 </head>
 <body>
 <%@ include file="./shared/header.jsp" %>

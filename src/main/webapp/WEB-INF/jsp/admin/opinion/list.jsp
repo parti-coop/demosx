@@ -66,7 +66,10 @@
           url: '/admin/ajax/opinions?issueId=${param.issueId}',
           type: 'GET',
           error: function (e) {
-            window.location.href = '/admin/index.do';
+            if(e.status === 401 || e.status === 403)
+              window.location.reload();
+            else
+              window.location.href = '/admin/index.do';
           }
         },
         columns: [

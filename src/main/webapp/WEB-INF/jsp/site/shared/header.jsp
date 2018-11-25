@@ -6,7 +6,7 @@
   <div class="container">
     <ul class="nav-login-ul list-inline text-right">
       <c:if test="${empty loginUser}">
-        <li class="nav-login-li"><a href="<c:url value="/login.do"/>" class="nav-login-li__link">로그인</a></li>
+        <li class="nav-login-li"><a href="<c:url value="/login.do"/>" class="nav-login-li__link show-login-modal">로그인</a></li>
         <li class="nav-login-li"><span class="li-middle-line">|</span></li>
         <li class="nav-login-li"><a href="<c:url value="/join.do"/>" class="nav-login-li__link">회원가입</a></li>
       </c:if>

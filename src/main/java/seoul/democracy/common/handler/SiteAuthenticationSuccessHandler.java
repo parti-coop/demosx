@@ -47,6 +47,15 @@ public class SiteAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
 
         clearAuthenticationAttributes(request);
 
+        // ajax login
+        if (request.getParameter("ajax") != null) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"msg\":\"로그인하였습니다.\"}");
+            return;
+        }
+
         if (StringUtils.hasText(target))
             getRedirectStrategy().sendRedirect(request, response, target);
         else getRedirectStrategy().sendRedirect(request, response, getDefaultTargetUrl());

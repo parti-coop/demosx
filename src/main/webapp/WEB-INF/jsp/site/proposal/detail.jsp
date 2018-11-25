@@ -183,9 +183,9 @@
                 }).join('/n');
                 alert(msg);
               } else alert(error.responseJSON.msg);
-            } else if (error.status === 403) {
+            } else if (error.status === 403 || error.status === 401) {
               alert('로그인이 필요합니다.');
-              window.location.reload();
+              window.location.href = '/login.do';
             }
           }
         });
@@ -208,9 +208,9 @@
           alert(data.msg);
           var count = +$('strong', that).text();
           console.log(count);
-          if(hasLike) {
+          if (hasLike) {
             that.removeClass('active');
-            if(count !== 0) $('strong', that).text(count - 1);
+            if (count !== 0) $('strong', that).text(count - 1);
           }
           else {
             that.addClass('active');
@@ -220,7 +220,7 @@
         error: function (error) {
           if (error.status === 400) {
             console.log(hasLike);
-            if(hasLike) that.removeClass('active');
+            if (hasLike) that.removeClass('active');
             else that.addClass('active');
             if (error.responseJSON.fieldErrors) {
               var msg = error.responseJSON.fieldErrors.map(function (item) {
@@ -228,9 +228,9 @@
               }).join('/n');
               alert(msg);
             } else alert(error.responseJSON.msg);
-          } else if (error.status === 403) {
+          } else if (error.status === 403 || error.status === 401) {
             alert('로그인이 필요합니다.');
-            window.location.reload();
+            window.location.href = '/login.do';
           }
         }
       });

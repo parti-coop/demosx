@@ -17,9 +17,10 @@ function adminAjax(param) {
     },
     error: function (error) {
       param.error(error);
-      if (error.status === 403) {
+      if (error.status === 403 || error.status === 401) {
         alert('로그인이 필요합니다.');
-        window.location.reload();
+        if(param.type === 'GET') window.location.reload();
+        else window.location.href = '/login.do';
         return;
       }
       if (error.responseJSON.fieldErrors) {

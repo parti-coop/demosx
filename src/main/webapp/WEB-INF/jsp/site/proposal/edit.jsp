@@ -5,10 +5,6 @@
   <title>제안수정하기 - 민주주의 서울</title>
   <%@ include file="../shared/head.jsp" %>
 
-  <!-- form validation -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.8.1/parsley.min.js"></script>
-  <script type="text/javascript" src="<c:url value="/js/parsley-ko.js"/>"></script>
-
   <!-- jquery serialize object -->
   <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/jquery-serialize-object/2.5.0/jquery.serialize-object.min.js"></script>
@@ -84,9 +80,9 @@
               }).join('/n');
               alert(msg);
             } else alert(error.responseJSON.msg);
-          } else if (error.status === 403) {
+          } else if (error.status === 403 || error.status === 401) {
             alert('로그인이 필요합니다.');
-            window.location.reload();
+            window.location.href = '/login.do';
           }
         }
       });

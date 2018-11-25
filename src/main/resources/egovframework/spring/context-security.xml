@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/security/spring-security.xsd">
 
     <global-method-security pre-post-annotations="enabled"/>
-    <http auto-config="true" use-expressions="true">
+    <http auto-config="true" use-expressions="true" entry-point-ref="authenticationEntryPoint">
 
         <intercept-url pattern="/admin/ajax/issue/proposals" access="hasRole('ROLE_MANAGER')"/>
         <intercept-url pattern="/admin/ajax/issue/proposals/**/managerComment" access="hasRole('ROLE_MANAGER')"/>
@@ -30,7 +30,10 @@
                     authentication-success-handler-ref="authenticationSuccessHandler"
                     authentication-failure-handler-ref="authenticationFailureHandler"
         />
-        <logout logout-url="/logout.do" logout-success-url="/" delete-cookies="JSESSIONID"/>
+
+        <access-denied-handler ref="accessDeniedHandler"/>
+
+        <logout logout-url="/logout.do" logout-success-url="/" delete-cookies="JSESSIONID" invalidate-session="true"/>
         <session-management>
             <concurrency-control max-sessions="10" error-if-maximum-exceeded="false"/>
         </session-management>
@@ -42,6 +45,12 @@
         </headers>
     </http>
 
+    <beans:bean id="accessDeniedHandler" class="seoul.democracy.common.handler.SiteAccessDeniedHandler"/>
+
+    <beans:bean id="authenticationEntryPoint" class="seoul.democracy.common.handler.SiteAuthenticationEntryPoint">
+        <beans:constructor-arg value="/login.do"/>
+    </beans:bean>
+
     <beans:bean id="csrfSecurityRequestMatcher" class="seoul.democracy.common.config.CsrfSecurityRequestMatcher"/>
 
     <beans:bean id="authenticationSuccessHandler"
@@ -50,7 +59,7 @@
     </beans:bean>
 
     <beans:bean id="authenticationFailureHandler"
-                class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+                class="seoul.democracy.common.handler.SiteAuthenticationFailureHandler">
         <beans:property name="defaultFailureUrl" value="/login.do?login_error=1"/>
     </beans:bean>
 
