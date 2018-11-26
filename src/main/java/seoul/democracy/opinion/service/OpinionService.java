@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.domain.Issue;
@@ -24,7 +25,13 @@ import seoul.democracy.opinion.repository.OpinionRepository;
 import seoul.democracy.user.domain.User;
 import seoul.democracy.user.utils.UserUtils;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.function.Function.identity;
 import static seoul.democracy.opinion.predicate.OpinionLikePredicate.equalUserIdAndOpinionId;
+import static seoul.democracy.opinion.predicate.OpinionLikePredicate.equalUserIdAndOpinionIdIn;
 import static seoul.democracy.opinion.predicate.OpinionPredicate.equalIssueIdAndCreatedByIdAndStatus;
 
 @Service
@@ -54,6 +61,25 @@ public class OpinionService {
 
     public Page<OpinionDto> getOpinions(Predicate predicate, Pageable pageable, Expression<OpinionDto> projection) {
         return opinionRepository.findAll(predicate, pageable, projection);
+    }
+
+    public Page<OpinionDto> getOpinionsWithLiked(Predicate predicate, Pageable pageable, Expression<OpinionDto> projection) {
+        Page<OpinionDto> opinions = opinionRepository.findAll(predicate, pageable, projection);
+
+        Long userId = UserUtils.getUserId();
+        if (userId == null) return opinions;
+
+        List<Long> ids = opinions.getContent().stream().map(OpinionDto::getId).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(ids)) return opinions;
+
+        Iterable<OpinionLike> likes = opinionLikeRepository.findAll(equalUserIdAndOpinionIdIn(userId, ids));
+        Map<Long, OpinionDto> opinionMap = opinions.getContent().stream()
+                                               .collect(Collectors.toMap(OpinionDto::getId, identity()));
+        for (OpinionLike like : likes) {
+            opinionMap.get(like.getId().getOpinionId()).setLiked(true);
+        }
+
+        return opinions;
     }
 
     private Opinion getOpinion(Long opinionId) {

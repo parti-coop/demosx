@@ -57,4 +57,11 @@ public class OpinionDto {
     protected String content;
     protected Opinion.Status status;
     protected Opinion.Vote vote;
+
+    // 제안에 대해 공감 표시 여부
+    private Boolean liked;
+
+    public String contentWithBr() {
+        return content.replaceAll("(\r\n|\r|\n|\n\r)", "<br>");
+    }
 }

@@ -2,6 +2,7 @@ package seoul.democracy.features.E_01_회원_가입_및_로그인;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -61,6 +62,7 @@ public class S_1_2_사용자는_로그인_할_수_있다 {
     /**
      * 1. 사용자는 로그인 할 수 있다.
      */
+    @Ignore
     @Test
     public void T_1_사용자는_로그인_할_수_있다() throws Exception {
         UserLoginDto loginDto = UserLoginDto.of("admin1@googl.co.kr", "12345");
@@ -75,6 +77,7 @@ public class S_1_2_사용자는_로그인_할_수_있다 {
     /**
      * 2. 비밀번호가 틀린 경우 로그인할 수 없다.
      */
+    @Ignore
     @Test
     public void T_2_비밀번호가_틀린_경우_로그인할_수_없다() throws Exception {
         UserLoginDto loginDto = UserLoginDto.of("admin1@googl.co.kr", "wrong_password");
@@ -89,6 +92,7 @@ public class S_1_2_사용자는_로그인_할_수_있다 {
     /**
      * 3. 등록되지 않은 이메일은 로그인할 수 없다.
      */
+    @Ignore
     @Test
     public void T_3_등록되지_않은_이메일은_로그인할_수_없다() throws Exception {
         UserLoginDto loginDto = UserLoginDto.of("notexists_email@googl.co.kr", "12345");

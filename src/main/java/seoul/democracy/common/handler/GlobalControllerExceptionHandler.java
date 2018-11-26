@@ -47,7 +47,7 @@ public class GlobalControllerExceptionHandler {
         if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null) {
             status = AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class).value();
         } else if (ex instanceof AccessDeniedException) {
-            status = HttpStatus.UNAUTHORIZED;
+            status = HttpStatus.FORBIDDEN;
         } else if (ex instanceof MethodArgumentNotValidException) {
             status = HttpStatus.BAD_REQUEST;
         }

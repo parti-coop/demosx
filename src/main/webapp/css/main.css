@@ -861,6 +861,7 @@ a:hover {
     font-size: 16px;
     text-align: left;
     margin-bottom: 10px;
+    word-break: break-word;
 }
 .my-sugest-li__title__status--agree{
     color: #1e60b1;
@@ -1018,7 +1019,8 @@ a:hover {
 }
 .demo-content{
     float: left;
-    width: 75%
+    width: 75%;
+    min-height: 400px;
 }
 .demo-content--hostory{
     margin-bottom: 350px;
@@ -1073,6 +1075,9 @@ a:hover {
 }
 .contents-box--discuss{
     padding: 0 0 35px;
+}
+.contents-box .contents-box__contents {
+    margin-bottom: 30px;
 }
 .contents-box .contents-box__contents,
 .contents-box .contents-box__contents p{
@@ -1771,7 +1776,6 @@ a:hover {
     margin-top: 20px;
 }
 .content-thumbs-up-btn{
-    margin-top: 30px;
     color: #727a7f;
     font-size: 16px;
     display: inline-block;
@@ -1790,6 +1794,28 @@ a:hover {
     box-shadow:         0 2px 0 rgba(0, 0, 0, 0.15);
 }
 .content-thumbs-up-btn.active {
+    background-color: #ff5600;
+    color: white;
+}
+.opinion-thumbs-up-btn{
+    color: #727a7f;
+    font-size: 14px;
+    display: inline-block;
+    padding: 3px 9px 4px;
+    margin-bottom: 7px;
+    background-color: white;
+
+    border: 1px solid #b6c1cc;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    -moz-box-shadow:    0 2px 0 rgba(0, 0, 0, 0.15);
+    -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+    box-shadow:         0 2px 0 rgba(0, 0, 0, 0.15);
+}
+.opinion-thumbs-up-btn.active {
     background-color: #ff5600;
     color: white;
 }
@@ -2023,6 +2049,7 @@ a:hover {
     color: #43484c;
     font-size: 14px;
     line-height: 1.8;
+    word-break: break-word;
 }
 .show-more-container{
     margin-top: 40px;

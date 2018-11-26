@@ -75,9 +75,8 @@
       event.preventDefault();
 
       var data = $formNewProposal.serializeObject();
-      console.log(data);
       $.ajax({
-        //headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
+        headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
         url: '/ajax/mypage/proposals',
         type: 'POST',
         contentType: 'application/json',

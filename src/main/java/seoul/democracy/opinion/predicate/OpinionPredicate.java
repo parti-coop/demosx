@@ -3,9 +3,9 @@ package seoul.democracy.opinion.predicate;
 import com.mysema.query.types.ExpressionUtils;
 import com.mysema.query.types.Predicate;
 import org.springframework.util.StringUtils;
+import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.opinion.domain.Opinion;
 
-import static seoul.democracy.issue.domain.Issue.Status.OPEN;
 import static seoul.democracy.opinion.domain.QOpinion.opinion;
 
 public class OpinionPredicate {
@@ -26,7 +26,10 @@ public class OpinionPredicate {
     }
 
     public static Predicate predicateForOpinionList(Long issueId) {
-        return ExpressionUtils.and(opinion.issue.id.eq(issueId), opinion.issue.status.eq(OPEN));
+        return ExpressionUtils.allOf(
+            opinion.issue.id.eq(issueId),
+            opinion.issue.status.eq(Issue.Status.OPEN),
+            opinion.status.eq(Opinion.Status.OPEN));
     }
 
     public static Predicate predicateForMypageDebateOpinion(Long userId, String search) {
@@ -34,7 +37,7 @@ public class OpinionPredicate {
             opinion.createdById.eq(userId),
             opinion.status.eq(Opinion.Status.OPEN),
             opinion.type.eq(Opinion.Type.D));
-        
+
         if (StringUtils.hasText(search))
             predicate = ExpressionUtils.and(predicate, opinion.content.contains(search));
 

@@ -116,14 +116,19 @@
         error: function (error) {
           if (error.status === 400) {
             if (error.responseJSON.fieldErrors) {
+              var passwordError = '';
               var msg = error.responseJSON.fieldErrors.map(function (item) {
                 if(item.fieldName === 'password') {
-                  $('#password-group').addClass('has-error');
-                  $('#password-error').text(item.fieldError);
+                  passwordError = item.fieldError;
                 }
                 return item.fieldError;
               }).join('/n');
-              alert(msg);
+              if(passwordError) {
+                $('#password-group').addClass('has-error');
+                $('#password-error').text(passwordError);
+              } else {
+                alert(msg);
+              }
             } else alert(error.responseJSON.msg);
           } else if (error.status === 403 || error.status === 401) {
             alert('로그인이 필요합니다.');

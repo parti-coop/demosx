@@ -81,7 +81,7 @@
                        class="block-list-li__ask-link">${opinion.issue.title}</a>
                   </c:when>
                   <c:when test="${opinion.issue.type eq 'D' and opinion.issue.group eq 'ORG'}">
-                    <a href="<c:url value="/org-debate.do?id=${opinion.issue.id}"/>"
+                    <a href="<c:url value="/debate.do?id=${opinion.issue.id}"/>"
                        class="block-list-li__ask-link">${opinion.issue.title}</a>
                   </c:when>
                 </c:choose>
@@ -102,7 +102,7 @@
                           <span class="my-sugest-li__title__status--etc">(기타)</span>
                         </c:when>
                       </c:choose>
-                        ${opinion.content}</p>
+                        ${opinion.contentWithBr()}</p>
                     <div class="demo-title-post-info">
                       <p class="td-post-info-p"><i class="xi-thumbs-up"></i> 공감 <strong>${opinion.likeCount}</strong>회
                       </p>
