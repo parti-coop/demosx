@@ -41,6 +41,34 @@
   </div>
 </div>
 
+<c:if test="${not empty loginUser}">
+  <div class="modal fade" id="modalEditOpinion" tabindex="-1" role="dialog" aria-labelledby="의견 수정하기">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form class="demo-form" id="form-edit-opinion">
+            <input type="hidden" name="opinionId" value="">
+            <div class="form-input-container form-input-container--history">
+              <div class="form-group form-group--demo">
+                <label class="demo-form-label" for="inputContent">의견 수정하기</label>
+                <textarea class="form-control" name="content" id="inputContent" rows="8"
+                          data-parsley-required="true" data-parsley-maxlength="1000"></textarea>
+              </div>
+            </div>
+            <div class="form-action text-right">
+              <div class="btn-group clearfix">
+                <button class="btn demo-submit-btn cancel-btn" data-dismiss="modal" aria-label="Close" role="button">취소
+                </button>
+                <button type="submit" class="demo-submit-btn demo-submit-btn--submit">저장하기</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</c:if>
+
 <div class="demo-comments-container">
   <div class="demo-comments-top">
     <div class="clearfix">
@@ -65,7 +93,6 @@
     <button class="white-btn d-btn btn-more" type="button" id="opinion-more">더보기<i class="xi-angle-down-min"></i>
     </button>
   </div>
-
 </div>
 
 <!-- jquery serialize object -->
@@ -150,8 +177,52 @@
       });
     });
 
+    // 의견 수정
+    var $opinionContent = null;
+    var $modalEditOpinion = $('#modalEditOpinion');
+    $(document).on('click', '.edit-opinion-btn', function() {
+      $formOpinion[0].reset();
+      $formOpinion.parsley().reset();
+      $opinionContent = $(this).parents('.comment-li');
+      $('input[name=opinionId]', $modalEditOpinion).val($(this).data('id'));
+      $('textarea[name=content]', $modalEditOpinion).val($(this).data('content'));
+      $modalEditOpinion.modal('show');
+    });
+    var $formEditOpinion = $('#form-edit-opinion');
+    $formEditOpinion.parsley(parsleyConfig);
+    $formEditOpinion.on('submit', function (event) {
+      event.preventDefault();
+      var data = $formEditOpinion.serializeObject();
+      $.ajax({
+        headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
+        url: '/ajax/mypage/opinions/' + data.opinionId,
+        type: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify(data),
+        success: function (result) {
+          alert(result.msg);
+          $('.comment-content-text', $opinionContent).html(data.content.replace(/\r\n|\r|\n|\n\r/g, '<br>'));
+          $modalEditOpinion.modal('hide');
+        },
+        error: function (error) {
+          if (error.status === 400) {
+            if (error.responseJSON.fieldErrors) {
+              var msg = error.responseJSON.fieldErrors.map(function (item) {
+                return item.fieldError;
+              }).join('/n');
+              alert(msg);
+            } else alert(error.responseJSON.msg);
+          } else if (error.status === 403 || error.status === 401) {
+            alert('로그인이 필요합니다.');
+            window.location.href = '/login.do';
+          }
+        }
+      });
+    });
+
     // 의견 공감
-    $(document).on('click', '.opinion-thumbs-up-btn', function() {
+    $(document).on('click', '.opinion-thumbs-up-btn', function () {
       var hasLike = $(this).hasClass('active');
       var id = $(this).data('id');
       var that = $(this);
