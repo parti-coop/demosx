@@ -41,4 +41,8 @@ public class IssueHistoryDto {
 
     private IssueHistory.Status status;
     private String content;
+
+    public String contentWithBr() {
+        return content.replaceAll("(\r\n|\r|\n|\n\r)", "<br>");
+    }
 }

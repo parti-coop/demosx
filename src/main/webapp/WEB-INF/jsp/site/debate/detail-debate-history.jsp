@@ -154,47 +154,7 @@
   </div>
 </div>
 
-<div class="container discussion-contents-container" id="suggest-scroll-position">
-  <div class="clearfix">
-    <div class="demo-content">
-      <button class="btn d-btn btn-white btn-block suggest-click-btn" data-toggle="modal" data-target="#myModal">
-        새로운 히스토리 작성 <i class="xi-angle-right"></i>
-      </button>
-
-      <div class="demo-comments-container">
-        <c:if test="${empty histories}">
-          <h5 class="discuss-title">작성된 히스토리가 없습니다.</h5>
-        </c:if>
-        <c:if test="${not empty histories}">
-          <ul class="demo-comments">
-            <c:forEach var="history" items="${histories}">
-              <li class="comment-li">
-                <div class="profile-circle profile-circle--comment"
-                     style="background-image: url(${history.createdBy.viewPhoto()})">
-                  <p class="alt-text">${history.createdBy.name}프로필</p>
-                </div>
-                <div class="comment-content">
-                  <p class="comment-name">${history.createdBy.name}</p>
-                  <div class="comment-info clearfix">
-                    <div class="comment-date-wrapper">
-                      <p class="comment-time"><i class="xi-time"></i> ${history.createdDate.toLocalDate()}</p>
-                    </div>
-                    <div class="comment-likes-count">
-                      <p class="comment-thumbs-count"><i class="xi-thumbs-up"></i> 공감 <strong>12</strong>개</p>
-                    </div>
-                  </div>
-                  <p class="comment-content-text">${history.content}</p>
-                </div>
-              </li>
-            </c:forEach>
-          </ul>
-        </c:if>
-      </div>
-    </div>
-
-    <%@ include file="../shared/side.jsp" %>
-  </div><!-- demo-row end  -->
-</div>
+<%@ include file="../shared/history.jsp" %>
 
 <script>
   $(function () {

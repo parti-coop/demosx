@@ -44,4 +44,6 @@ public class AdminDebateAjaxController {
                                                  @PageableDefault Pageable pageable) {
         return debateService.getDebates(predicateForRelationSelect(search), pageable, projectionForAdminSelect);
     }
+
+
 }

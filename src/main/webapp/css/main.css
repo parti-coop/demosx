@@ -1691,6 +1691,9 @@ a:hover {
     height: 51px;
     font-size: 16px;
 }
+#new-history-btn {
+    margin-bottom: 30px;
+}
 .discuss-btn-group{
     margin-top: 15px;
 }

@@ -324,6 +324,16 @@
     function makeOpinionString(opinion) {
       var photo = opinion.createdBy.photo || '/images/noavatar.png';
 
+      var ownerMenu = '';
+      if(opinion.createdBy.id === userId) {
+        ownerMenu = '        <div class="clearfix">' +
+          '          <div class="pull-right">' +
+          '            <button type="button" class="btn btn-default btn-sm edit-opinion-btn" data-id="' + opinion.id + '" data-content="' + opinion.content + '">수정하기</button>' +
+          '            <button type="button" class="btn btn-default btn-sm delete-opinion-btn" data-id="' + opinion.id + '">삭제하기</button>' +
+          '          </div>' +
+          '        </div>';
+      }
+
       return '<li class="comment-li">' +
         '      <div class="profile-circle profile-circle--comment" style="background-image: url(' + photo + ')">' +
         '        <p class="alt-text">' + opinion.createdBy.name + '사진</p>' +
@@ -340,13 +350,7 @@
         '            </button>' +
         '          </div>' +
         '        </div>' +
-        '        <p class="comment-content-text">' + opinion.content.replace(/\r\n|\r|\n|\n\r/g, '<br>') + '</p>' +
-        '        <div class="clearfix">' +
-        '          <div class="pull-right">' +
-        '            <button type="button" class="btn btn-default btn-sm edit-opinion-btn" data-id="' + opinion.id + '" data-content="' + opinion.content + '">수정하기</button>' +
-        '            <button type="button" class="btn btn-default btn-sm delete-opinion-btn" data-id="' + opinion.id + '">삭제하기</button>' +
-        '          </div>' +
-        '        </div>' +
+        '        <p class="comment-content-text">' + opinion.content.replace(/\r\n|\r|\n|\n\r/g, '<br>') + '</p>' + ownerMenu +
         '      </div>' +
         '    </li>';
     }
