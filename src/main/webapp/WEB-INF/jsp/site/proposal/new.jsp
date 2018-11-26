@@ -28,7 +28,7 @@
 
           <div class="form-group form-group--demo">
             <label class="demo-form-label" for="inputTitle">제목</label>
-            <input type="text" class="form-control demo-input" id="inputTitle" placeholder="제목"
+            <input type="text" class="form-control demo-input" id="inputTitle" placeholder="제목" autocomplete="off"
                    name="title" data-parsley-required="true" data-parsley-maxlength="100">
           </div>
           <div class="form-group form-group--demo">

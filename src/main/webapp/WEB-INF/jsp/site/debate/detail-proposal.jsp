@@ -140,9 +140,11 @@
         </c:if>
       </div>
 
-      <%@include file="../opinion/proposal.jsp" %>
+      <jsp:include page="../opinion/proposal.jsp">
+        <jsp:param name="id" value="${debate.id}"/>
+        <jsp:param name="closed" value="${debate.process eq 'INIT' or debate.process eq 'COMPLETE'}"/>
+      </jsp:include>
     </div>
-
 
     <%@include file="../shared/side.jsp" %>
   </div>

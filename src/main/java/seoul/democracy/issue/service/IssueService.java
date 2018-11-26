@@ -9,6 +9,7 @@ import org.springframework.util.CollectionUtils;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.issue.dto.IssueDto;
 import seoul.democracy.issue.repository.IssueRepository;
+import seoul.democracy.issue.repository.IssueStatsRepository;
 
 import java.util.List;
 
@@ -19,10 +20,13 @@ import static seoul.democracy.issue.predicate.IssuePredicate.equalIdIn;
 public class IssueService {
 
     private final IssueRepository issueRepository;
+    private final IssueStatsRepository statsRepository;
 
     @Autowired
-    public IssueService(IssueRepository issueRepository) {
+    public IssueService(IssueRepository issueRepository,
+                        IssueStatsRepository statsRepository) {
         this.issueRepository = issueRepository;
+        this.statsRepository = statsRepository;
     }
 
     public List<IssueDto> getIssues(Predicate predicate, Expression<IssueDto> projection) {
@@ -33,5 +37,10 @@ public class IssueService {
         if (!CollectionUtils.isEmpty(relations) &&
                 issueRepository.count(equalIdIn(relations)) != relations.size())
             throw new BadRequestException("relations", "error.relations", "연관 항목을 확인해 주세요.");
+    }
+
+    @Transactional
+    public void increaseViewCount(Long statsId) {
+        statsRepository.increaseViewCount(statsId);
     }
 }

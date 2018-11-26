@@ -92,7 +92,7 @@ public class ProposalDto {
         proposal.id, proposal.createdDate,
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
         CategoryDto.projection.as("category"),
-        IssueStatsDto.projection.as("stats"),
+        proposal.statsId, IssueStatsDto.projection.as("stats"),
         proposal.status, proposal.process,
         proposal.adminCommentDate, proposal.adminComment,
         UserDto.projectionForBasic.as("manager"),
@@ -126,6 +126,7 @@ public class ProposalDto {
 
     private CategoryDto category;
 
+    private Long statsId;
     private IssueStatsDto stats;
     private List<IssueFile> files;
 

@@ -59,10 +59,10 @@ public class ActionDto {
         action.id, action.thumbnail, action.title);
 
     /**
-     * 관리자 실행 상세에서 사용
+     * 사이트 실행 상세에서 사용
      */
     public final static QBean<ActionDto> projectionForSiteDetail = Projections.fields(ActionDto.class,
-        action.id, action.title, action.content);
+        action.id, action.statsId, action.title, action.content);
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -81,6 +81,8 @@ public class ActionDto {
     private String thumbnail;
     private String title;
     private String content;
+
+    private Long statsId;
 
     private List<IssueFileDto> files;
 

@@ -113,6 +113,8 @@ public class DebateController {
 
         model.addAttribute("debate", debateDto);
 
+        issueService.increaseViewCount(debateDto.getStatsId());
+
         return debateDto.getOpinionType().isProposal() ? "/site/debate/detail-proposal" : "site/debate/detail-debate";
     }
 
@@ -123,6 +125,8 @@ public class DebateController {
         Predicate predicate = equalIdAndStatus(id, OPEN);
         DebateDto debateDto = debateService.getDebate(predicate, projectionForSiteDetail, false, false);
         model.addAttribute("debate", debateDto);
+
+        issueService.increaseViewCount(debateDto.getStatsId());
 
         List<IssueHistoryDto> histories = issueHistoryService.getHistories(predicateForSite(debateDto.getId()), IssueHistoryDto.projectionForSite);
         model.addAttribute("histories", histories);

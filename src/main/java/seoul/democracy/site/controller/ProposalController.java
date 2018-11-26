@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import seoul.democracy.issue.dto.CategoryDto;
 import seoul.democracy.issue.service.CategoryService;
+import seoul.democracy.issue.service.IssueService;
 import seoul.democracy.proposal.domain.ProposalSort;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.dto.ProposalUpdateDto;
@@ -30,12 +31,15 @@ public class ProposalController {
 
     private final ProposalService proposalService;
     private final CategoryService categoryService;
+    private final IssueService issueService;
 
     @Autowired
     public ProposalController(ProposalService proposalService,
-                              CategoryService categoryService) {
+                              CategoryService categoryService,
+                              IssueService issueService) {
         this.proposalService = proposalService;
         this.categoryService = categoryService;
+        this.issueService = issueService;
     }
 
     @RequestMapping(value = "/proposal-list.do", method = RequestMethod.GET)
@@ -64,6 +68,8 @@ public class ProposalController {
                            Model model) {
         ProposalDto proposalDto = proposalService.getProposalWithLiked(equalIdAndStatus(id, OPEN), projectionForSiteDetail);
         model.addAttribute("proposal", proposalDto);
+
+        issueService.increaseViewCount(proposalDto.getStatsId());
 
         return "/site/proposal/detail";
     }

@@ -1,5 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="discussion-comment-form" id="discussion-comment-form">
+  <c:if test="${param.closed eq true}">
+    <h4><b>토론 기간동안 댓글 작성이 가능합니다.</b> (${debate.startDate} ~ ${debate.endDate})</h4>
+  </c:if>
+  <c:if test="${param.closed ne true}">
   <div class="demo-comment-form clearfix">
     <c:if test="${empty loginUser}">
       <div class="profile-circle profile-circle--comment-form" style="background-image: url(/images/noavatar.png)">
@@ -39,6 +44,7 @@
       </form>
     </c:if>
   </div>
+  </c:if>
 </div>
 
 <c:if test="${not empty loginUser}">

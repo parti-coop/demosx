@@ -82,7 +82,7 @@ public class DebateDto {
     public final static QBean<DebateDto> projectionForSiteDetail = Projections.fields(DebateDto.class,
         debate.id, debate.opinionType,
         CategoryDto.projection.as("category"),
-        IssueStatsDto.projection.as("stats"),
+        debate.statsId, IssueStatsDto.projection.as("stats"),
         debate.group, debate.process, debate.thumbnail, debate.title, debate.content, debate.startDate, debate.endDate);
 
     private Long id;
@@ -97,6 +97,7 @@ public class DebateDto {
 
     private CategoryDto category;
 
+    private Long statsId;
     private IssueStatsDto stats;
     private List<IssueFileDto> files;
 

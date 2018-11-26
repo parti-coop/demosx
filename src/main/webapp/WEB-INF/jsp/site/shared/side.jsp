@@ -6,7 +6,7 @@
     <div class="side-box">
       <p class="side-help-text">로그인 하시면, 다양한 제안과 토론에 참여가 가능합니다.</p>
       <div class="domo-box-buttons">
-        <a href="" class="btn demo-btn demo-btn--primary btn-side">로그인하기<i class="xi-angle-right"></i></a>
+        <a href="" class="btn demo-btn demo-btn--primary btn-side show-login-modal">로그인하기<i class="xi-angle-right"></i></a>
       </div>
     </div>
   </div>

@@ -152,7 +152,9 @@
         </div>
       </div>
 
-      <%@include file="../opinion/proposal.jsp" %>
+      <jsp:include page="../opinion/proposal.jsp">
+        <jsp:param name="id" value="${proposal.id}"/>
+      </jsp:include>
     </div>
 
     <%@include file="../shared/side.jsp" %>

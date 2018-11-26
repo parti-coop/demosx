@@ -74,6 +74,8 @@ public class ActionController {
         }
         model.addAttribute("action", actionDto);
 
+        issueService.increaseViewCount(actionDto.getStatsId());
+
         return "/site/action/detail";
     }
 }
