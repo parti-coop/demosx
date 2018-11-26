@@ -42,6 +42,12 @@ public class OpinionDto {
         IssueDto.projectionForOpinion.as("issue"),
         opinion.likeCount, opinion.content, opinion.vote);
 
+    /**
+     * 이슈 내 의견
+     */
+    public final static QBean<OpinionDto> projectionForMyOpinion = Projections.fields(OpinionDto.class,
+        opinion.id, opinion.content, opinion.vote);
+
     protected Long id;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     protected LocalDateTime createdDate;

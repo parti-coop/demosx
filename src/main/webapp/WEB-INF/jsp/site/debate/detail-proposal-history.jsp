@@ -105,7 +105,7 @@
   </button>
 </div>
 
-<%@ include file="../shared/history.jsp" %>
+<%@ include file="history.jsp" %>
 
 <script>
   $(function () {

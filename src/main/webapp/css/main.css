@@ -1377,7 +1377,7 @@ a:hover {
 .progress-fill-bar{
     height: 22px;
     display: inline-block;
-    background-color: #ff5600;
+    background-color: #eff3f6;
     background-image: url(/images/progress-pattern.png)
 }
 .progress-fill-bar--blue{
@@ -1663,7 +1663,18 @@ a:hover {
     background-color: #43484c;
     color: #fff;
 }
-
+.delete-btn {
+    background-color: #cf2239;
+    color: #fff;
+    -webkit-border-radius: 4px !important;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+.delete-btn:hover, .delete-btn:focus{
+    background-color: #af192d;
+    color: #fff;
+}
 .demo-submit-btn--submit{
     background-color: #1e60b1;
 }
@@ -1723,7 +1734,7 @@ a:hover {
 @media (max-width: 767px){
     .d-btn--discuss{
         padding: 5px 7px;
-        font-size: 14px;
+        font-size: 12px;
         margin-right: 0;
         width: 33%;
     }
@@ -2094,6 +2105,7 @@ a:hover {
 .comment-vote-result{
     padding-right: 100px;
     position: relative;
+    min-height: 70px;
 }
 .comment-status-wrapper{
     position: absolute;
@@ -2108,6 +2120,18 @@ a:hover {
         position: relative;
         text-align: right;
     }
+}
+#yes-opinion {
+    color: #1e60b1;
+    display: block;
+}
+#no-opinion {
+    color: #cf2239;
+    display: block;
+}
+#etc-opinion {
+    color: #727a7f;
+    display: block;
 }
 /* comment END */
 

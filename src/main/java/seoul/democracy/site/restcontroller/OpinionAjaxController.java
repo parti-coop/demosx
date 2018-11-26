@@ -10,10 +10,14 @@ import seoul.democracy.opinion.dto.OpinionCreateDto;
 import seoul.democracy.opinion.dto.OpinionDto;
 import seoul.democracy.opinion.dto.OpinionUpdateDto;
 import seoul.democracy.opinion.service.OpinionService;
+import seoul.democracy.user.utils.UserUtils;
 
 import javax.validation.Valid;
 
+import static seoul.democracy.opinion.domain.Opinion.Status.OPEN;
 import static seoul.democracy.opinion.dto.OpinionDto.projectionForIssueDetail;
+import static seoul.democracy.opinion.dto.OpinionDto.projectionForMyOpinion;
+import static seoul.democracy.opinion.predicate.OpinionPredicate.equalIssueIdAndCreatedByIdAndStatus;
 import static seoul.democracy.opinion.predicate.OpinionPredicate.predicateForOpinionList;
 
 @RestController
@@ -65,6 +69,14 @@ public class OpinionAjaxController {
         opinionService.deselectOpinionLike(id);
 
         return ResultInfo.of("공감해제하였습니다.");
+    }
+
+    @RequestMapping(value = "/ajax/mypage/opinions", method = RequestMethod.GET)
+    public OpinionDto getDebateOpinionByIssue(@RequestParam("issueId") Long issueId) {
+        OpinionDto opinionDto = opinionService.getOpinion(equalIssueIdAndCreatedByIdAndStatus(issueId, UserUtils.getUserId(), OPEN), projectionForMyOpinion);
+        if (opinionDto == null) return new OpinionDto();
+
+        return opinionDto;
     }
 
 }
