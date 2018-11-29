@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
@@ -64,9 +65,7 @@ public class UserService {
 
     @Transactional
     public User create(UserCreateDto createDto) {
-
-        if (existsEmail(createDto.getEmail()))
-            throw new AlreadyExistsException("이미 사용중인 이메일입니다.");
+        if (existsEmail(createDto.getEmail())) throw new AlreadyExistsException("이미 사용중인 이메일입니다.");
 
         User user = User.create(createDto);
 
@@ -132,5 +131,23 @@ public class UserService {
     public boolean matchPassword(String password) {
         User user = getMe();
         return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    @Transactional
+    public void initPassword(String email) {
+        User user = userRepository.findOne(equalEmail(email));
+        if (user == null) return;
+
+        user.initPassword();
+    }
+
+    @Transactional
+    public void resetPassword(UserPasswordResetDto resetDto) {
+        User user = userRepository.findOne(equalEmail(resetDto.getEmail()));
+        if (user == null || StringUtils.isEmpty(user.getToken()) || !user.getToken().equals(resetDto.getToken()))
+            throw new BadRequestException("token", "error.token", "패스워드 설정을 할 수 없습니다.");
+
+        String password = passwordEncoder.encode(resetDto.getPassword());
+        user.resetPassword(password);
     }
 }

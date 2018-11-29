@@ -19,6 +19,7 @@ import seoul.democracy.user.dto.UserUpdateDto;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * 회원
@@ -170,6 +171,17 @@ public class User implements Serializable {
     public User changePassword(String password) {
         this.password = password;
         return this;
+    }
+
+    public void initPassword() {
+        if (StringUtils.hasText(this.token)) return;
+
+        this.token = UUID.randomUUID().toString();
+    }
+
+    public void resetPassword(String password) {
+        this.token = null;
+        this.password = password;
     }
 
     public String viewPhoto() {

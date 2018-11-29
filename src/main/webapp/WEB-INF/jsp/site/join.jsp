@@ -39,7 +39,7 @@
       <div class="form-group form-group--demo">
         <label class="demo-form-label" for="inputPasswordConfirm">비밀번호확인</label>
         <input type="password" class="form-control demo-input" id="inputPasswordConfirm"
-               placeholder="6자리 이상 비밀전호를 설정해 주세요."
+               placeholder="비밀전호를 확인해 주세요."
                data-parsley-required="true" data-parsley-minlength="6" data-parsley-equalto="#password">
         <!-- <p class="demo-help-error"><i class="xi-error-o xi-x"></i> 비밀번호를 적어주세요.</p> -->
       </div>

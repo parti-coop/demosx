@@ -82,4 +82,22 @@ public class LoginController {
     public String findPassword() {
         return UserUtils.isLogin() ? "redirect:/index.do" : "/site/find-password";
     }
+
+    @RequestMapping(value = "/find-password.do", method = RequestMethod.POST)
+    public String findPassword(@RequestParam("email") String email, Model model) {
+        if (UserUtils.isLogin()) return "redirect:/index.do";
+
+        userService.initPassword(email);
+        model.addAttribute("reset", true);
+
+        return "/site/find-password";
+    }
+
+    @RequestMapping(value = "/reset-password.do", method = RequestMethod.GET)
+    public String resetPassword(@RequestParam("token") String token, Model model) {
+        if (UserUtils.isLogin()) return "redirect:/index.do";
+
+        model.addAttribute("token", token);
+        return "/site/reset-password";
+    }
 }
