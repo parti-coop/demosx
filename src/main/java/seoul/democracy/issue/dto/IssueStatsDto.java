@@ -43,6 +43,24 @@ public class IssueStatsDto {
         return etcCount * 100 / totalCount;
     }
 
+    public double yesPercentToDouble() {
+        long totalCount = getOpinionCount();
+        if(totalCount == 0) return 0;
+        return yesCount * 100.0 / totalCount;
+    }
+
+    public double noPercentToDouble() {
+        long totalCount = getOpinionCount();
+        if(totalCount == 0) return 0;
+        return noCount * 100.0 / totalCount;
+    }
+
+    public double etcPercentToDouble() {
+        long totalCount = getOpinionCount();
+        if(totalCount == 0) return 0;
+        return etcCount * 100.0 / totalCount;
+    }
+
     public String viewLikeCount() {
         return String.format("%,d", likeCount);
     }

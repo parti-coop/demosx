@@ -48,10 +48,11 @@
         <div class="progress-container">
           <div class="progress-bg progress-bg--discussion">
             <div class="progress-fill-bar progress-fill-bar--blue"
-                 style="width: ${debate.stats.yesPercent()}%;"></div>
+                 style="width: ${debate.stats.yesPercentToDouble()}%;"></div>
             <div class="progress-fill-bar progress-fill-bar--grey"
-                 style="width: ${debate.stats.etcPercent()}%;"></div>
-            <div class="progress-fill-bar progress-fill-bar--red" style="width: ${debate.stats.noPercent()}%;"></div>
+                 style="width: ${debate.stats.etcPercentToDouble()}%;"></div>
+            <div class="progress-fill-bar progress-fill-bar--red"
+                 style="width: ${debate.stats.noPercentToDouble()}%;"></div>
           </div>
         </div>
         <div class="progress-info clearfix">
@@ -175,23 +176,18 @@
         <div class="demo-progress">
           <div class="progress-container">
             <div class="progress-bg progress-bg--discussion">
-              <div class="progress-fill-bar progress-fill-bar--blue" style="width: ${debate.stats.yesPercent()}%;"></div>
-              <div class="progress-fill-bar progress-fill-bar--grey" style="width: ${debate.stats.etcPercent()}%;"></div>
-              <div class="progress-fill-bar progress-fill-bar--red" style="width: ${debate.stats.noPercent()}%;"></div>
+              <div class="progress-fill-bar progress-fill-bar--blue" style="width: ${debate.stats.yesPercentToDouble()}%;"></div>
+              <div class="progress-fill-bar progress-fill-bar--grey" style="width: ${debate.stats.etcPercentToDouble()}%;"></div>
+              <div class="progress-fill-bar progress-fill-bar--red" style="width: ${debate.stats.noPercentToDouble()}%;"></div>
             </div>
           </div>
           <div class="discuss-progress-info clearfix">
-            <div class="progress-info__blue" style="width: ${debate.stats.yesPercent()}%;">
-              <p>찬성</p>
-              <p>${debate.stats.yesCount}표(${debate.stats.yesPercent()}%)</p>
-            </div>
-            <div class="progress-info__grey" style="width: ${debate.stats.etcPercent()}%;">
-              <p>기타</p>
-              <p>${debate.stats.etcCount}표(${debate.stats.etcPercent()}%)</p>
-            </div>
-            <div class="progress-info__red" style="width: ${debate.stats.noPercent()}%;">
-              <p>반대</p>
-              <p>${debate.stats.noCount}표(${debate.stats.noPercent()}%)</p>
+            <div class="progress-info__right">
+              <p class="progress-info__text">
+                <sapn class="progress-blue">찬성 ${debate.stats.yesCount}표(${debate.stats.yesPercent()}%)</sapn>
+                <span class="progress-grey"> • 기타 ${debate.stats.etcCount}표(${debate.stats.etcPercent()}%) • </span>
+                <span class="progress-red">반대 ${debate.stats.noCount}표(${debate.stats.noPercent()}%)</span>
+              </p>
             </div>
           </div>
         </div>
