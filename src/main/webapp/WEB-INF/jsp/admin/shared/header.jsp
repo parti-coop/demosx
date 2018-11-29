@@ -108,7 +108,7 @@
           </a>
         </li>
 
-        <li class="header">Stats</li>
+        <li class="header">통계</li>
         <li>
           <a href="<c:url value="/admin/stats/issue.do"/>">
             <i class="fa fa-bar-chart"></i>

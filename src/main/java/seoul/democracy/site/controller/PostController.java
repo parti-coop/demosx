@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.post.dto.PostDto;
 import seoul.democracy.post.predicate.PostPredicate;
 import seoul.democracy.post.service.PostService;
@@ -45,6 +46,7 @@ public class PostController {
     public String noticeDetail(@RequestParam("id") Long id,
                                Model model) {
         PostDto postDto = postService.getPost(PostPredicate.equalIdAndTypeAndStatus(id, NOTICE, OPEN), PostDto.projectionForSiteDetail);
+        if (postDto == null) throw new NotFoundException("해당 내용을 찾을 수 없습니다.");
 
         model.addAttribute("post", postDto);
 

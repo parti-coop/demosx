@@ -71,4 +71,28 @@ public class SiteController {
     public String copyright() {
         return "/site/static/copyright";
     }
+
+    /**
+     * 403
+     */
+    @RequestMapping(value = "/403.do", method = RequestMethod.GET)
+    public String forbidden() {
+        return "/site/static/403";
+    }
+
+    /**
+     * 404
+     */
+    @RequestMapping(value = "/404.do", method = RequestMethod.GET)
+    public String notFound() {
+        return "/site/static/404";
+    }
+
+    /**
+     * 500
+     */
+    @RequestMapping(value = "/500.do", method = RequestMethod.GET)
+    public String error() {
+        return "/site/static/500";
+    }
 }

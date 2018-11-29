@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import seoul.democracy.action.dto.ActionDto;
 import seoul.democracy.action.service.ActionService;
+import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.dto.CategoryDto;
 import seoul.democracy.issue.dto.IssueDto;
 import seoul.democracy.issue.service.CategoryService;
@@ -68,6 +69,8 @@ public class ActionController {
                            Model model) {
 
         ActionDto actionDto = actionService.getAction(equalIdAndStatus(id, OPEN), projectionForSiteDetail, true, true);
+        if (actionDto == null) throw new NotFoundException("해당 내용을 찾을 수 없습니다.");
+
         if (!CollectionUtils.isEmpty(actionDto.getRelations())) {
             List<IssueDto> issues = issueService.getIssues(equalIdIn(actionDto.getRelations()), projectionForRelation);
             actionDto.setIssueMap(issues.stream().collect(Collectors.toMap(IssueDto::getId, identity())));

@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.debate.domain.Debate;
 import seoul.democracy.debate.dto.DebateDto;
 import seoul.democracy.debate.service.DebateService;
@@ -106,6 +107,8 @@ public class DebateController {
 
         Predicate predicate = equalIdAndStatus(id, OPEN);
         DebateDto debateDto = debateService.getDebate(predicate, projectionForSiteDetail, true, true);
+        if (debateDto == null) throw new NotFoundException("해당 내용을 찾을 수 없습니다.");
+
         if (!CollectionUtils.isEmpty(debateDto.getRelations())) {
             List<IssueDto> issues = issueService.getIssues(equalIdIn(debateDto.getRelations()), projectionForRelation);
             debateDto.setIssueMap(issues.stream().collect(Collectors.toMap(IssueDto::getId, identity())));

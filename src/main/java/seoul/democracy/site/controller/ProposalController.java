@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.issue.dto.CategoryDto;
 import seoul.democracy.issue.service.CategoryService;
 import seoul.democracy.issue.service.IssueService;
@@ -67,6 +68,8 @@ public class ProposalController {
     public String proposal(@RequestParam("id") Long id,
                            Model model) {
         ProposalDto proposalDto = proposalService.getProposalWithLiked(equalIdAndStatus(id, OPEN), projectionForSiteDetail);
+        if (proposalDto == null) throw new NotFoundException("해당 내용을 찾을 수 없습니다.");
+
         model.addAttribute("proposal", proposalDto);
 
         issueService.increaseViewCount(proposalDto.getStatsId());
@@ -85,6 +88,7 @@ public class ProposalController {
                                Model model) {
 
         ProposalDto proposalDto = proposalService.getProposal(predicateForEdit(id, UserUtils.getUserId()), projectionForSiteEdit);
+        if (proposalDto == null) throw new NotFoundException("해당 내용을 찾을 수 없습니다.");
 
         ProposalUpdateDto updateDto = ProposalUpdateDto.of(proposalDto.getId(), proposalDto.getTitle(), proposalDto.getContent());
         model.addAttribute("updateDto", updateDto);
