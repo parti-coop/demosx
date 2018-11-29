@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import seoul.democracy.common.exception.AlreadyExistsException;
+import seoul.democracy.email.service.EmailService;
+import seoul.democracy.user.domain.User;
 import seoul.democracy.user.dto.UserCreateDto;
 import seoul.democracy.user.service.UserService;
 import seoul.democracy.user.utils.UserUtils;
@@ -22,10 +24,13 @@ import javax.validation.Valid;
 public class LoginController {
 
     private final UserService userService;
+    private final EmailService emailService;
 
     @Autowired
-    public LoginController(UserService userService) {
+    public LoginController(UserService userService,
+                           EmailService emailService) {
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     /**
@@ -84,17 +89,22 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/find-password.do", method = RequestMethod.POST)
-    public String findPassword(@RequestParam("email") String email, Model model) {
+    public String findPassword(@RequestParam("email") String email,
+                               Model model) throws Exception {
         if (UserUtils.isLogin()) return "redirect:/index.do";
 
-        userService.initPassword(email);
+        User user = userService.initPassword(email);
+        if (user == null) return "/site/find-password";
+
+        emailService.resetPassword(user.getEmail(), user.getToken());
         model.addAttribute("reset", true);
 
         return "/site/find-password";
     }
 
     @RequestMapping(value = "/reset-password.do", method = RequestMethod.GET)
-    public String resetPassword(@RequestParam("token") String token, Model model) {
+    public String resetPassword(@RequestParam("token") String token,
+                                Model model) {
         if (UserUtils.isLogin()) return "redirect:/index.do";
 
         model.addAttribute("token", token);

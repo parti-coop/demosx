@@ -134,11 +134,11 @@ public class UserService {
     }
 
     @Transactional
-    public void initPassword(String email) {
+    public User initPassword(String email) {
         User user = userRepository.findOne(equalEmail(email));
-        if (user == null) return;
+        if (user == null) return null;
 
-        user.initPassword();
+        return user.initPassword();
     }
 
     @Transactional

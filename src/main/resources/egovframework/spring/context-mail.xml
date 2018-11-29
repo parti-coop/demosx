@@ -15,4 +15,22 @@
         </property>
     </bean>
 
+    <bean id="resetPasswordEmailContent" class="org.apache.commons.io.IOUtils" factory-method="toString">
+        <constructor-arg value="classpath:egovframework/email/reset-password.html" type="java.io.InputStream" />
+    </bean>
+    <bean id="registerProposalEmailContent" class="org.apache.commons.io.IOUtils" factory-method="toString">
+        <constructor-arg value="classpath:egovframework/email/register-proposal.html" type="java.io.InputStream" />
+    </bean>
+    <bean id="assignProposalEmailContent" class="org.apache.commons.io.IOUtils" factory-method="toString">
+        <constructor-arg value="classpath:egovframework/email/assign-proposal.html" type="java.io.InputStream" />
+    </bean>
+    <bean id="dropProposalEmailContent" class="org.apache.commons.io.IOUtils" factory-method="toString">
+        <constructor-arg value="classpath:egovframework/email/drop-proposal.html" type="java.io.InputStream" />
+    </bean>
+    <bean id="opinionProposalEmailContent" class="org.apache.commons.io.IOUtils" factory-method="toString">
+        <constructor-arg value="classpath:egovframework/email/opinion-proposal.html" type="java.io.InputStream" />
+    </bean>
+    <bean id="passProposalEmailContent" class="org.apache.commons.io.IOUtils" factory-method="toString">
+        <constructor-arg value="classpath:egovframework/email/pass-proposal.html" type="java.io.InputStream" />
+    </bean>
 </beans>

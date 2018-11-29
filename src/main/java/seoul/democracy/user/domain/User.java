@@ -173,10 +173,12 @@ public class User implements Serializable {
         return this;
     }
 
-    public void initPassword() {
-        if (StringUtils.hasText(this.token)) return;
+    public User initPassword() {
+        if (StringUtils.hasText(this.token)) return this;
 
-        this.token = UUID.randomUUID().toString();
+        this.token = UUID.randomUUID().toString().replace("-", "");
+
+        return this;
     }
 
     public void resetPassword(String password) {
