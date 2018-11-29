@@ -1,10 +1,14 @@
 package seoul.democracy.opinion.repository;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.types.Expression;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import seoul.democracy.opinion.dto.OpinionDto;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public interface OpinionRepositoryCustom {
 
@@ -22,4 +26,9 @@ public interface OpinionRepositoryCustom {
      * 제안의견 공감 해제
      */
     void decreaseLike(Long opinionId);
+
+    /**
+     * 날짜 별 통계
+     */
+    List<Tuple> getStatsByDate(LocalDate date);
 }

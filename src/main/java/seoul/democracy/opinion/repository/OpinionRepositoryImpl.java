@@ -1,6 +1,7 @@
 package seoul.democracy.opinion.repository;
 
 import com.mysema.query.SearchResults;
+import com.mysema.query.Tuple;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.support.Expressions;
 import com.mysema.query.types.Expression;
@@ -11,6 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QueryDslRepositorySupport;
 import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.dto.OpinionDto;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 import static seoul.democracy.issue.domain.QIssue.issue;
 import static seoul.democracy.opinion.domain.QOpinion.opinion;
@@ -73,5 +79,17 @@ public class OpinionRepositoryImpl extends QueryDslRepositorySupport implements 
             .where(opinion.id.eq(opinionId))
             .set(opinion.likeCount, opinion.likeCount.subtract(constant))
             .execute();
+    }
+
+    @Override
+    public List<Tuple> getStatsByDate(LocalDate date) {
+        LocalDateTime startDateTime = LocalDateTime.of(date, LocalTime.of(0, 0));
+        LocalDateTime endDateTime = LocalDateTime.of(date.plusDays(1), LocalTime.of(0, 0));
+
+        return from(opinion)
+                   .innerJoin(opinion.issue, issue)
+                   .where(opinion.createdDate.goe(startDateTime).and(opinion.createdDate.lt(endDateTime)))
+                   .groupBy(opinion.issue.type, opinion.issue.group)
+                   .list(opinion.issue.type, opinion.issue.group, opinion.count());
     }
 }

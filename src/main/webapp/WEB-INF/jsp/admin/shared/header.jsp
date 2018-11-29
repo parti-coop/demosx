@@ -110,9 +110,15 @@
 
         <li class="header">Stats</li>
         <li>
-          <a href="https://adminlte.io/docs">
+          <a href="<c:url value="/admin/stats/issue.do"/>">
             <i class="fa fa-bar-chart"></i>
-            <span>통계</span>
+            <span>게시물 통계</span>
+          </a>
+        </li>
+        <li>
+          <a href="<c:url value="/admin/stats/opinion.do"/>">
+            <i class="fa fa-bar-chart"></i>
+            <span>댓글 통계</span>
           </a>
         </li>
       </ul>
