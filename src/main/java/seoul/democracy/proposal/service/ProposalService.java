@@ -3,6 +3,7 @@ package seoul.democracy.proposal.service;
 import com.mysema.query.types.Expression;
 import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -19,6 +20,9 @@ import seoul.democracy.issue.repository.IssueStatsRepository;
 import seoul.democracy.issue.service.CategoryService;
 import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.*;
+import seoul.democracy.proposal.event.ProposalAssignedManagerEvent;
+import seoul.democracy.proposal.event.ProposalCompletedEvent;
+import seoul.democracy.proposal.event.ProposalCreatedEvent;
 import seoul.democracy.proposal.repository.ProposalRepository;
 import seoul.democracy.user.domain.User;
 import seoul.democracy.user.service.UserService;
@@ -34,8 +38,10 @@ public class ProposalService {
     private final IssueLikeRepository likeRepository;
     private final IssueStatsRepository statsRepository;
 
-    final private CategoryService categoryService;
+    private final CategoryService categoryService;
     private final UserService userService;
+
+    private final ApplicationEventPublisher eventPublisher;
 
 
     @Autowired
@@ -43,12 +49,14 @@ public class ProposalService {
                            IssueLikeRepository likeRepository,
                            IssueStatsRepository statsRepository,
                            CategoryService categoryService,
-                           UserService userService) {
+                           UserService userService,
+                           ApplicationEventPublisher eventPublisher) {
         this.proposalRepository = proposalRepository;
         this.likeRepository = likeRepository;
         this.statsRepository = statsRepository;
         this.categoryService = categoryService;
         this.userService = userService;
+        this.eventPublisher = eventPublisher;
     }
 
     public ProposalDto getProposal(Predicate predicate, Expression<ProposalDto> projection) {
@@ -85,7 +93,11 @@ public class ProposalService {
     @Transactional
     public Proposal create(ProposalCreateDto createDto) {
         Proposal proposal = Proposal.create(createDto);
-        return proposalRepository.save(proposal);
+        proposal = proposalRepository.save(proposal);
+
+        eventPublisher.publishEvent(ProposalCreatedEvent.of(proposal));
+
+        return proposal;
     }
 
     /**
@@ -197,7 +209,15 @@ public class ProposalService {
         Proposal proposal = getProposal(assignDto.getProposalId());
         User manager = userService.getUser(assignDto.getManagerId());
 
-        return proposal.assignManager(manager);
+        Proposal.Process currentProcess = proposal.getProcess();
+        proposal.assignManager(manager);
+
+        // 담당자 최초 할당 이벤트
+        if (currentProcess == Proposal.Process.NEED_ASSIGN && proposal.getProcess() == Proposal.Process.ASSIGNED) {
+            eventPublisher.publishEvent(ProposalAssignedManagerEvent.of(proposal));
+        }
+
+        return proposal;
     }
 
     /**
@@ -207,7 +227,15 @@ public class ProposalService {
     @PostAuthorize("returnObject.managerId == authentication.principal.user.id")
     public Proposal editManagerComment(ProposalManagerCommentEditDto editDto) {
         Proposal proposal = getProposal(editDto.getProposalId());
-        return proposal.editManagerComment(editDto.getComment());
+        Proposal.Process currentProcess = proposal.getProcess();
+        proposal.editManagerComment(editDto.getComment());
+
+        // 담당자 최초 답변 이벤트
+        if (currentProcess == Proposal.Process.ASSIGNED && proposal.getProcess() == Proposal.Process.COMPLETE) {
+            eventPublisher.publishEvent(ProposalCompletedEvent.of(proposal));
+        }
+
+        return proposal;
     }
 
 }

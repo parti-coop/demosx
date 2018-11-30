@@ -6,6 +6,10 @@ import org.springframework.util.StringUtils;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.proposal.domain.Proposal;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import static seoul.democracy.issue.domain.Issue.Status.OPEN;
 import static seoul.democracy.proposal.domain.QProposal.proposal;
 
@@ -82,5 +86,17 @@ public class ProposalPredicate {
             proposal.id.eq(id),
             proposal.createdById.eq(userId),
             proposal.status.eq(OPEN));
+    }
+
+    public static Predicate predicateForSendDropEmail() {
+        LocalDate date = LocalDate.now().minusDays(20);
+        LocalDateTime startDateTime = LocalDateTime.of(date, LocalTime.of(0, 0));
+        LocalDateTime endDateTime = LocalDateTime.of(date.plusDays(1), LocalTime.of(0, 0));
+
+        return ExpressionUtils.allOf(
+            proposal.status.eq(OPEN),
+            proposal.process.eq(Proposal.Process.INIT),
+            proposal.createdDate.goe(startDateTime),
+            proposal.createdDate.lt(endDateTime));
     }
 }

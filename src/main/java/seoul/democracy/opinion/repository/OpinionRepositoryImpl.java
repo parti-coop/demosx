@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QueryDslRepositorySupport;
+import seoul.democracy.issue.domain.Issue;
+import seoul.democracy.issue.domain.IssueType;
 import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.dto.OpinionDto;
 
@@ -20,6 +22,7 @@ import java.util.List;
 
 import static seoul.democracy.issue.domain.QIssue.issue;
 import static seoul.democracy.opinion.domain.QOpinion.opinion;
+import static seoul.democracy.user.domain.QUser.user;
 import static seoul.democracy.user.dto.UserDto.createdBy;
 import static seoul.democracy.user.dto.UserDto.modifiedBy;
 
@@ -91,5 +94,23 @@ public class OpinionRepositoryImpl extends QueryDslRepositorySupport implements 
                    .where(opinion.createdDate.goe(startDateTime).and(opinion.createdDate.lt(endDateTime)))
                    .groupBy(opinion.issue.type, opinion.issue.group)
                    .list(opinion.issue.type, opinion.issue.group, opinion.count());
+    }
+
+    @Override
+    public List<Tuple> getNewOpinionProposal() {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDateTime startDateTime = LocalDateTime.of(yesterday, LocalTime.of(0, 0));
+        LocalDateTime endDateTime = LocalDateTime.of(yesterday.plusDays(1), LocalTime.of(0, 0));
+
+        return from(opinion)
+                   .innerJoin(opinion.issue, issue)
+                   .innerJoin(opinion.issue.createdBy, user)
+                   .where(opinion.issue.type.eq(IssueType.P)
+                              .and(opinion.issue.status.eq(Issue.Status.OPEN))
+                              .and(opinion.createdDate.goe(startDateTime))
+                              .and(opinion.createdDate.lt(endDateTime)))
+                   .groupBy(opinion.issue.id)
+                   .list(opinion.issue.id, opinion.issue.createdBy.email, opinion.issue.createdBy.name);
+
     }
 }

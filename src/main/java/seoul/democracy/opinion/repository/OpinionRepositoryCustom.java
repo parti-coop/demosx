@@ -31,4 +31,9 @@ public interface OpinionRepositoryCustom {
      * 날짜 별 통계
      */
     List<Tuple> getStatsByDate(LocalDate date);
+
+    /**
+     * 새 의견이 있는 제안들
+     */
+    List<Tuple> getNewOpinionProposal();
 }

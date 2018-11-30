@@ -21,7 +21,7 @@ public class ProposalAjaxController {
     }
 
     @RequestMapping(value = "/proposals", method = RequestMethod.POST)
-    public ResultInfo newProposal(@RequestBody @Valid ProposalCreateDto createDto) {
+    public ResultInfo newProposal(@RequestBody @Valid ProposalCreateDto createDto) throws Exception {
         proposalService.create(createDto);
 
         return ResultInfo.of("제안을 등록하였습니다.");
