@@ -21,23 +21,51 @@
           src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.1/js/jquery.fileupload.min.js"></script>
 
   <!-- tinymce editor -->
-  <%--<script type="text/javascript" src="<c:url value="/tinymce/tinymce.min.js"/>"></script>--%>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.8.5/tinymce.min.js"></script>
+  <script type="text/javascript" src="<c:url value="/tinymce/tinymce.min.js"/>"></script>
   <script>
-    tinymce.init({
-      selector: '.tinymce-editor',
-      menubar: false,
-      language: 'ko_KR',
-      language_url: '<c:url value="/tinymce/langs/ko_KR.js"/>',
-      plugins: ['autolink', 'autosave', 'textcolor', 'image', 'media', 'link', 'paste', 'autoresize'],
-      toolbar: "undo redo | styleselect | forecolor bold italic | alignleft aligncenter alignright alignjustify | link media custom_image",
-      mobile: {
-        theme: 'mobile'
-      },
-      branding: false,
-      content_css: ['https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', '/css/admin.css', 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic'],
-      preview_styles: 'font-family font-size color',
-      body_class: 'container'
+    $(function () {
+      var $editor = null;
+      tinymce.init({
+        selector: '.tinymce-editor',
+        menubar: false,
+        language: 'ko_KR',
+        plugins: ['autolink', 'autosave', 'textcolor', 'image', 'media', 'link', 'paste', 'autoresize'],
+        toolbar: "undo redo | styleselect | forecolor bold italic | alignleft aligncenter alignright alignjustify | link media custom_image",
+        mobile: {
+          theme: 'mobile'
+        },
+        branding: false,
+        content_css: ['https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', '/css/admin.css', 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic'],
+        preview_styles: 'font-family font-size color',
+        body_class: 'container',
+        setup: function (editor) {
+          $editor = editor;
+          editor.addButton('custom_image', {
+            title: '이미지삽입',
+            icon: 'image',
+            onclick: function() {
+              $('#tinymce-file-upload').click();
+            }
+          });
+        }
+      });
+
+      $('#tinymce-file-upload').fileupload({
+        headers: {
+          'X-CSRF-TOKEN': '${_csrf.token}'
+        },
+        url: '/admin/ajax/files',
+        dataType: 'json',
+        done: function (e, data) {
+          $editor.execCommand('mceInsertContent', false, '<img src="' + data.result.url + '" alt="' + data.result.filename  + '"/>');
+        },
+        progressall: function (e, data) {
+        },
+        fail: function (e, data) {
+          alert(data.jqXHR.responseJSON.msg);
+        }
+      }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
     });
   </script>
 </head>
@@ -73,6 +101,7 @@
                   <div class="col-sm-10">
                     <form:textarea path="content" class="tinymce-editor"
                                    style="visibility:hidden; width:100%; height:400px;"/>
+                    <input type="file" name="file" class="hidden" id="tinymce-file-upload">
                   </div>
                 </div>
                 <div class="form-group">

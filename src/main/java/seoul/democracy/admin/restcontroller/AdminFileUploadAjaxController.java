@@ -22,7 +22,7 @@ public class AdminFileUploadAjaxController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public UploadFileInfo fileUpload(@RequestParam(value = "type") UploadFileType type, @RequestParam("file") MultipartFile file) {
+    public UploadFileInfo fileUpload(@RequestParam(value = "type", defaultValue = "EDITOR") UploadFileType type, @RequestParam("file") MultipartFile file) {
         return storageService.store(type, file);
     }
 }

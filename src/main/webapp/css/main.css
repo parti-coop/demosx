@@ -4,6 +4,10 @@ body{
     font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', sans-serif;
 }
 
+img {
+    max-width: 100%;
+}
+
 a:hover, a:focus {
     text-decoration: none;
 }
