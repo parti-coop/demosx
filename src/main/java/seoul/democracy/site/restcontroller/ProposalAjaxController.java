@@ -3,6 +3,8 @@ package seoul.democracy.site.restcontroller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import seoul.democracy.common.dto.ResultInfo;
+import seoul.democracy.common.dto.ResultRedirectInfo;
+import seoul.democracy.proposal.domain.Proposal;
 import seoul.democracy.proposal.dto.ProposalCreateDto;
 import seoul.democracy.proposal.dto.ProposalUpdateDto;
 import seoul.democracy.proposal.service.ProposalService;
@@ -21,10 +23,10 @@ public class ProposalAjaxController {
     }
 
     @RequestMapping(value = "/proposals", method = RequestMethod.POST)
-    public ResultInfo newProposal(@RequestBody @Valid ProposalCreateDto createDto) throws Exception {
-        proposalService.create(createDto);
+    public ResultRedirectInfo newProposal(@RequestBody @Valid ProposalCreateDto createDto) throws Exception {
+        Proposal proposal = proposalService.create(createDto);
 
-        return ResultInfo.of("제안을 등록하였습니다.");
+        return ResultRedirectInfo.of("제안을 등록하였습니다.", "/proposal.do?id=" + proposal.getId());
     }
 
     @RequestMapping(value = "/proposals/{id}", method = RequestMethod.PUT)

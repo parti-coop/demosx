@@ -84,7 +84,9 @@
         data: JSON.stringify(data),
         success: function (data) {
           alert(data.msg);
-          window.location.href='/mypage/proposal.do';
+          $formNewProposal[0].reset();
+          $formNewProposal.parsley().reset();
+          window.location.href = data.url;
         },
         error: function (error) {
           if (error.status === 400) {

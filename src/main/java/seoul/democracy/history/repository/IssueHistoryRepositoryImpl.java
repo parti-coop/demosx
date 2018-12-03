@@ -36,6 +36,7 @@ public class IssueHistoryRepositoryImpl extends QueryDslRepositorySupport implem
     public List<IssueHistoryDto> findAll(Predicate predicate, Expression<IssueHistoryDto> projection) {
         return getQuery(projection)
                    .where(predicate)
+                   .orderBy(issueHistory.createdDate.desc())
                    .list(projection);
     }
 

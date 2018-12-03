@@ -71,6 +71,18 @@
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-serialize-object/2.5.0/jquery.serialize-object.min.js"></script>
 <script>
+  <c:if test="${empty loginUser}">
+  $(function () {
+    $(document).on('click', '.show-opinion-modal', function () {
+      <c:if test="${param.closed eq true}">
+      alert('투표 기간동안 작성 가능합니다.');
+      </c:if>
+      <c:if test="${param.closed ne true}">
+      $('#modal-login').modal('show');
+      </c:if>
+    });
+  });
+  </c:if>
   <c:if test="${not empty loginUser}">
   $(function () {
     var $formEditOpinion = $('#form-edit-opinion');
@@ -138,7 +150,6 @@
     $formEditOpinion.on('submit', function (event) {
       event.preventDefault();
       var data = $formEditOpinion.serializeObject();
-      console.log(data);
       var isNew = !data.opinionId;
       $.ajax({
         headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
@@ -150,7 +161,8 @@
         success: function (result) {
           alert(result.msg);
           if (isNew) {
-            $('#latest-sort-btn').trigger('click');
+            //$('#latest-sort-btn').trigger('click');
+            window.location.reload();
           } else {
             $('.comment-content-text[data-id=' + data.opinionId + ']').html(data.content.replace(/\r\n|\r|\n|\n\r/g, '<br>'));
           }
@@ -186,8 +198,9 @@
         dataType: 'json',
         success: function (data) {
           alert(data.msg);
-          $('.comment-content-text[data-id=' + id + ']').parents('.comment-li').remove();
-          $modalEditOpinion.modal('hide');
+          window.location.reload();
+          //$('.comment-content-text[data-id=' + id + ']').parents('.comment-li').remove();
+          //$modalEditOpinion.modal('hide');
         },
         error: function (error) {
           if (error.status === 400) {

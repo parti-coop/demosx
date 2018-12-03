@@ -112,6 +112,7 @@
         data: JSON.stringify(data),
         success: function (data) {
           alert(data.msg);
+          window.location.reload();
         },
         error: function (error) {
           if (error.status === 400) {
@@ -142,7 +143,7 @@
       headers: {
         'X-CSRF-TOKEN': '${_csrf.token}'
       },
-      url: '/admin/ajax/files?type=THUMBNAIL',
+      url: '/ajax/mypage/files',
       dataType: 'json',
       done: function (e, data) {
         $('#thumbnail-progress').addClass('hidden');

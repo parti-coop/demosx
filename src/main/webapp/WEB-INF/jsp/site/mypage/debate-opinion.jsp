@@ -43,7 +43,7 @@
             <div class="search-form-group">
               <label class="demo-form-label sr-only" for="inputSearch">검색</label>
               <input type="text" class="form-control demo-input" name="search" id="inputSearch"
-                     autocomplete="off" placeholder="제목을 검색해보세요." value="${search}">
+                     autocomplete="off" placeholder="의견 내용을 검색해보세요." value="${search}">
               <button type="submit" class="search-submit-btn">
                 <i class="xi-search">
                   <p class="sr-only">돋보기</p>

@@ -122,4 +122,11 @@ public class DebateDto {
                    .filter(relation -> relation.getType() == IssueType.P)
                    .collect(Collectors.toList());
     }
+
+    public List<IssueDto> viewDebates() {
+        return relations.stream()
+                   .map(relation -> issueMap.get(relation))
+                   .filter(relation -> relation.getType() == IssueType.D)
+                   .collect(Collectors.toList());
+    }
 }

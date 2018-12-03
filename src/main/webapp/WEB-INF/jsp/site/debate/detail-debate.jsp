@@ -143,7 +143,7 @@
         <h5 class="discuss-title">${debate.title}</h5>
         <div class="contents-box__contents">${debate.content}</div>
 
-        <c:set var="issues" value="${devate.viewProposals()}"/>
+        <c:set var="issues" value="${debate.viewProposals()}"/>
         <c:if test="${not empty issues}">
           <div class="relative-links">
             <h5 class="relative-title">연관제안</h5>

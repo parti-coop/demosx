@@ -112,7 +112,7 @@
         <h5 class="discuss-title">${debate.title}</h5>
         <div class="contents-box__contents">${debate.content}</div>
 
-        <c:set var="issues" value="${devate.viewProposals()}"/>
+        <c:set var="issues" value="${debate.viewProposals()}"/>
         <c:if test="${not empty issues}">
           <div class="relative-links">
             <h5 class="relative-title">연관제안</h5>
@@ -120,6 +120,19 @@
               <c:forEach var="issue" items="${issues}">
                 <li class="relative-link-li">
                   <a class="relative-link" href="<c:url value="/proposal.do?id=${issue.id}"/>">- ${issue.title}</a>
+                </li>
+              </c:forEach>
+            </ul>
+          </div>
+        </c:if>
+        <c:set var="issues" value="${debate.viewDebates()}"/>
+        <c:if test="${not empty issues}">
+          <div class="relative-links">
+            <h5 class="relative-title">연관토론</h5>
+            <ul class="relative-link-ul">
+              <c:forEach var="issue" items="${issues}">
+                <li class="relative-link-li">
+                  <a class="relative-link" href="<c:url value="/debate.do?id=${issue.id}"/>">- ${issue.title}</a>
                 </li>
               </c:forEach>
             </ul>
@@ -155,7 +168,7 @@
 
     $('.suggest-click-btn').click(function () {
       $('html, body').animate({
-        scrollTop: $('#suggest-scroll-position').offset().top - 80
+        scrollTop: $('#discussion-comment-form').offset().top - 80
       }, 300);
     });
 
