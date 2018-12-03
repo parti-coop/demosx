@@ -70,7 +70,7 @@
           editor.addButton('custom_image', {
             title: '이미지삽입',
             icon: 'image',
-            onclick: function() {
+            onclick: function () {
               $('#tinymce-file-upload').click();
             }
           });
@@ -84,7 +84,7 @@
         url: '/admin/ajax/files',
         dataType: 'json',
         done: function (e, data) {
-          $editor.execCommand('mceInsertContent', false, '<img src="' + data.result.url + '" alt="' + data.result.filename  + '"/>');
+          $editor.execCommand('mceInsertContent', false, '<img src="' + data.result.url + '" alt="' + data.result.filename + '"/>');
         },
         progressall: function (e, data) {
         },
@@ -224,14 +224,40 @@
                     <div id="selected-proposal-list">
                       <c:forEach var="relation" items="${updateDto.relations}">
                         <c:set var="issue" value="${updateDto.issueMap[relation]}"/>
-                        <p class="form-control-static">${issue.title}
-                          <i class="fa fa-times-circle cursor-pointer remove-issue-icon ml-10"></i>
-                          <input type="hidden" class="relation-input" value="${issue.id}">
-                        </p>
+                        <c:if test="${issue.type eq 'P'}">
+                          <p class="form-control-static">${issue.title}
+                            <i class="fa fa-times-circle cursor-pointer remove-issue-icon ml-10"></i>
+                            <input type="hidden" class="relation-input" value="${issue.id}">
+                          </p>
+                        </c:if>
                       </c:forEach>
                     </div>
                   </div>
                 </div>
+                <c:if test="${issueGroup eq 'ORG'}">
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">토론제안</label>
+                    <div class="col-sm-6">
+                      <div class="input-group input-group-sm">
+                        <select id="select-debate-input" class="form-control"></select>
+                        <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" id="select-debate-btn">추가하기</button>
+                      </span>
+                      </div>
+                      <div id="selected-debate-list">
+                        <c:forEach var="relation" items="${updateDto.relations}">
+                          <c:set var="issue" value="${updateDto.issueMap[relation]}"/>
+                          <c:if test="${issue.type eq 'D'}">
+                            <p class="form-control-static">${issue.title}
+                              <i class="fa fa-times-circle cursor-pointer remove-issue-icon ml-10"></i>
+                              <input type="hidden" class="relation-input" value="${issue.id}">
+                            </p>
+                          </c:if>
+                        </c:forEach>
+                      </div>
+                    </div>
+                  </div>
+                </c:if>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">공개여부<span> *</span></label>
                   <div class="col-sm-10">
@@ -272,59 +298,63 @@
         '<input type="hidden" class="relation-input" value="' + id + '"></p>';
     }
 
-    var $selectIssueInput = $('#select-proposal-input');
-    $selectIssueInput.select2({
-      language: 'ko',
-      theme: "bootstrap",
-      ajax: {
-        headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
-        url: '/admin/ajax/issue/proposals/select',
-        type: 'GET',
-        dataType: 'json',
-        data: function (params) {
-          return {
-            search: params.term
-          };
-        },
-        processResults: function (data) {
-          return {
-            results: data.content.map(function (item) {
-              return {
-                id: item.id,
-                text: item.title,
-                item: item
-              }
-            })
-          };
+    function initIssueSelect2(issueType) {
+      var $selectIssueInput = $('#select-' + issueType + '-input');
+      $selectIssueInput.select2({
+        language: 'ko',
+        theme: "bootstrap",
+        placeholder: "제목을 입력하세요.",
+        ajax: {
+          headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
+          url: '/admin/ajax/issue/' + issueType + 's/select',
+          type: 'GET',
+          dataType: 'json',
+          data: function (params) {
+            return {
+              search: params.term
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data.content.map(function (item) {
+                return {
+                  id: item.id,
+                  text: item.title,
+                  item: item
+                }
+              })
+            };
+          }
         }
-      }
-    });
+      });
 
+      $('#select-' + issueType + '-btn').click(function () {
+        var selectedData = $selectIssueInput.select2('data');
+        if (selectedData.length === 0) {
+          alert('선택된 항목이 없습니다.');
+          return;
+        }
 
-    $('#select-proposal-btn').click(function () {
-      var selectedData = $selectIssueInput.select2('data');
-      if (selectedData.length === 0) {
-        alert('선택된 항목이 없습니다.');
-        return;
-      }
+        var sameValueItem = $('input.relation-input[value=' + selectedData[0].id + ']');
+        if (sameValueItem.length !== 0) {
+          alert('이미 선택된 항목입니다.');
+          return;
+        }
 
-      var sameValueItem = $('input.relation-input[value=' + selectedData[0].id + ']');
-      if (sameValueItem.length !== 0) {
-        alert('이미 선택된 항목입니다.');
-        return;
-      }
+        $('#selected-' + issueType + '-list').append(getSelectedIssue(selectedData[0].text, selectedData[0].id));
+        rearrangeIssue();
+        $selectIssueInput.val(null).trigger('change');
+      });
+    }
 
-      $('#selected-proposal-list').append(getSelectedIssue(selectedData[0].text, selectedData[0].id));
-      rearrangeIssue();
-      $selectIssueInput.val(null).trigger('change');
-    });
+    initIssueSelect2('proposal');
+    initIssueSelect2('debate');
+    rearrangeIssue();
 
     $(document).on('click', '.remove-issue-icon', function () {
       $(this).parent('p').remove();
       rearrangeIssue();
     });
-
-    rearrangeIssue();
   });
 </script>
 <script>

@@ -10,7 +10,7 @@
 
 <div class="sign-container">
   <h3 class="demo-detail-title">비밀번호찾기</h3>
-  <form action="/find-password.do" method="post" id="je-find-password">
+  <form action="<c:url value="/find-password.do"/>" method="post" id="je-find-password">
     <input type="hidden" name="_csrf" value="${_csrf.token}">
     <div class="form-group form-group--demo">
       <label class="demo-form-label" for="inputEmail">이메일로 비밀번호 재설정 링크 전달</label>

@@ -103,18 +103,36 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">연관제안</label>
                   <div class="col-sm-10">
-                    <c:forEach var="relation" items="${debate.relations}">
+                    <c:forEach var="relation" items="${debate.relations}" varStatus="status">
                       <c:set var="issue" value="${debate.issueMap[relation]}"/>
-                      <p class="form-control-static">${issue.title}</p>
+                      <c:if test="${issue.type eq 'P'}">
+                        <p class="form-control-static">${issue.title}</p>
+                      </c:if>
                     </c:forEach>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">히스토리 작성</label>
-                  <div class="col-sm-10">
-                    <a href="#" class="btn btn-default btn-sm">작성하러 가기</a>
+                <c:if test="${issueGroup eq 'ORG'}">
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">연관토론</label>
+                    <div class="col-sm-10">
+                      <c:forEach var="relation" items="${debate.relations}" varStatus="status">
+                        <c:set var="issue" value="${debate.issueMap[relation]}"/>
+                        <c:if test="${issue.type eq 'D'}">
+                          <p class="form-control-static">${issue.title}</p>
+                        </c:if>
+                      </c:forEach>
+                    </div>
                   </div>
-                </div>
+                </c:if>
+                <c:if test="${debate.status eq 'OPEN'}">
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">히스토리 작성</label>
+                    <div class="col-sm-10">
+                      <a href="<c:url value="/debate-history.do?id=${debate.id}#middle-nav-tab"/>" target="_blank"
+                         class="btn btn-default btn-sm">작성하러 가기</a>
+                    </div>
+                  </div>
+                </c:if>
               </div>
             </form>
           </div>

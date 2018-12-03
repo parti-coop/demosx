@@ -23,9 +23,8 @@
         <script>
           $(function () {
             $('.logout-link').click(function (event) {
-              $('#form-logout').submit();
-
               event.preventDefault();
+              $('#form-logout').submit();
             });
           });
         </script>

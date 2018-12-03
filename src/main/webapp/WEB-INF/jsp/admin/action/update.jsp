@@ -278,6 +278,7 @@
       $selectIssueInput.select2({
         language: 'ko',
         theme: "bootstrap",
+        placeholder: "제목을 입력하세요.",
         ajax: {
           headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
           url: '/admin/ajax/issue/' + issueType + 's/select',

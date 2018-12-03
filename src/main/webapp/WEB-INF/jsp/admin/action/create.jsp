@@ -197,8 +197,8 @@
                       </span>
                     </div>
                     <div id="selected-proposal-list">
-                      <c:forEach var="relation" items="${updateDto.relations}">
-                        <c:set var="issue" value="${updateDto.issueMap[relation]}"/>
+                      <c:forEach var="relation" items="${createDto.relations}">
+                        <c:set var="issue" value="${createDto.issueMap[relation]}"/>
                         <c:if test="${issue.type eq 'P'}">
                           <p class="form-control-static">${issue.title}
                             <i class="fa fa-times-circle cursor-pointer remove-issue-icon ml-10"></i>
@@ -219,8 +219,8 @@
                       </span>
                     </div>
                     <div id="selected-debate-list">
-                      <c:forEach var="relation" items="${updateDto.relations}">
-                        <c:set var="issue" value="${updateDto.issueMap[relation]}"/>
+                      <c:forEach var="relation" items="${createDto.relations}">
+                        <c:set var="issue" value="${createDto.issueMap[relation]}"/>
                         <c:if test="${issue.type eq 'D'}">
                           <p class="form-control-static">${issue.title}
                             <i class="fa fa-times-circle cursor-pointer remove-issue-icon ml-10"></i>
@@ -278,6 +278,7 @@
       $selectIssueInput.select2({
         language: 'ko',
         theme: "bootstrap",
+        placeholder: "제목을 입력하세요.",
         ajax: {
           headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
           url: '/admin/ajax/issue/' + issueType + 's/select',
