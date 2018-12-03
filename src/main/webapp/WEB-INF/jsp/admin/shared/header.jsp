@@ -53,19 +53,19 @@
         <li class="header">시민제안</li>
         <li>
           <a href="<c:url value="/admin/issue/proposal.do"/>">
-            <i class="fa fa-picture-o"></i>
+            <i class="fa fa-paper-plane" aria-hidden="true"></i>
             <span>제안 관리</span>
           </a>
         </li>
         <li>
           <a href="<c:url value="/admin/issue/debate.do"/>">
-            <i class="fa fa-picture-o"></i>
+            <i class="fa fa-comments-o" aria-hidden="true"></i>
             <span>토론 관리</span>
           </a>
         </li>
         <li>
           <a href="<c:url value="/admin/issue/action.do"/>">
-            <i class="fa fa-picture-o"></i>
+            <i class="fa fa-history" aria-hidden="true"></i>
             <span>실행 관리</span>
           </a>
         </li>
@@ -73,7 +73,7 @@
         <li class="header">기관제안</li>
         <li>
           <a href="<c:url value="/admin/issue/org-debate.do"/>">
-            <i class="fa fa-picture-o"></i>
+            <i class="fa fa-comments-o" aria-hidden="true"></i>
             <span>기관제안 관리</span>
           </a>
         </li>
@@ -87,7 +87,7 @@
         </li>
         <li>
           <a href="<c:url value="/admin/users/manager.do"/>">
-            <i class="fa fa-user"></i>
+            <i class="fa fa-id-card" aria-hidden="true"></i>
             <span>담당자 관리</span>
           </a>
         </li>
@@ -95,7 +95,7 @@
         <li class="header">게시판</li>
         <li>
           <a href="<c:url value="/admin/post/notice.do"/>">
-            <i class="fa fa-calendar-check-o"></i>
+            <i class="fa fa-list" aria-hidden="true"></i>
             <span>공지사항 관리</span>
           </a>
         </li>
@@ -103,7 +103,7 @@
         <li class="header">카테고리</li>
         <li>
           <a href="<c:url value="/admin/category/list.do"/>">
-            <i class="fa fa-calendar-check-o"></i>
+            <i class="fa fa-files-o" aria-hidden="true"></i>
             <span>카테고리 관리</span>
           </a>
         </li>

@@ -4,6 +4,8 @@ import com.mysema.query.types.ExpressionUtils;
 import com.mysema.query.types.Predicate;
 import org.springframework.util.StringUtils;
 import seoul.democracy.issue.domain.Issue;
+import seoul.democracy.issue.domain.IssueGroup;
+import seoul.democracy.issue.domain.IssueType;
 import seoul.democracy.opinion.domain.Opinion;
 
 import static seoul.democracy.opinion.domain.QOpinion.opinion;
@@ -54,5 +56,13 @@ public class OpinionPredicate {
             predicate = ExpressionUtils.and(predicate, opinion.content.contains(search));
 
         return predicate;
+    }
+
+    public static Predicate equalIssueType(IssueType type) {
+        return opinion.issue.type.eq(type);
+    }
+
+    public static Predicate equalIssueTypeAndIssueGroup(IssueType issueType, IssueGroup group) {
+        return ExpressionUtils.and(opinion.issue.type.eq(issueType), opinion.issue.group.eq(group));
     }
 }

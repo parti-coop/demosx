@@ -57,4 +57,8 @@ public class DebatePredicate {
 
         return ExpressionUtils.and(predicate, debate.title.contains(search));
     }
+
+    public static Predicate equalGroup(IssueGroup group) {
+        return debate.group.eq(group);
+    }
 }
