@@ -2264,6 +2264,11 @@ a:hover {
     width: 100%;
 
 }
+@media (max-width: 767px){
+    .modal-dialog--demo{
+        width: auto;
+    }
+}
 
 /* sign up, in END */
 
@@ -2600,11 +2605,11 @@ a:hover {
         padding-right: 0;
     }
     .navbar-header--demo{
-        z-index: 11000;
+        z-index: 1002;
     }
     .container .demo-collapse{
         position: fixed;
-        z-index: 9999;
+        z-index: 1001;
         top: 0;
         bottom: 0;
         left: 0;
@@ -2622,7 +2627,7 @@ a:hover {
     }
     .navbar-toggle--demo{
         position: absolute;
-        z-index: 11000;
+        z-index: 1002;
         right: 0;
         border: none;
         margin-top: 0;

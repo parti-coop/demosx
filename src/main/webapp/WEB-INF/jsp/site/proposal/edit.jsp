@@ -70,7 +70,7 @@
         data: JSON.stringify(data),
         success: function (data) {
           alert(data.msg);
-          window.location.href = '/mypage/proposal.do';
+          window.location.href = '/proposal.do?id=' + ${updateDto.id};
         },
         error: function (error) {
           if (error.status === 400) {

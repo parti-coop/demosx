@@ -52,10 +52,11 @@
         </a></li>
         <li class="li-middle"><span class="li-middle-line">|</span></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+          <a href="#" class="dropdown-toggle hidden-xs" data-toggle="dropdown" role="button" aria-haspopup="true"
              aria-expanded="false">시민제안
             <div class="nav-li-active-bar"></div>
           </a>
+          <a href="#" class="dropdown-toggle visible-xs">시민제안<div class="nav-li-active-bar"></div></a>
           <ul class="dropdown-menu">
             <li><a href="<c:url value="/proposal-list.do"/>"><i class="xi-angle-right-min"></i> 제안</a></li>
             <li><a href="<c:url value="/debate-list.do"/>"><i class="xi-angle-right-min"></i> 토론</a></li>
@@ -81,7 +82,7 @@
           </c:if>
           <c:if test="${not empty loginUser}">
             <li class="nav-login-m-li">
-              <a href="<c:url value="/mypage.do"/>" class="nav-login-m-li__link">마이페이지</a>
+              <a href="<c:url value="/mypage/info.do"/>" class="nav-login-m-li__link">마이페이지</a>
             </li>
             <li class="nav-login-m-li">
               <a href="#" class="nav-login-m-li__link nav-login-m-li__link--last logout-link">로그아웃</a>

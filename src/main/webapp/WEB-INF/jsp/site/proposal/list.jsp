@@ -18,9 +18,7 @@
       <a href="<c:url value="/new-proposal.do"/>" class="btn demo-btn demo-btn--primary d-btn-lg btn-block">제안하기 <i class="xi-angle-right"></i></a>
     </div>
     <div class="m-bottom-btn-group clearfix">
-      <a href="" class="btn d-btn btn-blue btn-block">
-        제안하기
-      </a>
+      <a href="<c:url value="/new-proposal.do"/>" class="btn d-btn btn-blue btn-block">제안하기</a>
     </div>
   </div>
 
