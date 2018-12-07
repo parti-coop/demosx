@@ -5,6 +5,7 @@ import com.mysema.query.types.Predicate;
 import org.springframework.util.StringUtils;
 import seoul.democracy.issue.domain.Issue;
 import seoul.democracy.proposal.domain.Proposal;
+import seoul.democracy.proposal.domain.ProposalType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,7 +40,7 @@ public class ProposalPredicate {
         return ExpressionUtils.and(predicate, proposal.title.contains(search));
     }
 
-    public static Predicate predicateForAdminList(String search, String category, Proposal.Process process) {
+    public static Predicate predicateForAdminList(String search, String category, Proposal.Process process, ProposalType proposalType) {
         Predicate predicate = null;
 
         if (StringUtils.hasText(search))
@@ -51,13 +52,16 @@ public class ProposalPredicate {
         if (process != null)
             predicate = ExpressionUtils.and(predicate, proposal.process.eq(process));
 
+        if (proposalType != null)
+            predicate = ExpressionUtils.and(predicate, proposal.proposalType.eq(proposalType));
+
         return predicate;
     }
 
-    public static Predicate predicateForManagerList(Long managerId, String search, String category, Proposal.Process process) {
+    public static Predicate predicateForManagerList(Long managerId, String search, String category, Proposal.Process process, ProposalType proposalType) {
         Predicate predicate = proposal.managerId.eq(managerId);
 
-        return ExpressionUtils.and(predicate, predicateForAdminList(search, category, process));
+        return ExpressionUtils.and(predicate, predicateForAdminList(search, category, process, proposalType));
     }
 
     public static Predicate predicateForSiteList(String search, String category) {

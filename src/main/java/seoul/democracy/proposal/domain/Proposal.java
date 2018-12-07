@@ -28,6 +28,13 @@ import java.time.LocalDateTime;
 public class Proposal extends Issue {
 
     /**
+     * 제안타입
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ISSUE_TYPE")
+    private ProposalType proposalType;
+
+    /**
      * 이슈 과정
      */
     @Enumerated(EnumType.STRING)
@@ -124,6 +131,11 @@ public class Proposal extends Issue {
 
     public Proposal updateCategory(Category category) {
         this.category = category;
+        return this;
+    }
+
+    public Proposal updateProposalType(ProposalType proposalType) {
+        this.proposalType = proposalType;
         return this;
     }
 

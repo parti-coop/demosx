@@ -141,6 +141,17 @@ public class ProposalService {
     }
 
     /**
+     * 제안타입 설정
+     */
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public Proposal updateProposalType(ProposalTypeUpdateDto updateDto) {
+        Proposal proposal = getProposal(updateDto.getProposalId());
+
+        return proposal.updateProposalType(updateDto.getProposalType());
+    }
+
+    /**
      * 카테고리 변경
      */
     @Transactional

@@ -39,7 +39,7 @@ import static org.junit.Assert.assertThat;
 @Transactional
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class S_7_9_관리자는_제안을_분류할_수_있다 {
+public class S_7_09_관리자는_제안을_분류할_수_있다 {
 
     private final static String ip = "127.0.0.2";
     private MockHttpServletRequest request;

@@ -8,6 +8,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import seoul.democracy.common.dto.ResultInfo;
 import seoul.democracy.proposal.domain.Proposal;
+import seoul.democracy.proposal.domain.ProposalType;
 import seoul.democracy.proposal.dto.*;
 import seoul.democracy.proposal.service.ProposalService;
 import seoul.democracy.user.domain.User;
@@ -33,11 +34,12 @@ public class AdminProposalAjaxController {
     public Page<ProposalDto> getProposals(@RequestParam(value = "search") String search,
                                           @RequestParam(value = "category", required = false) String category,
                                           @RequestParam(value = "process", required = false) Proposal.Process process,
+                                          @RequestParam(value = "proposalType", required = false) ProposalType proposalType,
                                           @PageableDefault Pageable pageable) {
         User user = UserUtils.getLoginUser();
         Predicate predicate = user.isAdmin() ?
-                                  predicateForAdminList(search, category, process) :
-                                  predicateForManagerList(user.getId(), search, category, process);
+                                  predicateForAdminList(search, category, process, proposalType) :
+                                  predicateForManagerList(user.getId(), search, category, process, proposalType);
 
         return proposalService.getProposals(predicate, pageable, projectionForAdminList);
     }
@@ -57,7 +59,16 @@ public class AdminProposalAjaxController {
 
         proposalService.updateCategory(updateDto);
 
-        return ResultInfo.of("카테고리를 업데이트 하였습니다.");
+        return ResultInfo.of("분류를 업데이트 하였습니다.");
+    }
+
+    @RequestMapping(value = "/{proposalId}/proposalType", method = RequestMethod.PATCH)
+    public ResultInfo updateProposalType(@PathVariable("proposalId") Long proposalId,
+                                         @RequestBody @Valid ProposalTypeUpdateDto updateDto) {
+
+        proposalService.updateProposalType(updateDto);
+
+        return ResultInfo.of("타입을 업데이트 하였습니다.");
     }
 
     @RequestMapping(value = "/{proposalId}/closed", method = RequestMethod.PATCH)

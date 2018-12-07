@@ -11,6 +11,7 @@ import seoul.democracy.issue.dto.CategoryDto;
 import seoul.democracy.issue.dto.IssueStatsDto;
 import seoul.democracy.opinion.domain.OpinionType;
 import seoul.democracy.proposal.domain.Proposal;
+import seoul.democracy.proposal.domain.ProposalType;
 import seoul.democracy.user.dto.UserDto;
 
 import java.time.LocalDateTime;
@@ -29,7 +30,7 @@ public class ProposalDto {
         proposal.createdIp, proposal.modifiedIp, proposal.opinionType,
         CategoryDto.projection.as("category"),
         IssueStatsDto.projection.as("stats"),
-        proposal.status, proposal.process,
+        proposal.proposalType, proposal.status, proposal.process,
         proposal.adminCommentDate, proposal.adminComment,
         UserDto.projectionForBasic.as("manager"),
         proposal.managerCommentDate, proposal.managerComment,
@@ -43,7 +44,7 @@ public class ProposalDto {
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
         CategoryDto.projection.as("category"),
         IssueStatsDto.projection.as("stats"),
-        proposal.status, proposal.process,
+        proposal.proposalType, proposal.status, proposal.process,
         UserDto.projectionForBasic.as("manager"),
         proposal.title);
 
@@ -55,7 +56,7 @@ public class ProposalDto {
         UserDto.projectionForBasicByCreatedBy.as("createdBy"),
         CategoryDto.projection.as("category"),
         IssueStatsDto.projection.as("stats"),
-        proposal.status, proposal.process,
+        proposal.proposalType, proposal.status, proposal.process,
         proposal.adminComment,
         UserDto.projectionForAdminManager.as("manager"),
         proposal.managerComment,
@@ -124,6 +125,7 @@ public class ProposalDto {
     private String modifiedIp;
     private OpinionType opinionType;
 
+    private ProposalType proposalType;
     private CategoryDto category;
 
     private Long statsId;

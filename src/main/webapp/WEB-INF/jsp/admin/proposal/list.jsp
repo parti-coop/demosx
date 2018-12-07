@@ -36,6 +36,13 @@
                       </c:forEach>
                     </select>
                   </th>
+                  <th>
+                    <select name="proposalType" aria-controls="list" class="form-control input-sm" title="타">
+                      <option value="">타입선택</option>
+                      <option value="PROPOSAL">제안</option>
+                      <option value="COMPLAINT">민원</option>
+                    </select>
+                  </th>
                   <th>제목</th>
                   <th>작성자</th>
                   <th>조회수</th>
@@ -77,6 +84,11 @@
       table.draw();
     });
 
+    var $proposalType = $('select[name=proposalType');
+    $proposalType.change(function () {
+      table.draw();
+    });
+
     var table = $('#list')
       .on('preXhr.dt', function (e, settings, data) {
         console.log(data);
@@ -84,10 +96,15 @@
         data['size'] = data.length;
         data['sort'] = [sortColumn[data['order'][0].column] + ',' + data['order'][0].dir];
         data['search'] = data['search'].value;
+
         var category = $category.val();
         if (category) data['category'] = category;
+
         var process = $process.val();
         if (process) data['process'] = process;
+
+        var proposalType = $proposalType.val();
+        if (proposalType) data['proposalType'] = proposalType;
 
         delete data['draw'];
         delete data['columns'];
@@ -134,7 +151,7 @@
           url: '/admin/ajax/issue/proposals',
           type: 'GET',
           error: function (e) {
-            if(e.status === 401 || e.status === 403)
+            if (e.status === 401 || e.status === 403)
               window.location.reload();
             else
               window.location.href = '/admin/index.do';
@@ -145,6 +162,13 @@
           {
             data: function (item) {
               return (item.category) ? item.category.name : '-';
+            }, orderable: false
+          },
+          {
+            data: function (item) {
+              if (item.proposalType === 'PROPOSAL') return '제안';
+              if (item.proposalType === 'COMPLAINT') return '민원';
+              return '';
             }, orderable: false
           },
           {

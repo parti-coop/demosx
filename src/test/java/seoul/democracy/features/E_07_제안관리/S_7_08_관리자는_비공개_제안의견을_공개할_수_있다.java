@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.opinion.domain.Opinion;
 import seoul.democracy.opinion.dto.OpinionDto;
@@ -34,7 +35,7 @@ import static seoul.democracy.opinion.predicate.OpinionPredicate.equalId;
 
 /**
  * epic : 7. 제안관리
- * story : 7.7 관리자는 제안의견을 블럭 처리할 수 있다.
+ * story : 7.8 관리자는 비공개 제안의견을 공개할 수 있다.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -44,7 +45,7 @@ import static seoul.democracy.opinion.predicate.OpinionPredicate.equalId;
 @Transactional
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class S_7_7_관리자는_제안의견을_블럭_처리할_수_있다 {
+public class S_7_08_관리자는_비공개_제안의견을_공개할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";
@@ -56,10 +57,10 @@ public class S_7_7_관리자는_제안의견을_블럭_처리할_수_있다 {
     @Autowired
     private ProposalService proposalService;
 
-    private final Long opinionId = 1L;
+    private final Long blockedOpinionId = 41L;
+    private final Long openedOpinionId = 1L;
     private final Long deletedOpinionId = 2L;
-    private final Long blockedOpinionId = 3L;
-    private final Long multiOpinionId = 31L;
+    private final Long blockedMultiOpinionId = 3L;
 
     @Before
     public void setUp() throws Exception {
@@ -69,80 +70,76 @@ public class S_7_7_관리자는_제안의견을_블럭_처리할_수_있다 {
     }
 
     /**
-     * 1. 관리자는 제안의견을 블럭할 수 있다.
+     * 1. 관리자는 비공개 제안의견을 공개할 수 있다.
      */
     @Test
     @WithUserDetails("admin1@googl.co.kr")
-    public void T_1_관리자는_제안의견을_블럭할_수_있다() {
+    public void T_1_관리자는_비공개_제안의견을_공개할_수_있다() {
         final String now = LocalDateTime.now().format(dateTimeFormatter);
-        Opinion opinion = opinionService.blockOpinion(opinionId);
+        Opinion opinion = opinionService.openOpinion(blockedOpinionId);
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
         assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
+
         assertThat(opinionDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
         assertThat(opinionDto.getModifiedIp(), is(ip));
 
-        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.OPEN));
 
-        ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
-        assertThat(proposalDto.getStats().getOpinionCount(), is(0L));
-        assertThat(proposalDto.getStats().getApplicantCount(), is(0L));
+        ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinionDto.getIssue().getId()), ProposalDto.projection);
+        assertThat(proposalDto.getStats().getOpinionCount(), is(1L));
+        assertThat(proposalDto.getStats().getApplicantCount(), is(1L));
     }
 
     /**
-     * 2. 매니저는 제안의견을 블럭할 수 없다.
+     * 2. 관리자는 공개된 제안의견을 공개할 수 없다.
+     */
+    @Test(expected = BadRequestException.class)
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_2_관리자는_공개된_제안의견을_공개할_수_없다() {
+        opinionService.openOpinion(openedOpinionId);
+    }
+
+    /**
+     * 3. 매니저는 비공개 제안의견을 공개할 수 없다.
      */
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("manager1@googl.co.kr")
-    public void T_2_매니저는_제안의견을_블럭할_수_없다() {
-        opinionService.blockOpinion(opinionId);
+    public void T_3_매니저는_비공개_제안의견을_공개할_수_없다() {
+        opinionService.openOpinion(blockedOpinionId);
     }
 
     /**
-     * 3. 사용자는 제안의견을 블럭할 수 없다.
+     * 4. 사용자는 비공개 제안의견을 공개할 수 없다.
      */
     @Test(expected = AccessDeniedException.class)
     @WithUserDetails("user1@googl.co.kr")
-    public void T_3_사용자는_제안의견을_블럭할_수_없다() {
-        opinionService.blockOpinion(opinionId);
+    public void T_4_사용자는_비공개_제안의견을_공개할_수_없다() {
+        opinionService.openOpinion(blockedOpinionId);
     }
 
     /**
-     * 4. 관리자는 블럭된 제안의견을 블럭할 수 없다.
+     * 5. 관리자는 삭제된 제안을 공개할 수 없다.
      */
     @Test(expected = NotFoundException.class)
     @WithUserDetails("admin1@googl.co.kr")
-    public void T_4_관리자는_블럭된_제안의견을_블럭할_수_없다() {
-        opinionService.blockOpinion(blockedOpinionId);
+    public void T_5_관리자는_삭제된_제안을_공개할_수_없다() {
+        opinionService.openOpinion(deletedOpinionId);
     }
 
     /**
-     * 5. 관리자는 삭제된 제안의견을 블럭할 수 없다.
-     */
-    @Test(expected = NotFoundException.class)
-    @WithUserDetails("admin1@googl.co.kr")
-    public void T_5_관리자는_삭제된_제안의견을_블럭할_수_없다() {
-        opinionService.blockOpinion(deletedOpinionId);
-    }
-
-    /**
-     * 6. 관리자는 여러 제안의견 중 하나를 블럭할 수 있다.
+     * 6. 관리자는 여러 제안의견 중 비공개 의견을 공개할 수 있다.
      */
     @Test
     @WithUserDetails("admin1@googl.co.kr")
-    public void T_6_관리자는_여러_제안의견_중_하나를_블럭할_수_있다() {
-        final String now = LocalDateTime.now().format(dateTimeFormatter);
-        Opinion opinion = opinionService.blockOpinion(multiOpinionId);
+    public void T_6_관리자는_여러_제안의견_중_비공개_의견을_공개할_수_있다() {
+        Opinion opinion = opinionService.openOpinion(blockedMultiOpinionId);
 
         OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
-        assertThat(opinionDto.getModifiedDate().format(dateTimeFormatter), is(now));
-        assertThat(opinionDto.getModifiedBy().getEmail(), is("admin1@googl.co.kr"));
-        assertThat(opinionDto.getModifiedIp(), is(ip));
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.OPEN));
 
-        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
-
-        ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinion.getIssue().getId()), ProposalDto.projection);
-        assertThat(proposalDto.getStats().getOpinionCount(), is(8L));
+        ProposalDto proposalDto = proposalService.getProposal(ProposalPredicate.equalId(opinionDto.getIssue().getId()), ProposalDto.projection);
+        assertThat(proposalDto.getStats().getOpinionCount(), is(2L));
         assertThat(proposalDto.getStats().getApplicantCount(), is(1L));
     }
 }

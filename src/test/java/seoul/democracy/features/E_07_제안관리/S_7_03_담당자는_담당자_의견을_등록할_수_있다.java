@@ -38,7 +38,7 @@ import static seoul.democracy.proposal.predicate.ProposalPredicate.equalId;
 @Transactional
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class S_7_3_담당자는_담당자_의견을_등록할_수_있다 {
+public class S_7_03_담당자는_담당자_의견을_등록할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
 

@@ -42,7 +42,7 @@ import static seoul.democracy.proposal.predicate.ProposalPredicate.equalId;
 @Transactional
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class S_7_5_관리자는_제안을_블럭_처리할_수_있다 {
+public class S_7_05_관리자는_제안을_블럭_처리할_수_있다 {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     private final static String ip = "127.0.0.2";

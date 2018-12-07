@@ -55,6 +55,21 @@
                   </div>
                 </div>
                 <div class="form-group">
+                  <label class="col-sm-2 control-label">타입</label>
+                  <div class="col-sm-2">
+                    <c:if test="${loginUser.isManager()}">
+                      <p class="form-control-static">${proposal.proposalType.msg}</p>
+                    </c:if>
+                    <c:if test="${loginUser.isAdmin()}">
+                      <select class="form-control input-sm" id="proposal-type-select">
+                        <option value="">타입선택</option>
+                        <option value="PROPOSAL"<c:if test="${proposal.proposalType eq 'PROPOSAL'}"> selected</c:if>>제안</option>
+                        <option value="COMPLAINT"<c:if test="${proposal.proposalType eq 'COMPLAINT'}"> selected</c:if>>민원</option>
+                      </select>
+                    </c:if>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label class="col-sm-2 control-label">제목</label>
                   <div class="col-sm-10"><p class="form-control-static">${proposal.title}</p></div>
                 </div>
@@ -297,6 +312,32 @@
           },
           error: function () {
             $categorySelect.val(categoryValue);
+          }
+        });
+      });
+
+      // 타입 수정
+      var proposalTypeValue = '${proposal.proposalType}';
+      var $proposalTypeSelect = $('#proposal-type-select');
+      $proposalTypeSelect.change(function () {
+        if (!confirm('타입을 변경할까요?')) {
+          $(this).val(proposalTypeValue);
+          return;
+        }
+
+        adminAjax({
+          csrf: '${_csrf.token}',
+          url: '/admin/ajax/issue/proposals/${proposal.id}/proposalType',
+          type: 'PATCH',
+          data: {
+            proposalId: ${proposal.id},
+            proposalType: $(this).val()
+          },
+          success: function () {
+            proposalTypeValue = $proposalTypeSelect.val();
+          },
+          error: function () {
+            $proposalTypeSelect.val(proposalTypeValue);
           }
         });
       });

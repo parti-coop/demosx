@@ -36,7 +36,7 @@ import static seoul.democracy.proposal.predicate.ProposalPredicate.equalId;
 @Transactional
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class S_7_2_관리자는_공감수_50넘는_제안에_담당자_지정할_수_있다 {
+public class S_7_02_관리자는_공감수_50넘는_제안에_담당자_지정할_수_있다 {
 
     @Autowired
     private ProposalService proposalService;
