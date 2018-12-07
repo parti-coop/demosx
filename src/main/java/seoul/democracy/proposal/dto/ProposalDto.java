@@ -57,7 +57,7 @@ public class ProposalDto {
         IssueStatsDto.projection.as("stats"),
         proposal.status, proposal.process,
         proposal.adminComment,
-        UserDto.projectionForBasic.as("manager"),
+        UserDto.projectionForAdminManager.as("manager"),
         proposal.managerComment,
         proposal.title, proposal.content);
 

@@ -118,10 +118,11 @@
                 </div>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">담당자 지정</label>
-                  <div class="col-sm-3">
-                    <p class="form-control-static" id="assigned-manager">${proposal.manager.name}</p>
+                  <div class="col-sm-5">
+                    <p class="form-control-static" id="assigned-manager">${proposal.manager.name}
+                      ( ${proposal.manager.department1} / ${proposal.manager.department2} / ${proposal.manager.department3} )</p>
                   </div>
-                  <div class="col-sm-4">
+                  <div class="col-sm-5">
                     <c:if
                         test="${loginUser.isAdmin() and proposal.status.isOpen()
                         and (proposal.process.isNeedAssign() or proposal.process.isAssigned())}">
@@ -200,7 +201,8 @@
       var $selectManagerInput = $('#select-manager-input');
       $selectManagerInput.select2({
         language: 'ko',
-        theme: "bootstrap",
+        theme: 'bootstrap',
+        width: '100%',
         ajax: {
           headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
           url: '/admin/ajax/users/role-manager',
@@ -216,7 +218,7 @@
               results: data.content.map(function (item) {
                 return {
                   id: item.id,
-                  text: item.name,
+                  text: item.name + ' ( ' + item.department1 + ' / ' + item.department2 + ' / ' + item.department3 + ' )',
                   item: item
                 }
               })
@@ -242,8 +244,8 @@
             managerId: selectedData[0].id
           },
           success: function (data) {
+            $('#assigned-manager').text(selectedData[0].text);
             $selectManagerInput.val(null).trigger('change');
-            $('#assigned-manager').text(data.manager.name);
           },
           error: function () {
           }
