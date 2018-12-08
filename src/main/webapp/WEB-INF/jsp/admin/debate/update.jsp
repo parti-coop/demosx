@@ -126,6 +126,7 @@
                       </span>
                       <img src="<c:url value="/images/loading.gif"/>" height="20" id="thumbnail-progress"
                            class="hidden">
+                      <span>사이즈 : 800px X 600px</span>
                     </div>
                     <div id="thumbnail-uploaded" class="${updateDto.thumbnail eq null ? 'hidden' : ''}">
                       <div class="thumbnail-img-wrapper">

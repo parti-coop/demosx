@@ -126,6 +126,7 @@
                       </span>
                       <img src="<c:url value="/images/loading.gif"/>" height="20" id="thumbnail-progress"
                            class="hidden">
+                      <span>사이즈 : 700px X 960px</span>
                     </div>
                     <div id="thumbnail-uploaded" class="${createDto.thumbnail eq null ? 'hidden' : ''}">
                       <div class="thumbnail-img-wrapper">
@@ -361,7 +362,7 @@
       headers: {
         'X-CSRF-TOKEN': '${_csrf.token}'
       },
-      url: '/admin/ajax/files?type=THUMBNAIL',
+      url: '/admin/ajax/files?type=THUMBNAIL2',
       dataType: 'json',
       done: function (e, data) {
         $('#thumbnail-progress').addClass('hidden');

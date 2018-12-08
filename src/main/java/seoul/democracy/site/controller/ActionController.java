@@ -65,7 +65,7 @@ public class ActionController {
     }
 
     @RequestMapping(value = "/action.do", method = RequestMethod.GET)
-    public String proposal(@RequestParam("id") Long id,
+    public String action(@RequestParam("id") Long id,
                            Model model) {
 
         ActionDto actionDto = actionService.getAction(equalIdAndStatus(id, OPEN), projectionForSiteDetail, true, true);
