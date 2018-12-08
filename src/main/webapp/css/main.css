@@ -2395,7 +2395,6 @@ a:hover {
     line-height: 1.8;
 }
 
-
 .show-more-container {
     margin-top: 40px;
     margin-bottom: 40px;
@@ -3578,4 +3577,85 @@ a:hover {
 
 i.mce-ico {
     font-family: 'tinymce', Arial, serif !important;
+}
+
+.header-no-margin .navbar {
+    margin-bottom: 40px;
+}
+
+/* main slide */
+.main-slide-wrapper {
+    margin-bottom: 40px;
+}
+
+.slide-text-wrapper {
+    position: absolute;
+    top: 50%;
+    right: 60px;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.slide-text-wrapper p {
+    font-size: 26px;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.slide2-text-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 100px;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.slide2-text-wrapper p {
+    color: white;
+    font-size: 26px;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+@media (max-width: 767px) {
+    .header-no-margin .navbar {
+        margin-bottom: 0;
+    }
+
+    .main-slide-wrapper {
+        margin-left: -15px;
+        margin-right: -15px;
+        margin-bottom: 20px;
+    }
+
+    .slide-text-wrapper p, .slide2-text-wrapper p {
+        font-size: 18px;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .slide-text-wrapper, .slide2-text-wrapper {
+        position: absolute;
+        top: inherit;
+        right: inherit;
+        bottom: 40px;
+        left: 40px;
+        -webkit-transform: none;
+        -moz-transform: none;
+        -ms-transform: none;
+        -o-transform: none;
+        transform: none;
+    }
+
+    .swiper-button-next, .swiper-button-prev {
+        height: 20px !important;
+    }
+
 }
