@@ -63,8 +63,12 @@
                     <c:if test="${loginUser.isAdmin()}">
                       <select class="form-control input-sm" id="proposal-type-select">
                         <option value="">타입선택</option>
-                        <option value="PROPOSAL"<c:if test="${proposal.proposalType eq 'PROPOSAL'}"> selected</c:if>>제안</option>
-                        <option value="COMPLAINT"<c:if test="${proposal.proposalType eq 'COMPLAINT'}"> selected</c:if>>민원</option>
+                        <option value="PROPOSAL"<c:if test="${proposal.proposalType eq 'PROPOSAL'}"> selected</c:if>>
+                          제안
+                        </option>
+                        <option value="COMPLAINT"<c:if test="${proposal.proposalType eq 'COMPLAINT'}"> selected</c:if>>
+                          민원
+                        </option>
                       </select>
                     </c:if>
                   </div>
@@ -134,8 +138,11 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">담당자 지정</label>
                   <div class="col-sm-5">
-                    <p class="form-control-static" id="assigned-manager">${proposal.manager.name}
-                      ( ${proposal.manager.department1} / ${proposal.manager.department2} / ${proposal.manager.department3} )</p>
+                    <p class="form-control-static" id="assigned-manager">
+                      <c:if test="${not empty proposal.manager.id}">
+                        ${proposal.manager.name}( ${proposal.manager.department1} / ${proposal.manager.department2} / ${proposal.manager.department3} )
+                      </c:if>
+                    </p>
                   </div>
                   <div class="col-sm-5">
                     <c:if

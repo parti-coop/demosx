@@ -1,8 +1,8 @@
 package seoul.democracy.common.service;
 
+import egovframework.rte.fdl.property.EgovPropertyService;
 import org.imgscalr.Scalr;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
@@ -25,8 +25,16 @@ import java.util.UUID;
 @Service
 public class StorageService {
 
-    private final Resource uploadPath = new ClassPathResource("../../");
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("/yyyy/MM");
+    private final String systemUploadPath;
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM");
+
+    private final EgovPropertyService propertyService;
+
+    @Autowired
+    public StorageService(EgovPropertyService propertyService) {
+        this.propertyService = propertyService;
+        this.systemUploadPath = propertyService.getString("uploadFilePath");
+    }
 
     public UploadFileInfo store(UploadFileType type, MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
@@ -40,9 +48,9 @@ public class StorageService {
             normalizedFilename = normalizedFilename.replace(" ", "_");
             String filename = UUID.randomUUID().toString().replace("-", "") + "_" + normalizedFilename;
 
-            String uploadPath = "/files" + LocalDate.now().format(dateTimeFormatter);
+            String uploadPath = LocalDate.now().format(dateTimeFormatter);
 
-            File file = new File(this.uploadPath.getFile().getPath() + uploadPath, filename);
+            File file = new File(this.systemUploadPath + uploadPath, filename);
             if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
 
             if (type == UploadFileType.ORIGINAL)
@@ -50,7 +58,7 @@ public class StorageService {
             else
                 resizeImage(multipartFile.getInputStream(), file, type);
 
-            return UploadFileInfo.of(multipartFile.getOriginalFilename(), uploadPath + "/" + filename);
+            return UploadFileInfo.of(multipartFile.getOriginalFilename(), "/files/" + uploadPath + "/" + filename);
         } catch (IOException e) {
             throw new BadRequestException("file", "error.file", e.getMessage());
         }

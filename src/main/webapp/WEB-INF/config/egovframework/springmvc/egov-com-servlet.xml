@@ -93,6 +93,9 @@
         </mvc:message-converters>-->
     </mvc:annotation-driven>
 
+    <!-- upload files -->
+    <mvc:resources mapping="/files/**" location="file:${HOME}/files/" cache-period="31536000"/>
+
     <!-- 처리할 수 없는 요청(.css, .js, .jpg)은 컨테이너에게 위임한다. mvc:resources로 변경 가능 -->
     <mvc:default-servlet-handler/>
 
