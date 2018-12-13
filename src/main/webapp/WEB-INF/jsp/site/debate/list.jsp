@@ -63,7 +63,7 @@
             <p class="demo-card__desc">${item.excerpt}</p>
             <div class="demo-card__info demo-card__info--discussion">
               <p class="demo-card__info__p">
-                <i class="xi-thumbs-up"></i> 참여자 <strong>${item.stats.applicantCount}</strong>명
+                <i class="xi-user-plus"></i> 참여자 <strong>${item.stats.applicantCount}</strong>명
               </p>
               <c:if test="${item.opinionType == 'PROPOSAL'}">
                 <p class="demo-card__info__p">

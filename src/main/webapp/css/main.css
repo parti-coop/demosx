@@ -104,9 +104,8 @@ a:hover {
 }
 
 .navbar-default .demo-nav a {
-    padding-bottom: 0;
     font-weight: 700;
-    padding-top: 40px;
+    padding: 40px 30px 0;
     font-size: 20px;
     color: #43484c;
     text-align: center;
@@ -154,7 +153,7 @@ a:hover {
     background-color: transparent;
 }
 
-.navbar-default .demo-nav .active .nav-li-active-bar {
+.navbar-default .demo-nav .active .nav-li-active-bar, .navbar-default .demo-nav a:hover .nav-li-active-bar {
     background-color: #1e60b1;
 }
 
@@ -1181,11 +1180,13 @@ a:hover {
     font-weight: 700;
     font-size: 26px;
     line-height: 1.5;
+    margin-bottom: 40px;
 }
 
 @media (max-width: 767px) {
     .detail-title {
         font-size: 20px;
+        margin-bottom: 20px;
     }
 }
 
@@ -1584,7 +1585,7 @@ a:hover {
 
 .progress-bg--discussion .progress-fill-bar {
     float: left;
-    height: 40px;
+    height: 24px;
 }
 
 .progress-thumb {
@@ -1626,6 +1627,7 @@ a:hover {
 
 .demo-progress .progress-step-1 .progress-step-1-text {
     margin-left: -28px;
+    color: #ffffff;
 }
 
 .progress-step-1-line {
@@ -2346,6 +2348,12 @@ a:hover {
 
 .comment-date-wrapper {
     float: left;
+    margin-bottom: 30px;
+}
+@media (max-width: 767px) {
+    .comment-date-wrapper {
+        margin-bottom: 20px;
+    }
 }
 
 .comment-likes-count {
@@ -3329,11 +3337,13 @@ a:hover {
     color: #fff;
     overflow: hidden;
     line-height: 1.5;
+    height: 108px;
 }
 
 .full-img-card__bottom-bg {
     position: absolute;
     bottom: 0;
+    width: 100%;
     padding: 100px 30px 30px;
 
     background-image: url(/images/full-img-bg-gradation.png);
@@ -3369,6 +3379,7 @@ a:hover {
 
     .full-img-card__title {
         font-size: 20px;
+        height: 90px;
     }
 
 }
@@ -3385,6 +3396,7 @@ a:hover {
 
     .full-img-card__title {
         font-size: 19px;
+        height: 90px;
     }
 
 }
@@ -3401,6 +3413,7 @@ a:hover {
 
     .full-img-card__title {
         font-size: 16px;
+        height: 72px;
     }
 
     .full-img-card__bottom-bg {
@@ -3420,6 +3433,7 @@ a:hover {
 
     .full-img-card__title {
         font-size: 14px;
+        height: 63px;
     }
 
     .full-img-card__bottom-bg {
@@ -3444,6 +3458,7 @@ a:hover {
     .full-img-card__title {
         font-size: 14px;
         margin: 0;
+        height: 63px;
     }
 
     .full-img-card__bottom-bg {
@@ -3475,6 +3490,7 @@ a:hover {
     .full-img-card__title {
         font-size: 13px;
         margin: 0;
+        height: 60px;
     }
 
     .full-img-card__bottom-bg {

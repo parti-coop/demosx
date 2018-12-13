@@ -59,7 +59,7 @@
           <div class="demo-th">
             <p class="">제목 / 의견</p>
           </div>
-          <div class="demo-th">
+          <div class="demo-th" style="width: 140px;">
             <p>투표여부</p>
           </div>
         </div>
