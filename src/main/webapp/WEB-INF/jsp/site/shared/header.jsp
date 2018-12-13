@@ -45,7 +45,7 @@
     </div>
 
     <div class="demo-collapse collapse navbar-collapse" id="demo-navbar-collapse">
-      <a class="navbar-brand navbar-brand--demo navbar-brand--demo--collapse" href="#">민주주의 서울 오픈소스</a>
+      <a class="visible-xs navbar-brand navbar-brand--demo navbar-brand--demo--collapse" href="#">민주주의 서울 오픈소스</a>
       <ul class="nav navbar-nav navbar-right demo-nav">
         <li class="demo-nav-li"><a href="<c:url value="/intro.do"/>">오픈소스
           <div class="nav-li-active-bar"></div>
