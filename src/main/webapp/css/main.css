@@ -3675,3 +3675,27 @@ i.mce-ico {
     }
 
 }
+
+.position-relative {
+    position: relative;
+}
+
+.card-best-tag {
+    position: absolute;
+    left: 25px;
+    top: -3px;
+}
+
+.card-best-tag span {
+    position: absolute;
+    color: white;
+    font-size: 18px;
+    top: 10px;
+    left: 21px;
+}
+
+@media (max-width: 767px) {
+    .card-best-tag {
+        left: 15px;
+    }
+}

@@ -103,4 +103,25 @@ public class ProposalPredicate {
             proposal.createdDate.goe(startDateTime),
             proposal.createdDate.lt(endDateTime));
     }
+
+    public static Predicate equalStatusAndProposalType(Issue.Status status, ProposalType proposalType) {
+        return ExpressionUtils.and(
+            proposal.status.eq(status),
+            proposal.proposalType.eq(proposalType)
+        );
+    }
+
+    public static Predicate equalStatusAndLikeCountOver(Issue.Status status, long likeCount) {
+        return ExpressionUtils.and(
+            proposal.status.eq(status),
+            proposal.stats.likeCount.goe(likeCount)
+        );
+    }
+
+    public static Predicate equalStatusAndProcess(Issue.Status status, Proposal.Process process) {
+        return ExpressionUtils.and(
+            proposal.status.eq(status),
+            proposal.process.eq(process)
+        );
+    }
 }

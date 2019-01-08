@@ -10,18 +10,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import seoul.democracy.issue.domain.Issue;
+import seoul.democracy.proposal.domain.Proposal;
+import seoul.democracy.proposal.domain.ProposalType;
 import seoul.democracy.proposal.dto.ProposalDto;
 import seoul.democracy.proposal.service.ProposalService;
 
 import static seoul.democracy.proposal.dto.ProposalDto.projectionForSiteList;
-import static seoul.democracy.proposal.predicate.ProposalPredicate.equalStatus;
+import static seoul.democracy.proposal.predicate.ProposalPredicate.*;
 
 @Controller
 public class SiteController {
 
     private final ProposalService proposalService;
 
-    private final Pageable pageable = new PageRequest(0, 10, Sort.Direction.DESC, "createdDate");
+    private final Pageable pageableByLimit2 = new PageRequest(0, 2, Sort.Direction.DESC, "stats.likeCount");
+
+    private final Pageable pageableByLimit4 = new PageRequest(0, 4, Sort.Direction.DESC, "createdDate");
 
     @Autowired
     public SiteController(ProposalService proposalService) {
@@ -34,8 +38,16 @@ public class SiteController {
     @RequestMapping(value = "/index.do", method = RequestMethod.GET)
     public String index(Model model) {
 
-        Page<ProposalDto> proposals = proposalService.getProposals(equalStatus(Issue.Status.OPEN), pageable, projectionForSiteList);
-        model.addAttribute("page", proposals);
+        Page<ProposalDto> best = proposalService.getProposals(equalStatusAndProcess(Issue.Status.OPEN, Proposal.Process.COMPLETE), pageableByLimit2, projectionForSiteList);
+        model.addAttribute("best", best);
+
+        // 인기글 - 최대 4개 - 공감 5개 이상의 시간 최신 순
+        Page<ProposalDto> favorite = proposalService.getProposals(equalStatusAndLikeCountOver(Issue.Status.OPEN, 5), pageableByLimit4, projectionForSiteList);
+        model.addAttribute("favorite", favorite);
+
+        // 최신글 - 최대 4개 - 제안으로 분류된 것 중 최
+        Page<ProposalDto> latest = proposalService.getProposals(equalStatusAndProposalType(Issue.Status.OPEN, ProposalType.PROPOSAL), pageableByLimit4, projectionForSiteList);
+        model.addAttribute("latest", latest);
 
         return "/site/index";
     }
