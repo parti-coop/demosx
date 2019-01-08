@@ -27,7 +27,8 @@ public class IssueHistoryDto {
      */
     public final static QBean<IssueHistoryDto> projectionForSite = Projections.fields(IssueHistoryDto.class,
         issueHistory.id, issueHistory.createdDate,
-        UserDto.projectionForBasicByCreatedBy.as("createdBy"), issueHistory.content);
+        UserDto.projectionForBasicByCreatedBy.as("createdBy"),
+        issueHistory.status, issueHistory.content);
 
     private Long id;
     private LocalDateTime createdDate;

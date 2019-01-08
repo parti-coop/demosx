@@ -16,6 +16,7 @@ import seoul.democracy.debate.domain.Debate;
 import seoul.democracy.debate.dto.DebateDto;
 import seoul.democracy.debate.service.DebateService;
 import seoul.democracy.history.dto.IssueHistoryDto;
+import seoul.democracy.history.predicate.IssueHistoryPredicate;
 import seoul.democracy.history.service.IssueHistoryService;
 import seoul.democracy.issue.domain.IssueGroup;
 import seoul.democracy.issue.dto.CategoryDto;
@@ -135,5 +136,25 @@ public class DebateController {
         model.addAttribute("histories", histories);
 
         return debateDto.getOpinionType().isProposal() ? "/site/debate/detail-proposal-history" : "site/debate/detail-debate-history";
+    }
+
+    @RequestMapping(value = "/debate-history-edit.do", method = RequestMethod.GET)
+    public String debateHistoryEdit(@RequestParam("id") Long id,
+                                    @RequestParam(value = "historyId", required = false) Long historyId,
+                                    Model model) {
+
+        Predicate predicate = equalIdAndStatus(id, OPEN);
+        DebateDto debateDto = debateService.getDebate(predicate, projectionForSiteDetail, false, false);
+        model.addAttribute("debate", debateDto);
+
+        if (historyId != null) {
+            IssueHistoryDto history = issueHistoryService.getHistory(IssueHistoryPredicate.equalId(historyId), IssueHistoryDto.projectionForSite);
+            if (history == null || history.getStatus().isDelete())
+                throw new NotFoundException("해당 히스토리를 찾을 수 없습니다.");
+
+            model.addAttribute("history", history);
+        }
+
+        return debateDto.getOpinionType().isProposal() ? "/site/debate/detail-proposal-history-edit" : "site/debate/detail-debate-history-edit";
     }
 }

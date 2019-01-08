@@ -30,7 +30,7 @@
     </div>
     <div class="form-group form-group--demo">
       <label class="demo-form-label" for="inputPasswordConfirm">새 비밀번호 확인</label>
-      <input type="password" class="form-control demo-input" id="inputPasswordConfirm" placeholder="비밀전호를 확인해 주세요."
+      <input type="password" class="form-control demo-input" id="inputPasswordConfirm" placeholder="비밀번호를 확인해 주세요."
              data-parsley-required="true" data-parsley-minlength="6" data-parsley-equalto="#inputPassword">
     </div>
     <button type="submit" class="btn demo-btn demo-btn--primary btn-sign">비밀번호 재설정</button>
