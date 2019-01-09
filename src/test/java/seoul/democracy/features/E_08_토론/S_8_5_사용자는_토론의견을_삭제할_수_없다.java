@@ -213,4 +213,445 @@ public class S_8_5_사용자는_토론의견을_삭제할_수_없다 {
         opinionService.deleteOpinion(blockedProposalOpinionId);
     }
 
+    /**
+     * 10. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 1. 찬성(블럭) -> 찬성
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_10_1_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 161L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(161L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 2. 찬성 -> 찬성(블럭)
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_10_2_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 161L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(162L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 3. 찬성(블럭) -> 반대
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_10_3_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 161L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(163L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 4. 찬성 -> 반대(블럭)
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_10_4_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 161L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(164L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount() + 1));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount() - 1));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 5. 찬성(블럭) -> 기타
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_10_5_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 161L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(165L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 6. 찬성 -> 기타(블럭)
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_10_6_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 161L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(166L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount() + 1));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount() - 1));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 7. 찬성
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_10_7_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 161L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(167L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount() - 1));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount() - 1));
+    }
+
+    /**
+     * 11. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 1. 반대(블럭) -> 찬성
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_11_1_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 171L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(171L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 11. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 2. 반대 -> 찬성(블럭)
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_11_2_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 171L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(172L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount() - 1));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount() + 1));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 11. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 3. 반대(블럭) -> 반대
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_11_3_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 171L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(173L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 11. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 4. 반대 -> 반대(블럭)
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_11_4_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 171L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(174L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 11. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 5. 반대(블럭) -> 기타
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_11_5_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 171L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(175L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 11. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 6. 반대 -> 기타(블럭)
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_11_6_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 171L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(176L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount() + 1));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount() - 1));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 11. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 7. 반대
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_11_7_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 171L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(177L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount() - 1));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount() - 1));
+    }
+
+
+    /**
+     * 12. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 1. 기타(블럭) -> 찬성
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_12_1_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 181L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(181L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 12. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 2. 기타 -> 찬성(블럭)
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_12_2_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 181L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(182L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount() - 1));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount() + 1));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 12. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 3. 기타(블럭) -> 반대
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_12_3_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 181L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(183L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 12. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 4. 기타 -> 반대(블럭)
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_12_4_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 181L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(184L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount() - 1));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount() + 1));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 12. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 5. 기타(블럭) -> 기타
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_12_5_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 181L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(185L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 12. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 6. 기타 -> 기타(블럭)
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_12_6_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 181L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(186L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 12. 토론 의견 블럭시 최종의견이 투표수로 처리된다.
+     * 7. 기타
+     */
+    @Test
+    @WithUserDetails("admin1@googl.co.kr")
+    public void T_12_7_토론_의견_블럭시_최종의견이_투표수로_처리된다() {
+        Long issueId = 181L;
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(issueId), DebateDto.projection, false, false);
+        Opinion opinion = opinionService.blockOpinion(187L);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getStatus(), is(Opinion.Status.BLOCK));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount() - 1));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount() - 1));
+    }
 }

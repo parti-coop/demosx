@@ -221,11 +221,31 @@ public class OpinionService {
     }
 
     private void decreaseIssueStatsByOpinion(Opinion opinion) {
+        Issue issue = opinion.getIssue();
         Long statsId = opinion.getIssue().getStatsId();
-        decreaseVote(opinion.getVote(), statsId);
 
-        if (!existsOpinion(opinion.getIssue().getId(), opinion.getCreatedById()))
-            statsRepository.decreaseApplicant(opinion.getIssue().getStatsId());
+        OpinionDto latestOpinion = latestOpinion(issue.getId(), opinion.getCreatedById());
+
+        // 이전에 의견이 없을 때
+        if (latestOpinion == null) {
+            statsRepository.decreaseApplicant(statsId);
+            decreaseVote(opinion.getVote(), statsId);
+            return;
+        }
+
+        // 제안 의견일때
+        if (issue.getOpinionType().isProposal()) {
+            decreaseVote(opinion.getVote(), statsId);
+            return;
+        }
+
+        // 토론 의견일때
+        // 이전 의견을 삭제한 경우 변경없음
+        // 삭제 의견이 최종인 경우 같은 의견이면 변화 없음
+        if (latestOpinion.getId() > opinion.getId() || latestOpinion.getVote() == opinion.getVote()) return;
+
+        decreaseVote(opinion.getVote(), statsId);
+        increaseVote(latestOpinion.getVote(), statsId);
     }
 
     /**
