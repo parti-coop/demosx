@@ -17,16 +17,12 @@
                   반대합니다.</label>
                 <label class="demo-form-label debate-opinion-text hidden" id="etc-opinion" for="inputContent">의견 -
                   기타의견입니다.</label>
-                <p class="debate-opinion-text hidden" id="has-opinion">이미 투표하였습니다. 내용만 수정 가능합니다. 기존 의견 삭제 후 투표할 수
-                  있습니다.</p>
                 <textarea class="form-control" name="content" id="inputContent" rows="8"
                           data-parsley-required="true" data-parsley-maxlength="1000"></textarea>
                 <p><span id="opinion-length">0</span>/1000자</p>
               </div>
             </div>
             <div class="form-action text-right">
-              <button type="button" class="btn demo-submit-btn delete-btn delete-opinion-btn hidden">삭제하기
-              </button>
               <div class="btn-group clearfix">
                 <button class="btn demo-submit-btn cancel-btn" data-dismiss="modal" aria-label="Close" role="button">취소
                 </button>
@@ -104,7 +100,6 @@
       $formEditOpinion[0].reset();
       $formEditOpinion.parsley().reset();
       $('.debate-opinion-text').addClass('hidden');
-      $('.delete-opinion-btn', $formEditOpinion).addClass('hidden')
       $.ajax({
         headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
         url: '/ajax/mypage/opinions',
@@ -118,7 +113,6 @@
           if (data.id) {
             vote = data.vote;
             $('#has-opinion').removeClass('hidden');
-            $('.delete-opinion-btn', $formEditOpinion).removeClass('hidden').data('id', data.id);
             $('textarea[name=content]', $formEditOpinion).val(data.content);
             $opinionLength.text(data.content.length);
           }
@@ -177,42 +171,6 @@
           } else if (error.status === 403 || error.status === 401) {
             alert('로그인이 필요합니다.');
             window.location.href = '/login.do';
-          }
-        }
-      });
-    });
-
-    // 의견 삭제
-    $(document).on('click', '.delete-opinion-btn', function () {
-      if (!window.confirm('삭제할까요?')) return;
-
-      var id = $(this).data('id');
-
-      $.ajax({
-        headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
-        url: '/ajax/mypage/opinions/' + id,
-        type: 'DELETE',
-        contentType: 'application/json',
-        dataType: 'json',
-        success: function (data) {
-          alert(data.msg);
-          window.location.reload();
-          //$('.comment-content-text[data-id=' + id + ']').parents('.comment-li').remove();
-          //$modalEditOpinion.modal('hide');
-        },
-        error: function (error) {
-          if (error.status === 400) {
-            if (error.responseJSON.fieldErrors) {
-              var msg = error.responseJSON.fieldErrors.map(function (item) {
-                return item.fieldError;
-              }).join('/n');
-              alert(msg);
-            } else alert(error.responseJSON.msg);
-          } else if (error.status === 401) {
-            alert('로그인이 필요합니다.');
-            window.location.href = '/login.do';
-          } else if (error.status === 403) {
-            alert('삭제할 수 없습니다.');
           }
         }
       });
@@ -334,7 +292,6 @@
         ownerMenu = '        <div class="clearfix">' +
           '          <div class="pull-right">' +
           '            <button type="button" class="btn btn-default btn-sm show-opinion-modal">수정하기</button>' +
-          '            <button type="button" class="btn btn-default btn-sm delete-opinion-btn" data-id="' + opinion.id + '">삭제하기</button>' +
           '          </div>' +
           '        </div>';
       }

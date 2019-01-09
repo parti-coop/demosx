@@ -131,7 +131,7 @@ public class OpinionService {
      * 의견 삭제
      */
     @Transactional
-    @PostAuthorize("returnObject.createdById == authentication.principal.user.id")
+    @PostAuthorize("returnObject.createdById == authentication.principal.user.id and returnObject.issue.type.name() == 'P'")
     public Opinion deleteOpinion(Long opinionId) {
         Opinion opinion = getOpinion(opinionId);
         opinion.delete();

@@ -148,7 +148,7 @@
       });
     });
 
-    // 의견 삭제
+    <%--// 의견 삭제
     $(document).on('click', '.delete-opinion-btn', function () {
       if (!window.confirm('삭제할까요?')) return;
 
@@ -181,7 +181,7 @@
           }
         }
       });
-    });
+    });--%>
 
     // 의견 수정
     var $opinionContent = null;
@@ -332,7 +332,7 @@
         ownerMenu = '        <div class="clearfix">' +
           '          <div class="pull-right">' +
           '            <button type="button" class="btn btn-default btn-sm edit-opinion-btn" data-id="' + opinion.id + '" data-content="' + opinion.content + '">수정하기</button>' +
-          '            <button type="button" class="btn btn-default btn-sm delete-opinion-btn" data-id="' + opinion.id + '">삭제하기</button>' +
+          <%--'            <button type="button" class="btn btn-default btn-sm delete-opinion-btn" data-id="' + opinion.id + '">삭제하기</button>' + --%>
           '          </div>' +
           '        </div>';
       }
