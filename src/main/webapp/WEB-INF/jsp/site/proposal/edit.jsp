@@ -60,7 +60,6 @@
       event.preventDefault();
 
       var data = $formEditProposal.serializeObject();
-      console.log(data);
       $.ajax({
         headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
         url: '/ajax/mypage/proposals/${updateDto.id}',

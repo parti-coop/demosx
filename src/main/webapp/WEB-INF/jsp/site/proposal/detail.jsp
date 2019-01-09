@@ -212,7 +212,6 @@
           success: function (data) {
             alert(data.msg);
             var count = +$('strong', that).text();
-            console.log(count);
             if (hasLike) {
               that.removeClass('active');
               if (count !== 0) $('strong', that).text(count - 1);
@@ -224,7 +223,6 @@
           },
           error: function (error) {
             if (error.status === 400) {
-              console.log(hasLike);
               if (hasLike) that.removeClass('active');
               else that.addClass('active');
               if (error.responseJSON.fieldErrors) {

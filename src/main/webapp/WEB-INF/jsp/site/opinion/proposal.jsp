@@ -241,7 +241,6 @@
         success: function (data) {
           alert(data.msg);
           var count = +$('strong', that).text();
-          console.log(count);
           if (hasLike) {
             that.removeClass('active');
             if (count !== 0) $('strong', that).text(count - 1);
@@ -253,7 +252,6 @@
         },
         error: function (error) {
           if (error.status === 400) {
-            console.log(hasLike);
             if (hasLike) that.removeClass('active');
             else that.addClass('active');
             if (error.responseJSON.fieldErrors) {
@@ -311,7 +309,6 @@
           'sort[]': sort
         },
         success: function (data) {
-          console.log(data);
           $opinionCount.text(data.totalElements);
           for (var i = 0; i < data.content.length; i++) {
             var content = makeOpinionString(data.content[i]);

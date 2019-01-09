@@ -49,7 +49,6 @@
     var sortColumn = ['createdDate'];
     var table = $('#list')
       .on('preXhr.dt', function (e, settings, data) {
-        console.log(data);
         data['page'] = data.start / data.length + 1;
         data['size'] = data.length;
         data['sort'] = [sortColumn[data['order'][0].column] + ',' + data['order'][0].dir, 'name,asc'];

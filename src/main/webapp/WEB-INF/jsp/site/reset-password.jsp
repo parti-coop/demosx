@@ -51,7 +51,6 @@
       event.preventDefault();
 
       var data = $resetPassword.serializeObject();
-      console.log(data);
 
       $.ajax({
         headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },

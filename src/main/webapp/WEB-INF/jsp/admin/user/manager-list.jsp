@@ -187,7 +187,6 @@
     // 담당자 지정
     $('#assign-manager-btn').click(function() {
       var selectedData = $selectManagerInput.select2('data');
-      console.log(selectedData);
       if (selectedData.length === 0) {
         alert('선택된 항목이 없습니다.');
         return;
@@ -268,7 +267,6 @@
 
     var table = $('#list')
       .on('preXhr.dt', function (e, settings, data) {
-        console.log(data);
         data['page'] = data.start / data.length + 1;
         data['size'] = data.length;
         data['sort'] = ['name,asc'];

@@ -117,7 +117,6 @@
 
     function listener() {
       var elementOffset = $('#middle-nav-tab').offset().top;
-      console.log('top_height', elementOffset);
       if ($(window).scrollTop() < elementOffset) {
         $('#middle-nav-tab-scroll').css({ display: 'none' });
         $('#bottom-discuss-btn').css({ display: 'none' });

@@ -102,7 +102,6 @@
     $formMypage.on("submit", function (event) {
       event.preventDefault();
       var data = $formMypage.serializeObject();
-      console.log(data);
       $.ajax({
         headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
         url: '/ajax/mypage/info',
