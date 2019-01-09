@@ -96,11 +96,26 @@
       </c:if>
       <c:if test="${param.closed ne true}">
       var vote = $(this).data('vote');
-      $opinionLength.text('0');
+      var id = $(this).data('id');
       $formEditOpinion[0].reset();
       $formEditOpinion.parsley().reset();
       $('.debate-opinion-text').addClass('hidden');
-      $.ajax({
+      $('#' + vote.toLowerCase() + '-opinion').removeClass('hidden');
+      $('input[name=vote]', $formEditOpinion).val(vote);
+      if(id) {
+        var content = $(this).data('content');
+        console.log(content.length);
+        $('input[name=opinionId]', $formEditOpinion).val(id);
+        $('textarea[name=content]', $formEditOpinion).val(content);
+        $opinionLength.text(content.toString().length);
+      } else {
+        $('input[name=opinionId]', $formEditOpinion).val('');
+        $opinionLength.text('0');
+      }
+      $modalEditOpinion.modal('show');
+
+
+      <%--$.ajax({
         headers: { 'X-CSRF-TOKEN': '${_csrf.token}' },
         url: '/ajax/mypage/opinions',
         type: 'GET',
@@ -134,7 +149,7 @@
             window.location.href = '/login.do';
           }
         }
-      });
+      });--%>
       </c:if>
     });
 
@@ -291,7 +306,7 @@
       if (opinion.createdBy.id === userId) {
         ownerMenu = '        <div class="clearfix">' +
           '          <div class="pull-right">' +
-          '            <button type="button" class="btn btn-default btn-sm show-opinion-modal">수정하기</button>' +
+          '            <button type="button" class="btn btn-default btn-sm show-opinion-modal" data-id="' + opinion.id + '" data-vote="' + opinion.vote + '" data-content="' + opinion.content + '">수정하기</button>' +
           '          </div>' +
           '        </div>';
       }

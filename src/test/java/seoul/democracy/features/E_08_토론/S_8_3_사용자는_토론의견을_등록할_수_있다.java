@@ -14,7 +14,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.BadRequestException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.debate.dto.DebateDto;
@@ -207,13 +206,18 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
     }
 
     /**
-     * 8. 사용자는 토론의견은 한번만 등록 가능하다.
+     * 8. 사용자는 토론의견을 여러번 등록 가능하다.
      */
-    @Test(expected = AlreadyExistsException.class)
+    @Test
     @WithUserDetails("user2@googl.co.kr")
     public void T_8_사용자는_토론의견은_한번만_등록_가능하다() {
         OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.YES, "토론의 제안의견 입니다.");
-        opinionService.createOpinion(createDto);
+        Opinion opinion = opinionService.createOpinion(createDto);
+
+        OpinionDto opinionDto = opinionService.getOpinion(equalId(opinion.getId()), projection);
+        assertThat(opinionDto.getVote(), is(createDto.getVote()));
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
     }
 
     /**

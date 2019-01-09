@@ -175,8 +175,8 @@ public class OpinionService {
         Long statsId = issue.getStatsId();
         // 토론의견일 경우 하나의 의견만 가능
         boolean existsOpinion = existsOpinion(issue.getId(), userId);
-        if (existsOpinion && issue.getOpinionType().isDebate())
-            throw new AlreadyExistsException("토론의견은 하나만 가능합니다. 기존 의견 삭제 후 다시 등록해 주세요.");
+        //if (existsOpinion && issue.getOpinionType().isDebate())
+        //    throw new AlreadyExistsException("토론의견은 하나만 가능합니다. 기존 의견 삭제 후 다시 등록해 주세요.");
 
         if (!existsOpinion)
             statsRepository.increaseApplicant(statsId);
