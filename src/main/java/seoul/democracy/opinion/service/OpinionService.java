@@ -33,6 +33,7 @@ import static java.util.function.Function.identity;
 import static seoul.democracy.opinion.predicate.OpinionLikePredicate.equalUserIdAndOpinionId;
 import static seoul.democracy.opinion.predicate.OpinionLikePredicate.equalUserIdAndOpinionIdIn;
 import static seoul.democracy.opinion.predicate.OpinionPredicate.equalIssueIdAndCreatedByIdAndStatus;
+import static seoul.democracy.opinion.predicate.OpinionPredicate.orderByIdDesc;
 
 @Service
 @Transactional(readOnly = true)
@@ -104,6 +105,11 @@ public class OpinionService {
         return opinionRepository.exists(equalIssueIdAndCreatedByIdAndStatus(issueId, userId, Opinion.Status.OPEN));
     }
 
+    private OpinionDto latestOpinion(Long issueId, Long userId) {
+        //return opinionRepository.findOne
+        return opinionRepository.findOne(equalIssueIdAndCreatedByIdAndStatus(issueId, userId, Opinion.Status.OPEN), OpinionDto.projectionForMyOpinion, orderByIdDesc());
+    }
+
     /**
      * 의견 등록
      */
@@ -170,33 +176,53 @@ public class OpinionService {
         return opinion.open();
     }
 
+    private void increaseVote(Opinion.Vote vote, Long statsId) {
+        if (vote == Opinion.Vote.ETC)
+            statsRepository.increaseEtcOpinion(statsId);
+        else if (vote == Opinion.Vote.YES)
+            statsRepository.increaseYesOpinion(statsId);
+        else if (vote == Opinion.Vote.NO)
+            statsRepository.increaseNoOpinion(statsId);
+    }
+
+    private void decreaseVote(Opinion.Vote vote, Long statsId) {
+        if (vote == Opinion.Vote.ETC)
+            statsRepository.decreaseEtcOpinion(statsId);
+        else if (vote == Opinion.Vote.YES)
+            statsRepository.decreaseYesOpinion(statsId);
+        else if (vote == Opinion.Vote.NO)
+            statsRepository.decreaseNoOpinion(statsId);
+    }
+
     private void increaseIssueStatsByOpinion(Opinion opinion, Long userId) {
         Issue issue = opinion.getIssue();
         Long statsId = issue.getStatsId();
-        // 토론의견일 경우 하나의 의견만 가능
-        boolean existsOpinion = existsOpinion(issue.getId(), userId);
-        //if (existsOpinion && issue.getOpinionType().isDebate())
-        //    throw new AlreadyExistsException("토론의견은 하나만 가능합니다. 기존 의견 삭제 후 다시 등록해 주세요.");
 
-        if (!existsOpinion)
+        OpinionDto latestOpinion = latestOpinion(issue.getId(), userId);
+
+        // 이전에 의견이 없을 때
+        if (latestOpinion == null) {
             statsRepository.increaseApplicant(statsId);
+            increaseVote(opinion.getVote(), statsId);
+            return;
+        }
 
-        if (opinion.getVote() == Opinion.Vote.ETC)
-            statsRepository.increaseEtcOpinion(statsId);
-        else if (opinion.getVote() == Opinion.Vote.YES)
-            statsRepository.increaseYesOpinion(statsId);
-        else if (opinion.getVote() == Opinion.Vote.NO)
-            statsRepository.increaseNoOpinion(statsId);
+        // 제안 의견일때
+        if (issue.getOpinionType().isProposal()) {
+            increaseVote(opinion.getVote(), statsId);
+            return;
+        }
+
+        // 토론 의견일때
+        if (latestOpinion.getVote() == opinion.getVote()) return;
+
+        decreaseVote(latestOpinion.getVote(), statsId);
+        increaseVote(opinion.getVote(), statsId);
     }
 
     private void decreaseIssueStatsByOpinion(Opinion opinion) {
         Long statsId = opinion.getIssue().getStatsId();
-        if (opinion.getVote() == Opinion.Vote.ETC)
-            statsRepository.decreaseEtcOpinion(statsId);
-        else if (opinion.getVote() == Opinion.Vote.YES)
-            statsRepository.decreaseYesOpinion(statsId);
-        else if (opinion.getVote() == Opinion.Vote.NO)
-            statsRepository.decreaseNoOpinion(statsId);
+        decreaseVote(opinion.getVote(), statsId);
 
         if (!existsOpinion(opinion.getIssue().getId(), opinion.getCreatedById()))
             statsRepository.decreaseApplicant(opinion.getIssue().getStatsId());

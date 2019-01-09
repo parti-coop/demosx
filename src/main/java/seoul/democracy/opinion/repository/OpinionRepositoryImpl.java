@@ -5,6 +5,7 @@ import com.mysema.query.Tuple;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.support.Expressions;
 import com.mysema.query.types.Expression;
+import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -66,6 +67,14 @@ public class OpinionRepositoryImpl extends QueryDslRepositorySupport implements 
         return getQuery(projection)
                    .where(predicate)
                    .uniqueResult(projection);
+    }
+
+    @Override
+    public OpinionDto findOne(Predicate predicate, Expression<OpinionDto> projection, OrderSpecifier orderBy) {
+        return getQuery(projection)
+                   .where(predicate)
+                   .orderBy(orderBy)
+                   .singleResult(projection);
     }
 
     @Override

@@ -230,4 +230,165 @@ public class S_8_3_사용자는_토론의견을_등록할_수_있다 {
         opinionService.createOpinion(createDto);
     }
 
+    /**
+     * 10. 사용자 토론의견 추가등록시 기존 투표는 무효가 된다.
+     * 1. 기존 찬성의견 -> 찬성의견 갯수 변경 없음
+     */
+    @Test
+    @WithUserDetails("user2@googl.co.kr")
+    public void T_10_1_사용자_토론의견_추가등록시_기존_투표는_무효가_된다() {
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(debateIdInProgressWithDebate), DebateDto.projection, false, false);
+        OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.YES, "토론의 제안의견 입니다.");
+        Opinion opinion = opinionService.createOpinion(createDto);
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 사용자 토론의견 추가등록시 기존 투표는 무효가 된다.
+     * 2. 기존 찬성의견 -> 반대의견 갯수 변경됨
+     */
+    @Test
+    @WithUserDetails("user2@googl.co.kr")
+    public void T_10_2_사용자_토론의견_추가등록시_기존_투표는_무효가_된다() {
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(debateIdInProgressWithDebate), DebateDto.projection, false, false);
+        OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.NO, "토론의 제안의견 입니다.");
+        Opinion opinion = opinionService.createOpinion(createDto);
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount() - 1));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount() + 1));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 사용자 토론의견 추가등록시 기존 투표는 무효가 된다.
+     * 3. 기존 찬성의견 -> 기타의견 갯수 변경됨
+     */
+    @Test
+    @WithUserDetails("user2@googl.co.kr")
+    public void T_10_3_사용자_토론의견_추가등록시_기존_투표는_무효가_된다() {
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(debateIdInProgressWithDebate), DebateDto.projection, false, false);
+        OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.ETC, "토론의 제안의견 입니다.");
+        Opinion opinion = opinionService.createOpinion(createDto);
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount() - 1));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount() + 1));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 사용자 토론의견 추가등록시 기존 투표는 무효가 된다.
+     * 4. 기존 반대의견 -> 찬성의견 갯수 변경 없음
+     */
+    @Test
+    @WithUserDetails("user3@googl.co.kr")
+    public void T_10_4_사용자_토론의견_추가등록시_기존_투표는_무효가_된다() {
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(debateIdInProgressWithDebate), DebateDto.projection, false, false);
+        OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.YES, "토론의 제안의견 입니다.");
+        Opinion opinion = opinionService.createOpinion(createDto);
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount() + 1));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount() - 1));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 사용자 토론의견 추가등록시 기존 투표는 무효가 된다.
+     * 5. 기존 반대의견 -> 반대의견 갯수 변경됨
+     */
+    @Test
+    @WithUserDetails("user3@googl.co.kr")
+    public void T_10_5_사용자_토론의견_추가등록시_기존_투표는_무효가_된다() {
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(debateIdInProgressWithDebate), DebateDto.projection, false, false);
+        OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.NO, "토론의 제안의견 입니다.");
+        Opinion opinion = opinionService.createOpinion(createDto);
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 사용자 토론의견 추가등록시 기존 투표는 무효가 된다.
+     * 6. 기존 반대의견 -> 기타의견 갯수 변경됨
+     */
+    @Test
+    @WithUserDetails("user3@googl.co.kr")
+    public void T_10_6_사용자_토론의견_추가등록시_기존_투표는_무효가_된다() {
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(debateIdInProgressWithDebate), DebateDto.projection, false, false);
+        OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.ETC, "토론의 제안의견 입니다.");
+        Opinion opinion = opinionService.createOpinion(createDto);
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount() - 1));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount() + 1));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 사용자 토론의견 추가등록시 기존 투표는 무효가 된다.
+     * 7. 기존 기타의견 -> 찬성의견 갯수 변경 없음
+     */
+    @Test
+    @WithUserDetails("user4@googl.co.kr")
+    public void T_10_7_사용자_토론의견_추가등록시_기존_투표는_무효가_된다() {
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(debateIdInProgressWithDebate), DebateDto.projection, false, false);
+        OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.YES, "토론의 제안의견 입니다.");
+        Opinion opinion = opinionService.createOpinion(createDto);
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount() + 1));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount() - 1));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 사용자 토론의견 추가등록시 기존 투표는 무효가 된다.
+     * 8. 기존 기타의견 -> 반대의견 갯수 변경됨
+     */
+    @Test
+    @WithUserDetails("user4@googl.co.kr")
+    public void T_10_8_사용자_토론의견_추가등록시_기존_투표는_무효가_된다() {
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(debateIdInProgressWithDebate), DebateDto.projection, false, false);
+        OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.NO, "토론의 제안의견 입니다.");
+        Opinion opinion = opinionService.createOpinion(createDto);
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount() + 1));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount() - 1));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
+
+    /**
+     * 10. 사용자 토론의견 추가등록시 기존 투표는 무효가 된다.
+     * 9. 기존 기타의견 -> 기타의견 갯수 변경됨
+     */
+    @Test
+    @WithUserDetails("user4@googl.co.kr")
+    public void T_10_9_사용자_토론의견_추가등록시_기존_투표는_무효가_된다() {
+        DebateDto currentDebateDto = debateService.getDebate(DebatePredicate.equalId(debateIdInProgressWithDebate), DebateDto.projection, false, false);
+        OpinionCreateDto createDto = OpinionCreateDto.of(debateIdInProgressWithDebate, Opinion.Vote.ETC, "토론의 제안의견 입니다.");
+        Opinion opinion = opinionService.createOpinion(createDto);
+
+        DebateDto debateDto = debateService.getDebate(DebatePredicate.equalId(opinion.getIssue().getId()), DebateDto.projection, false, false);
+        assertThat(debateDto.getStats().getYesCount(), is(currentDebateDto.getStats().getYesCount()));
+        assertThat(debateDto.getStats().getNoCount(), is(currentDebateDto.getStats().getNoCount()));
+        assertThat(debateDto.getStats().getEtcCount(), is(currentDebateDto.getStats().getEtcCount()));
+        assertThat(debateDto.getStats().getApplicantCount(), is(currentDebateDto.getStats().getApplicantCount()));
+    }
 }

@@ -2,6 +2,7 @@ package seoul.democracy.opinion.repository;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.types.Expression;
+import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,8 @@ public interface OpinionRepositoryCustom {
     Page<OpinionDto> findAll(Predicate predicate, Pageable pageable, Expression<OpinionDto> projection);
 
     OpinionDto findOne(Predicate predicate, Expression<OpinionDto> projection);
+
+    OpinionDto findOne(Predicate predicate, Expression<OpinionDto> projection, OrderSpecifier order);
 
 
     /**

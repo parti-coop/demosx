@@ -1,6 +1,7 @@
 package seoul.democracy.opinion.predicate;
 
 import com.mysema.query.types.ExpressionUtils;
+import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import org.springframework.util.StringUtils;
 import seoul.democracy.issue.domain.Issue;
@@ -64,5 +65,9 @@ public class OpinionPredicate {
 
     public static Predicate equalIssueTypeAndIssueGroup(IssueType issueType, IssueGroup group) {
         return ExpressionUtils.and(opinion.issue.type.eq(issueType), opinion.issue.group.eq(group));
+    }
+
+    public static OrderSpecifier orderByIdDesc() {
+        return opinion.id.desc();
     }
 }
