@@ -32,6 +32,7 @@ CREATE TABLE `TB_USER` (
 	`REG_DT`      DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '등록일시', -- 등록일시
 	`REG_IP`      VARCHAR(15)         NOT NULL COMMENT '등록아이피', -- 등록아이피
 	`USER_EMAIL`  VARCHAR(100)        NOT NULL COMMENT '회원이메일', -- 회원이메일
+	`PROVIDER`    VARCHAR(12)         NOT NULL COMMENT '공급자', -- 공급자
 	`USER_ROLE`   VARCHAR(12)         NOT NULL COMMENT '회원권한', -- 회원권한
 	`USER_STATUS` VARCHAR(12)         NOT NULL COMMENT '회원상태', -- 회원상태
 	`USER_NAME`   VARCHAR(100)        NOT NULL COMMENT '회원이름', -- 회원이름
@@ -57,7 +58,8 @@ ALTER TABLE `TB_USER`
 -- 회원 Unique Index
 CREATE UNIQUE INDEX `UIX_TB_USER`
 	ON `TB_USER` ( -- 회원
-		`USER_EMAIL` ASC -- 회원이메일
+		`USER_EMAIL` ASC, -- 회원이메일
+		`PROVIDER` ASC    -- 공급자
 	);
 
 -- 회원 Index

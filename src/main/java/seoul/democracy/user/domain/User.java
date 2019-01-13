@@ -11,10 +11,7 @@ import seoul.democracy.common.exception.AlreadyExistsException;
 import seoul.democracy.common.exception.NotFoundException;
 import seoul.democracy.common.listener.AuditingIpListener;
 import seoul.democracy.issue.domain.Category;
-import seoul.democracy.user.dto.UserCreateDto;
-import seoul.democracy.user.dto.UserManagerCreateDto;
-import seoul.democracy.user.dto.UserManagerUpdateDto;
-import seoul.democracy.user.dto.UserUpdateDto;
+import seoul.democracy.user.dto.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -68,8 +65,14 @@ public class User implements Serializable {
     /**
      * 회원 이메일
      */
-    @Column(name = "USER_EMAIL", unique = true, updatable = false)
+    @Column(name = "USER_EMAIL", updatable = false)
     private String email;
+
+    /**
+     * 공급자, 어떤 회원으로 가입했는지
+     */
+    @Column(name = "PROVIDER", updatable = false)
+    private String provider;
 
     /**
      * 회원 이름
@@ -114,16 +117,22 @@ public class User implements Serializable {
     @Embedded
     private UserDepartment department;
 
-    private User(String email, String name, String password) {
+    private User(String email, String provider, String name, String password, String photo) {
         this.email = email;
+        this.provider = provider;
         this.name = name;
         this.password = password;
+        this.photo = photo;
         this.role = Role.ROLE_USER;
         this.status = Status.ACTIVATED;
     }
 
     public static User create(UserCreateDto createDto) {
-        return new User(createDto.getEmail().trim(), createDto.getName(), createDto.getPassword());
+        return new User(createDto.getEmail().trim(), "email", createDto.getName(), createDto.getPassword(), null);
+    }
+
+    public static User create(UserSocialCreateDto createDto) {
+        return new User(createDto.getEmail(), createDto.getProvider(), createDto.getName(), "", createDto.getPhoto());
     }
 
     public User update(UserUpdateDto updateDto) {

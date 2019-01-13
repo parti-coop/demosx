@@ -14,16 +14,32 @@ public class UserPredicate {
     }
 
     public static Predicate equalEmail(String email) {
-        return user.email.eq(email);
+        return ExpressionUtils.and(
+            user.email.eq(email),
+            user.provider.eq("email")
+        );
     }
 
     public static Predicate containsNameOrEmail(String search) {
         if (StringUtils.isEmpty(search)) return null;
 
-        return ExpressionUtils.or(user.name.contains(search), user.email.contains(search));
+        return ExpressionUtils.or(
+            user.name.contains(search),
+            ExpressionUtils.and(
+                user.email.contains(search),
+                user.provider.eq("email")
+            )
+        );
     }
 
     public static Predicate containsNameOrEmailAndRole(String search, Role role) {
         return ExpressionUtils.and(user.role.eq(role), containsNameOrEmail(search));
+    }
+
+    public static Predicate equalProviderAndId(String provider, String id) {
+        return ExpressionUtils.and(
+            user.email.eq(id),
+            user.provider.eq(provider)
+        );
     }
 }

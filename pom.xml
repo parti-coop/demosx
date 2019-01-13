@@ -229,6 +229,14 @@
         </dependency>
         <!-- image scale and crop end -->
 
+        <!-- social login -->
+        <dependency>
+            <groupId>com.github.scribejava</groupId>
+            <artifactId>scribejava-apis</artifactId>
+            <version>6.2.0</version>
+        </dependency>
+        <!-- social login end -->
+
         <!-- 테스트 라이브러리 -->
         <dependency>
             <groupId>junit</groupId>

@@ -17,6 +17,7 @@ import seoul.democracy.issue.service.CategoryService;
 import seoul.democracy.user.domain.User;
 import seoul.democracy.user.domain.UserLogin;
 import seoul.democracy.user.dto.*;
+import seoul.democracy.user.predicate.UserPredicate;
 import seoul.democracy.user.repository.UserLoginRepository;
 import seoul.democracy.user.repository.UserRepository;
 import seoul.democracy.user.utils.UserUtils;
@@ -67,6 +68,13 @@ public class UserService {
     public User create(UserCreateDto createDto) {
         if (existsEmail(createDto.getEmail())) throw new AlreadyExistsException("이미 사용중인 이메일입니다.");
 
+        User user = User.create(createDto);
+
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User create(UserSocialCreateDto createDto) {
         User user = User.create(createDto);
 
         return userRepository.save(user);
@@ -149,5 +157,16 @@ public class UserService {
 
         String password = passwordEncoder.encode(resetDto.getPassword());
         user.resetPassword(password);
+    }
+
+    @Transactional
+    public User getUserBySocial(String provider, String id, String name, String photo) {
+        User user = userRepository.findOne(UserPredicate.equalProviderAndId(provider, id));
+        if (user == null) {
+            user = User.create(UserSocialCreateDto.of(id, provider, name, photo));
+            return userRepository.save(user);
+        }
+
+        return user.update(UserUpdateDto.of(name, photo, null));
     }
 }

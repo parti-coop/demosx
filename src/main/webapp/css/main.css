@@ -3699,3 +3699,20 @@ i.mce-ico {
         left: 15px;
     }
 }
+
+.social-login-wrapper {
+    border-top: 2px solid #b6c1cc;
+    margin-top: 40px;
+    padding-top: 30px;
+}
+
+.social-login-wrapper p {
+    color: #727a7f;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+.social-login-wrapper img {
+    width: 100%;
+    margin-bottom: 14px;
+}

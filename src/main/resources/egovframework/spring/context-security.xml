@@ -45,6 +45,8 @@
         <headers>
             <frame-options policy="SAMEORIGIN"/>
         </headers>
+
+        <custom-filter ref="socialAuthenticationFilter" before="FORM_LOGIN_FILTER"/>
     </http>
 
     <beans:bean id="accessDeniedHandler" class="seoul.democracy.common.handler.SiteAccessDeniedHandler"/>
@@ -72,6 +74,7 @@
         <authentication-provider user-service-ref="userLoginService">
             <password-encoder ref="encoder"/>
         </authentication-provider>
+        <authentication-provider ref="socialAuthenticationProvider"/>
     </authentication-manager>
 
     <beans:bean id="userLoginService" class="seoul.democracy.user.service.UserLoginService"/>
@@ -86,6 +89,18 @@
                 IS_AUTHENTICATED_REMEMBERED > IS_AUTHENTICATED_ANONYMOUSLY
             </beans:value>
         </beans:property>
+    </beans:bean>
+
+    <beans:bean id="socialAuthenticationFilter" class="seoul.democracy.social.filter.SocialAuthenticationFilter">
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <beans:property name="socialService" ref="socialService"/>
+        <beans:property name="authenticationSuccessHandler" ref="authenticationSuccessHandler"/>
+        <beans:property name="authenticationFailureHandler" ref="authenticationFailureHandler"/>
+    </beans:bean>
+
+    <beans:bean id="socialAuthenticationProvider" class="seoul.democracy.social.service.SocialAuthenticationProvider">
+        <beans:property name="userDetailsService" ref="socialUserDetailService"/>
+        <beans:property name="socialService" ref="socialService"/>
     </beans:bean>
 
 </beans:beans>
