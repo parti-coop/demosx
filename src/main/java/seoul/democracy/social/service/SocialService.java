@@ -4,6 +4,7 @@ import com.github.scribejava.apis.NaverApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.springframework.stereotype.Service;
+import seoul.democracy.social.api.KakaoApi;
 
 import javax.servlet.http.HttpSession;
 import java.util.UUID;
@@ -16,6 +17,8 @@ public class SocialService {
     private final static String naverClientSecret = "zgsokxptmG";
     private final static String naverRedirectUrl = "http://localhost:8091/auth?p=naver";
 
+    private final static String kakaoClientId = "a7e7431647799a92c02afdc4f7ffd758";
+    private final static String kakaoRedirectUrl = "http://localhost:8091/auth?p=kakao";
 
     /* 세션 유효성 검증을 위한 난수 생성기 */
     private String generateRandomString() {
@@ -49,5 +52,23 @@ public class SocialService {
                    .apiSecret(naverClientSecret)
                    .callback(naverRedirectUrl)
                    .build(NaverApi.instance());
+    }
+
+    public OAuth20Service kakao(HttpSession session) {
+        String state = generateRandomString();
+        setSession(session, state);
+
+        return new ServiceBuilder(kakaoClientId)
+                   .state(state) // callback에서 이 값을 비교하여 유효한 결과인지 확인
+                   .callback(kakaoRedirectUrl)
+                   .debug()
+                   .build(KakaoApi.instance());
+    }
+
+    public OAuth20Service kakao() {
+        return new ServiceBuilder(kakaoClientId)
+                   .callback(kakaoRedirectUrl)
+                   .debug()
+                   .build(KakaoApi.instance());
     }
 }

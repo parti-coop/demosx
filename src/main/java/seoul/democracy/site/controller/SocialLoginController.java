@@ -37,6 +37,8 @@ public class SocialLoginController {
 
         if (provider.equals("naver")) {
             return "redirect:" + socialService.naver(session).getAuthorizationUrl();
+        } else if("kakao".equals(provider)) {
+            return "redirect:" + socialService.kakao(session).getAuthorizationUrl();
         }
 
         return "redirect:/login.do";

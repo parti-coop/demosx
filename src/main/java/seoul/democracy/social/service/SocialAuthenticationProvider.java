@@ -43,9 +43,23 @@ public class SocialAuthenticationProvider implements AuthenticationProvider {
                 final Response res = service.execute(req);
                 Map<String, Object> map = JsonUtils.asStringToMap(res.getBody());
                 Map<String, Object> mapResponse = (Map<String, Object>) map.get("response");
-                id = (String) mapResponse.get("id");
-                name = (String) mapResponse.get("name");
-                photo = (String) mapResponse.get("profile_image");
+                id = mapResponse.get("id").toString();
+                name = mapResponse.get("name").toString();
+                photo = mapResponse.get("profile_image").toString();
+            } catch (InterruptedException | ExecutionException | IOException e) {
+                throw new UsernameNotFoundException("Unknown connectd account id");
+            }
+        } else if (authToken.getProvider().equals("kakao")) {
+            final OAuthRequest req = new OAuthRequest(Verb.GET, "https://kapi.kakao.com/v2/user/me");
+            service.signRequest((OAuth2AccessToken) authToken.getToken(), req);
+            try {
+                final Response res = service.execute(req);
+                res.getBody();
+                Map<String, Object> map = JsonUtils.asStringToMap(res.getBody());
+                Map<String, Object> mapResponse = (Map<String, Object>) map.get("properties");
+                id = map.get("id").toString();
+                name = mapResponse.get("nickname").toString();
+                photo = mapResponse.get("profile_image").toString();
             } catch (InterruptedException | ExecutionException | IOException e) {
                 throw new UsernameNotFoundException("Unknown connectd account id");
             }

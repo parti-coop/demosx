@@ -54,6 +54,25 @@ public class SocialAuthenticationFilter extends AbstractAuthenticationProcessing
                 } catch (InterruptedException | ExecutionException e) {
                     throw new BadCredentialsException("Unknown access token");
                 }
+            } else if("kakao".equals(provider)) {
+                String state = request.getParameter("state");
+                if (state == null || !state.equals(request.getSession().getAttribute("auth_state"))) {
+                    return null;
+                }
+
+                String code = request.getParameter("code");
+                if (StringUtils.isEmpty(code)) return null;
+
+                OAuth20Service service = socialService.kakao();
+
+                try {
+                    OAuth2AccessToken accessToken = service.getAccessToken(code);
+                    SocialAuthenticationToken authRequest = new SocialAuthenticationToken(provider, accessToken);
+
+                    return this.getAuthenticationManager().authenticate(authRequest);
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new BadCredentialsException("Unknown access token");
+                }
             }
         } finally {
             RequestContextHolder.resetRequestAttributes();
