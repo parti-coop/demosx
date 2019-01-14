@@ -222,10 +222,15 @@
         <!-- Lombok 라이브러리 end -->
 
         <!-- image scale and crop -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.imgscalr</groupId>
             <artifactId>imgscalr-lib</artifactId>
             <version>4.2</version>
+        </dependency>-->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.8</version>
         </dependency>
         <!-- image scale and crop end -->
 
