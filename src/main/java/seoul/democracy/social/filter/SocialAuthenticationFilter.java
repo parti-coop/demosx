@@ -1,8 +1,12 @@
 package seoul.democracy.social.filter;
 
+import com.github.scribejava.core.model.OAuth1AccessToken;
+import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -19,65 +23,81 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+@Slf4j
 public class SocialAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     @Setter
     private SocialService socialService;
 
     public SocialAuthenticationFilter() {
-        super("/auth");
+        super("/auth/**");
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        String provider = request.getParameter("p");
+        String uri = request.getRequestURI();
+        String provider = uri.substring(uri.lastIndexOf("/") + 1);
 
         try {
             RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request, response));
+            switch (provider) {
+                case "naver": {
+                    String code = getCode(request);
 
-            if ("naver".equals(provider)) {
-                String state = request.getParameter("state");
-                if (state == null || !state.equals(request.getSession().getAttribute("auth_state"))) {
-                    return null;
-                }
-
-                String code = request.getParameter("code");
-                if (StringUtils.isEmpty(code)) return null;
-
-                OAuth20Service service = socialService.naver();
-
-                try {
+                    OAuth20Service service = socialService.naver();
                     OAuth2AccessToken accessToken = service.getAccessToken(code);
                     SocialAuthenticationToken authRequest = new SocialAuthenticationToken(provider, accessToken);
 
                     return this.getAuthenticationManager().authenticate(authRequest);
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new BadCredentialsException("Unknown access token");
                 }
-            } else if("kakao".equals(provider)) {
-                String state = request.getParameter("state");
-                if (state == null || !state.equals(request.getSession().getAttribute("auth_state"))) {
-                    return null;
-                }
+                case "kakao": {
+                    String code = getCode(request);
 
-                String code = request.getParameter("code");
-                if (StringUtils.isEmpty(code)) return null;
-
-                OAuth20Service service = socialService.kakao();
-
-                try {
+                    OAuth20Service service = socialService.kakao();
                     OAuth2AccessToken accessToken = service.getAccessToken(code);
                     SocialAuthenticationToken authRequest = new SocialAuthenticationToken(provider, accessToken);
 
                     return this.getAuthenticationManager().authenticate(authRequest);
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new BadCredentialsException("Unknown access token");
+                }
+                case "twitter": {
+                    String oauthVerifier = request.getParameter("oauth_verifier");
+                    OAuth1RequestToken requestToken = (OAuth1RequestToken) socialService.getSession(request.getSession());
+
+                    OAuth10aService service = socialService.twitter();
+                    OAuth1AccessToken accessToken = service.getAccessToken(requestToken, oauthVerifier);
+                    SocialAuthenticationToken authRequest = new SocialAuthenticationToken(provider, accessToken);
+
+                    return this.getAuthenticationManager().authenticate(authRequest);
+                }
+                case "facebook": {
+                    String code = getCode(request);
+
+                    OAuth20Service service = socialService.facebook();
+                    OAuth2AccessToken accessToken = service.getAccessToken(code);
+                    SocialAuthenticationToken authRequest = new SocialAuthenticationToken(provider, accessToken);
+
+                    return this.getAuthenticationManager().authenticate(authRequest);
+                }
+                default: {
+                    return null;
                 }
             }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new BadCredentialsException("Unknown access token");
         } finally {
             RequestContextHolder.resetRequestAttributes();
         }
+    }
 
-        return null;
+    private String getCode(HttpServletRequest request) {
+        String state = request.getParameter("state");
+        if (state == null || !state.equals(socialService.getSession(request.getSession()))) {
+            throw new BadCredentialsException("Unknown access token");
+        }
+
+        String code = request.getParameter("code");
+        if (StringUtils.isEmpty(code)) throw new BadCredentialsException("Unknown access token");
+
+        return code;
     }
 }

@@ -35,8 +35,8 @@ public class UserDto {
         user.department.department1.as("department1"), user.department.department2.as("department2"), user.department.department3.as("department3"));
 
     public final static QBean<UserDto> projectionForBasic = Projections.fields(UserDto.class, user.id, user.email, user.provider, user.name, user.photo);
-    public final static QBean<UserDto> projectionForBasicByCreatedBy = Projections.fields(UserDto.class, createdBy.id, createdBy.email, user.provider, createdBy.name, createdBy.photo);
-    public final static QBean<UserDto> projectionForBasicByModifiedBy = Projections.fields(UserDto.class, modifiedBy.id, modifiedBy.email, user.provider, modifiedBy.name);
+    public final static QBean<UserDto> projectionForBasicByCreatedBy = Projections.fields(UserDto.class, createdBy.id, createdBy.email, createdBy.provider, createdBy.name, createdBy.photo);
+    public final static QBean<UserDto> projectionForBasicByModifiedBy = Projections.fields(UserDto.class, modifiedBy.id, modifiedBy.email, modifiedBy.provider, modifiedBy.name);
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")

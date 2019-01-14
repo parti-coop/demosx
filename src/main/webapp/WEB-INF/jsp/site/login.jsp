@@ -39,9 +39,9 @@
   </form>
   <div class="social-login-wrapper">
     <p>*소셜아이디로 로그인</p>
-    <a href=""><img src="<c:url value="/images/login-facebook.png"/>" alt="페이스북으로 로그인"></a>
+    <a href="<c:url value="/social-login.do?provider=facebook"/>"><img src="<c:url value="/images/login-facebook.png"/>" alt="페이스북으로 로그인"></a>
     <a href="<c:url value="/social-login.do?provider=naver"/>"><img src="<c:url value="/images/login-naver.png"/>" alt="네이버로 로그인"></a>
-    <a href=""><img src="<c:url value="/images/login-twitter.png"/>" alt="트위터로 로그인"></a>
+    <a href="<c:url value="/social-login.do?provider=twitter"/>"><img src="<c:url value="/images/login-twitter.png"/>" alt="트위터로 로그인"></a>
     <a href="<c:url value="/social-login.do?provider=kakao"/>"><img src="<c:url value="/images/login-kakao.png"/>" alt="카카오톡으로 로그인"></a>
   </div>
 </div>

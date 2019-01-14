@@ -35,10 +35,14 @@ public class SocialLoginController {
             session.setAttribute("SITE_LOGIN_REDIRECT_URL", target);
         }
 
-        if (provider.equals("naver")) {
-            return "redirect:" + socialService.naver(session).getAuthorizationUrl();
-        } else if("kakao".equals(provider)) {
-            return "redirect:" + socialService.kakao(session).getAuthorizationUrl();
+        if ("naver".equals(provider)) {
+            return "redirect:" + socialService.naverAuthorizationUrl(session);
+        } else if ("kakao".equals(provider)) {
+            return "redirect:" + socialService.kakaoAuthorizationUrl(session);
+        } else if ("twitter".equals(provider)) {
+            return "redirect:" + socialService.twitterAuthorizationUrl(session);
+        } else if ("facebook".equals(provider)) {
+            return "redirect:" + socialService.facebookAuthorizationUrl(session);
         }
 
         return "redirect:/login.do";
