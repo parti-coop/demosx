@@ -7,6 +7,8 @@ import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import egovframework.rte.fdl.property.EgovPropertyService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import seoul.democracy.social.api.KakaoApi;
 
@@ -19,20 +21,40 @@ import java.util.concurrent.ExecutionException;
 public class SocialService {
     private final static String SESSION_STATE = "auth_state";
 
-    private final static String naverClientId = "sYuwq_WfJWKg8p73jpPY";
-    private final static String naverClientSecret = "zgsokxptmG";
-    private final static String naverRedirectUrl = "http://localhost:8091/auth/naver";
+    private final String naverClientId;
+    private final String naverClientSecret;
+    private final String naverRedirectUrl;
 
-    private final static String kakaoClientId = "a7e7431647799a92c02afdc4f7ffd758";
-    private final static String kakaoRedirectUrl = "http://localhost:8091/auth/kakao";
+    private final String kakaoClientId;
+    private final String kakaoRedirectUrl;
 
-    private final static String twitterClientId = "wtKXAJ6nYMMbcRDmbFOmVKWBr";
-    private final static String twitterClientSecret = "nNg7ftttJYnTYQsr7mG6NMrFmKGZh4kdDu9gwmRtH5scd0JWiC";
-    private final static String twitterRedirectUrl = "http://127.0.0.1:8091/auth/twitter";
+    private final String twitterClientId;
+    private final String twitterClientSecret;
+    private final String twitterRedirectUrl;
 
-    private final static String facebookClientId = "804803166523275";
-    private final static String facebookClientSecret = "7c3d4abbd668661f81d2936dc0f1872a";
-    private final static String facebookRedirectUrl = "http://localhost:8091/auth/facebook";
+    private final String facebookClientId;
+    private final String facebookClientSecret;
+    private final String facebookRedirectUrl;
+
+    @Autowired
+    public SocialService(EgovPropertyService propertyService) {
+        String host = propertyService.getString("host");
+
+        this.naverClientId = propertyService.getString("naverClientId");
+        this.naverClientSecret = propertyService.getString("naverClientSecret");
+        this.naverRedirectUrl = host + "/auth/naver";
+
+        this.kakaoClientId = propertyService.getString("kakaoClientId");
+        this.kakaoRedirectUrl = host + "/auth/kakao";
+
+        this.twitterClientId = propertyService.getString("twitterClientId");
+        this.twitterClientSecret = propertyService.getString("twitterClientSecret");
+        this.twitterRedirectUrl = host + "/auth/twitter";
+
+        this.facebookClientId = propertyService.getString("facebookClientId");
+        this.facebookClientSecret = propertyService.getString("facebookClientSecret");
+        this.facebookRedirectUrl = host + "/auth/facebook";
+    }
 
     /* 세션 유효성 검증을 위한 난수 생성기 */
     private String generateRandomString() {

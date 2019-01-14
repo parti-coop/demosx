@@ -8,6 +8,14 @@
         <property name="properties">
             <map>
                 <entry key="uploadFilePath" value="${Globals.uploadFilePath}"/>
+                <entry key="host" value="${Globals.host}"/>
+                <entry key="naverClientId" value="sYuwq_WfJWKg8p73jpPY"/>
+                <entry key="naverClientSecret" value="zgsokxptmG"/>
+                <entry key="kakaoClientId" value="a7e7431647799a92c02afdc4f7ffd758"/>
+                <entry key="twitterClientId" value="wtKXAJ6nYMMbcRDmbFOmVKWBr"/>
+                <entry key="twitterClientSecret" value="nNg7ftttJYnTYQsr7mG6NMrFmKGZh4kdDu9gwmRtH5scd0JWiC"/>
+                <entry key="facebookClientId" value="804803166523275"/>
+                <entry key="facebookClientSecret" value="7c3d4abbd668661f81d2936dc0f1872a"/>
             </map>
         </property>
     </bean>
