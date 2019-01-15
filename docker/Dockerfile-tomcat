@@ -1,0 +1,9 @@
+FROM tomcat:8.5.37
+
+RUN chown -R www-data /usr/local/tomcat
+RUN mkdir /var/www
+RUN chown -R www-data /var/www
+
+USER www-data
+
+CMD ["catalina.sh", "run"]

@@ -8,14 +8,15 @@
         <property name="properties">
             <map>
                 <entry key="uploadFilePath" value="${Globals.uploadFilePath}"/>
-                <entry key="host" value="${Globals.host}"/>
-                <entry key="naverClientId" value="sYuwq_WfJWKg8p73jpPY"/>
-                <entry key="naverClientSecret" value="zgsokxptmG"/>
-                <entry key="kakaoClientId" value="a7e7431647799a92c02afdc4f7ffd758"/>
-                <entry key="twitterClientId" value="wtKXAJ6nYMMbcRDmbFOmVKWBr"/>
-                <entry key="twitterClientSecret" value="nNg7ftttJYnTYQsr7mG6NMrFmKGZh4kdDu9gwmRtH5scd0JWiC"/>
-                <entry key="facebookClientId" value="804803166523275"/>
-                <entry key="facebookClientSecret" value="7c3d4abbd668661f81d2936dc0f1872a"/>
+                <!--<entry key="host" value="http://sandbox.demosx.org"/>-->
+                <entry key="host" value="${Globals.host"/>
+                <entry key="naverClientId" value="CKwvCn0kJExGi_he4fYs"/>
+                <entry key="naverClientSecret" value="dg47BLqsja"/>
+                <entry key="kakaoClientId" value="109a2160fd3c1e39af333ea69181d15a"/>
+                <entry key="twitterClientId" value="Qyupcyghdb56axbNPcbP8DUUL"/>
+                <entry key="twitterClientSecret" value="Rwu3tTZSNhXGsZkmE1LVLWOT2Rqo7kBS1h7owWnk1rhNwpZE1Z"/>
+                <entry key="facebookClientId" value="805472376511853"/>
+                <entry key="facebookClientSecret" value="a97ac6716b8d42462199b73352c5b6fe"/>
             </map>
         </property>
     </bean>
